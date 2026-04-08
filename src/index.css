@@ -1,0 +1,147 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* ORION Design System Colors */
+:root {
+  --orion-bg-void: #080b12;
+  --orion-bg-base: #0c0f1a;
+  --orion-bg-raised: #0f1422;
+  --orion-bg-panel: #111827;
+  --orion-bg-hover: #161d2e;
+  --orion-bg-active: #1a2235;
+
+  --orion-gold: #c9a84c;
+  --orion-gold-bright: #e8c96a;
+  --orion-gold-dim: #8a6f2e;
+  --orion-gold-pale: #f0d98a;
+
+  --orion-text-primary: #e8eaf0;
+  --orion-text-secondary: #8a93a8;
+  --orion-text-tertiary: #4a5268;
+
+  --orion-border-gold: rgba(201, 168, 76, 0.28);
+  --orion-glow-gold: 0 0 20px rgba(201, 168, 76, 0.25);
+
+  --background: #0c0f1a;
+  --foreground: #e8eaf0;
+  --card: #111827;
+  --card-foreground: #e8eaf0;
+  --primary: #c9a84c;
+  --primary-foreground: #0c0f1a;
+  --border: rgba(201, 168, 76, 0.28);
+  --input: #161d2e;
+  --ring: #c9a84c;
+  --radius: 6px;
+}
+
+* {
+  @apply border-border;
+}
+
+html {
+  @apply h-full;
+}
+
+body {
+  @apply m-0 p-0 bg-background text-foreground;
+  font-family: 'Noto Sans TC', 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  @apply h-full;
+}
+
+/* ORION-specific styles */
+.orion-grid-bg {
+  background-image:
+    linear-gradient(rgba(201, 168, 76, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 168, 76, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.orion-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #c9a84c;
+  letter-spacing: 0.15em;
+  font-family: 'Noto Sans TC', sans-serif;
+}
+
+.orion-subtitle {
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: #7a8499;
+  font-family: monospace;
+}
+
+.orion-btn-fill {
+  padding: 14px 48px;
+  background: linear-gradient(135deg, #c9a84c, #e8c96a);
+  color: #0a0d14;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.orion-btn-fill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(201, 168, 76, 0.3);
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scanDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes hexSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes glowBreath {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes bootFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fadeUp {
+  animation: fadeUp 0.5s ease-out;
+}
