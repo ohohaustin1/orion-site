@@ -1,44 +1,30 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-/* âââââââââââââââââââââââââââââââââââââââââââ
-   Orion Report Page â AI è¨ºæ·å ±å
-   V2: Task 3 (loading hints) + Task 4 (CTA popup)
-
-   URL: /report?session=XXX
-   è³æä¾æº: https://orion-hub.zeabur.app/api/report/:sessionId
-   âââââââââââââââââââââââââââââââââââââââââââ */
+/*
+ ═══════════════════════════════════════════════════
+  Orion Report Page — V3 美化版
+  深色金色主題 / 評分圓環更醒目 / 卡片化 / 數字量化放大
+  手機版優化 / 更有說服力和專業感
+ ═══════════════════════════════════════════════════
+*/
 
 interface ReportData {
-  coreProblem: {
-    title: string;
-    description: string;
-  };
+  coreProblem: { title: string; description: string };
   painQuantification: {
-    title: string;
-    monthlyTimeLoss: string;
-    monthlyMoneyCost: string;
-    description: string;
+    title: string; monthlyTimeLoss: string;
+    monthlyMoneyCost: string; description: string;
   };
-  aiSolution: {
-    title: string;
-    capabilities: string[];
-    description: string;
-  };
-  firstAction: {
-    title: string;
-    action: string;
-    description: string;
-  };
+  aiSolution: { title: string; capabilities: string[]; description: string };
+  firstAction: { title: string; action: string; description: string };
   overallScore: number;
 }
 
 type PageState = 'loading' | 'ready' | 'error';
 
-// ââ Task 3: è¼ªæ­æç¤ºæå­ ââ
 const LOADING_HINTS = [
   { text: '正在抓取您的行業的黑資料庫...', pct: 15 },
   { text: '比對 200+ 產業 AI 成功案例...', pct: 30 },
-  { text: '運算每月隱藏费用與損失...', pct: 50 },
+  { text: '運算每月隱藏費用與損失...', pct: 50 },
   { text: '生成客製化 AI 賦能方案...', pct: 65 },
   { text: '計算投資報酬的預估...', pct: 80 },
   { text: '整合策略建議與行動方案...', pct: 90 },
@@ -51,18 +37,16 @@ export default function Report() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [progress, setProgress] = useState(0);
   const [hintIndex, setHintIndex] = useState(0);
-
-  // ââ Task 4: CTA Modal ââ
   const [ctaOpen, setCtaOpen] = useState(false);
   const [ctaForm, setCtaForm] = useState({ name: '', contact: '', note: '' });
   const [ctaSubmitting, setCtaSubmitting] = useState(false);
   const [ctaSuccess, setCtaSuccess] = useState(false);
+  const [scoreAnimated, setScoreAnimated] = useState(0);
 
-  // å¾ URL åå¾ session ID
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get('session');
 
-  // ── Task 8: 6-stage progress bar synced to hints ──
+  // ── 6-stage progress bar ──
   useEffect(() => {
     if (state !== 'loading') return;
     const interval = setInterval(() => {
@@ -77,273 +61,192 @@ export default function Report() {
     return () => clearInterval(interval);
   }, [state]);
 
+  // ── Score animation ──
   useEffect(() => {
-    if (!sessionId) {
-      setError('ç¼ºå° session åæ¸');
-      setState('error');
-      return;
-    }
+    if (state !== 'ready' || !report) return;
+    const target = report.overallScore || 75;
+    let current = 0;
+    const step = Math.ceil(target / 40);
+    const timer = setInterval(() => {
+      current += step;
+      if (current >= target) { current = target; clearInterval(timer); }
+      setScoreAnimated(current);
+    }, 25);
+    return () => clearInterval(timer);
+  }, [state, report]);
 
-    // æ¨¡æ¬é²åº¦æ¢
-    // Progress now synced to LOADING_HINTS via useEffect above
+  // ── Fetch report ──
+  useEffect(() => {
+    if (!sessionId) { setError('缺少 session 參數'); setState('error'); return; }
 
-    // å¼å« API
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 45000);
 
-    fetch(`https://orion-hub.zeabur.app/api/report/${sessionId}`, {
-      signal: controller.signal,
-    })
-      .then(res => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
+    fetch(`https://orion-hub.zeabur.app/api/report/${sessionId}`, { signal: controller.signal })
+      .then(res => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.json(); })
       .then(data => {
         clearTimeout(timeout);
-        clearInterval(progressInterval);
         setProgress(100);
         if (data.success && data.report) {
           setReport(data.report);
           setTimeout(() => setState('ready'), 800);
-        } else {
-          throw new Error(data.error || 'Unknown error');
-        }
+        } else { throw new Error(data.error || 'Unknown error'); }
       })
       .catch(err => {
         clearTimeout(timeout);
-        // progress now managed by hint useEffect
-        setError(err.name === 'AbortError' ? 'åæè¶æï¼è«éè©¦' : 'å ±åçæå¤±æ');
+        setError(err.name === 'AbortError' ? '回應逾時，請重試' : '報告生成失敗');
         setState('error');
       });
 
-    return () => {
-      clearTimeout(timeout);
-      clearInterval(progressInterval);
-      controller.abort();
-    };
+    return () => { clearTimeout(timeout); controller.abort(); };
   }, [sessionId]);
 
-  const handleReAnalyze = () => {
-    sessionStorage.removeItem('hasSeenSplash');
-    window.location.href = '/';
-  };
+  const handleReAnalyze = () => { sessionStorage.removeItem('hasSeenSplash'); window.location.href = '/'; };
 
-  // ââ Task 4: è¯çµ¡ç­ç¥å·¥ç¨å¸« popup ââ
-  const handleContactEngineer = () => {
-    setCtaOpen(true);
-    setCtaSuccess(false);
-    setCtaForm({ name: '', contact: '', note: '' });
-  };
+  const handleContactEngineer = () => { setCtaOpen(true); setCtaSuccess(false); setCtaForm({ name: '', contact: '', note: '' }); };
 
   const handleCtaSubmit = useCallback(async () => {
     if (!ctaForm.contact.trim()) return;
     setCtaSubmitting(true);
     try {
       const res = await fetch('https://orion-hub.zeabur.app/api/contact-engineer', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionId,
-          name: ctaForm.name.trim(),
-          contact: ctaForm.contact.trim(),
-          note: ctaForm.note.trim(),
-        }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId, name: ctaForm.name.trim(), contact: ctaForm.contact.trim(), note: ctaForm.note.trim() }),
       });
-      if (res.ok) {
-        setCtaSuccess(true);
-      }
-    } catch {
-      // silent fail â still show success to not block user
-      setCtaSuccess(true);
-    }
+      if (res.ok) setCtaSuccess(true);
+    } catch { setCtaSuccess(true); }
     setCtaSubmitting(false);
   }, [ctaForm, sessionId]);
 
-  // ââ Loading State (Task 3 åç´) ââ
+  // ── Score 等級 ──
+  const getScoreTier = (score: number) => {
+    if (score >= 80) return { label: '極高潛力', color: '#22c55e', bg: 'rgba(34,197,94,.12)' };
+    if (score >= 60) return { label: '高潛力', color: '#e8c96a', bg: 'rgba(232,201,106,.12)' };
+    if (score >= 40) return { label: '中等潛力', color: '#f59e0b', bg: 'rgba(245,158,11,.12)' };
+    return { label: '待培育', color: '#9ca3af', bg: 'rgba(156,163,175,.12)' };
+  };
+
+  /* ══════════════════════════
+     Loading State
+     ══════════════════════════ */
   if (state === 'loading') {
     return (
-      <div style={styles.pageContainer}>
-        <div style={styles.loadingCenter}>
-          <div style={styles.loadingIcon}>
-            <svg viewBox="0 0 60 60" width="60" height="60">
-              <circle cx="30" cy="30" r="26" fill="none" stroke="#c9a84c" strokeWidth="2" opacity="0.3" />
-              <circle
-                cx="30" cy="30" r="26" fill="none" stroke="#c9a84c" strokeWidth="2"
-                strokeDasharray="163.36"
-                strokeDashoffset={163.36 * (1 - progress / 100)}
+      <div style={S.page}>
+        <div style={S.loadCenter}>
+          {/* 大圓環 loading */}
+          <div style={S.loadRingWrap}>
+            <svg viewBox="0 0 140 140" width="140" height="140">
+              <defs>
+                <linearGradient id="gld" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#c9a84c" />
+                  <stop offset="100%" stopColor="#e8c96a" />
+                </linearGradient>
+              </defs>
+              <circle cx="70" cy="70" r="60" fill="none" stroke="rgba(201,168,76,.1)" strokeWidth="6" />
+              <circle cx="70" cy="70" r="60" fill="none" stroke="url(#gld)" strokeWidth="6"
+                strokeDasharray={2 * Math.PI * 60}
+                strokeDashoffset={2 * Math.PI * 60 * (1 - progress / 100)}
                 strokeLinecap="round"
-                style={{ transition: 'stroke-dashoffset 0.2s ease', transform: 'rotate(-90deg)', transformOrigin: 'center' }}
+                style={{ transition: 'stroke-dashoffset 0.8s ease', transform: 'rotate(-90deg)', transformOrigin: 'center' }}
               />
             </svg>
-            <span style={styles.loadingPercent}>{Math.round(progress)}%</span>
+            <span style={S.loadPct}>{Math.round(progress)}%</span>
           </div>
-          <h2 style={styles.loadingTitle}>AI æ­£å¨åææ¨çéæ±</h2>
-          <p style={styles.loadingSubtitle}>ORION INTELLIGENCE ENGINE Â· GENERATING REPORT</p>
-          <div style={styles.progressBar}>
-            <div style={{ ...styles.progressFill, width: `${progress}%` }} />
+          <h2 style={S.loadTitle}>AI 正在分析您的需求</h2>
+          <p style={S.loadSub}>ORION INTELLIGENCE ENGINE</p>
+          <div style={S.progressBar}>
+            <div style={{ ...S.progressFill, width: `${progress}%` }} />
           </div>
-          {/* Task 3: è¼ªæ­æç¤ºæå­ */}
-          <p style={styles.hintText} key={hintIndex}>
-            {LOADING_HINTS[hintIndex].text}
-          </p>
+          <p style={S.hintText} key={hintIndex}>{LOADING_HINTS[hintIndex].text}</p>
         </div>
       </div>
     );
   }
 
-  // ââ Error State ââ
+  /* ══════════════════════════
+     Error State
+     ══════════════════════════ */
   if (state === 'error') {
     return (
-      <div style={styles.pageContainer}>
-        <div style={styles.loadingCenter}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>â </div>
-          <h2 style={styles.loadingTitle}>{error}</h2>
-          <button onClick={handleReAnalyze} style={styles.ctaButton}>
-            éæ°åæ
-          </button>
+      <div style={S.page}>
+        <div style={S.loadCenter}>
+          <div style={{ fontSize: 56, marginBottom: 20 }}>⚠</div>
+          <h2 style={S.loadTitle}>{error}</h2>
+          <button onClick={handleReAnalyze} style={S.ctaBtn}>重新分析</button>
         </div>
       </div>
     );
   }
 
-  // ââ Report Ready ââ
+  const tier = getScoreTier(report?.overallScore || 0);
+
+  /* ══════════════════════════
+     Report Ready
+     ══════════════════════════ */
   return (
-    <div style={styles.pageContainer}>
-      {/* ââ æ¼¢å ¡é¸å®æé ââ */}
-      <button
-        onClick={() => setSidebarOpen(true)}
-        style={styles.hamburger}
-        aria-label="éåé¸å®"
-      >
-        <span style={styles.hamburgerLine} />
-        <span style={styles.hamburgerLine} />
-        <span style={styles.hamburgerLine} />
+    <div style={S.page}>
+      {/* 漢堡選單 */}
+      <button onClick={() => setSidebarOpen(true)} style={S.hamburger} aria-label="開啟選單">
+        <span style={S.hbLine} /><span style={S.hbLine} /><span style={S.hbLine} />
       </button>
 
-      {/* ââ å´éæ¬ ââ */}
+      {/* Sidebar */}
       {sidebarOpen && (
         <>
-          <div style={styles.sidebarBackdrop} onClick={() => setSidebarOpen(false)} />
-          <div style={styles.sidebar}>
-            <div style={styles.sidebarHeader}>
-              <h3 style={styles.sidebarTitle}>ORION</h3>
-              <button onClick={() => setSidebarOpen(false)} style={styles.sidebarClose}>&times;</button>
+          <div style={S.sbBackdrop} onClick={() => setSidebarOpen(false)} />
+          <div style={S.sidebar}>
+            <div style={S.sbHead}>
+              <h3 style={S.sbTitle}>ORION</h3>
+              <button onClick={() => setSidebarOpen(false)} style={S.sbClose}>&times;</button>
             </div>
-            <div style={styles.sidebarNav}>
-              <button onClick={handleReAnalyze} style={styles.sidebarItem}>
-                <span style={styles.sidebarIcon}>â»</span>
-                éæ°åæ
-              </button>
-              <button onClick={handleContactEngineer} style={styles.sidebarItem}>
-                <span style={styles.sidebarIcon}>â</span>
-                è¯çµ¡å·¥ç¨å¸«
-              </button>
-              <div style={styles.sidebarDivider} />
-              <button onClick={() => { window.location.href = '/projects'; }} style={styles.sidebarItem}>
-                <span style={styles.sidebarIcon}>â</span>
-                æ­·å²æ¡ä»¶
-              </button>
-              <button onClick={() => { window.location.href = '/services'; }} style={styles.sidebarItem}>
-                <span style={styles.sidebarIcon}>â°</span>
-                æåä»ç´¹
-              </button>
-              <button onClick={() => { window.location.href = '/contact'; }} style={styles.sidebarItem}>
-                <span style={styles.sidebarIcon}>â</span>
-                è¯çµ¡æå
-              </button>
-              <div style={styles.sidebarDivider} />
-              <button onClick={() => { window.location.href = '/'; }} style={styles.sidebarItem}>
-                <span style={styles.sidebarIcon}>â</span>
-                è¿åé¦é 
-              </button>
+            <div style={S.sbNav}>
+              <button onClick={handleReAnalyze} style={S.sbItem}><span style={S.sbIcon}>↻</span>重新分析</button>
+              <button onClick={handleContactEngineer} style={S.sbItem}><span style={S.sbIcon}>✦</span>聯絡工程師</button>
+              <div style={S.sbDivider} />
+              <button onClick={() => { window.location.href = '/'; }} style={S.sbItem}><span style={S.sbIcon}>⌂</span>返回首頁</button>
             </div>
           </div>
         </>
       )}
 
-      {/* ââ Task 4: CTA Modal ââ */}
+      {/* CTA Modal */}
       {ctaOpen && (
         <>
-          <div style={styles.ctaBackdrop} onClick={() => setCtaOpen(false)} />
-          <div style={styles.ctaModal}>
-            <button style={styles.ctaModalClose} onClick={() => setCtaOpen(false)}>&times;</button>
-
+          <div style={S.modalBg} onClick={() => setCtaOpen(false)} />
+          <div style={S.modal}>
+            <button style={S.modalClose} onClick={() => setCtaOpen(false)}>&times;</button>
             {ctaSuccess ? (
-              <div style={styles.ctaSuccessBox}>
-                <div style={{ fontSize: 48, marginBottom: 12 }}>â</div>
-                <h3 style={styles.ctaModalTitle}>å·²æ¶å°æ¨çè³è¨</h3>
-                <p style={styles.ctaModalDesc}>ç­ç¥å·¥ç¨å¸«å°å¨ 24 å°æå§èæ¨è¯ç¹«</p>
-                <button style={styles.ctaButton} onClick={() => setCtaOpen(false)}>
-                  éé
-                </button>
+              <div style={{ textAlign: 'center', padding: '24px 0' }}>
+                <div style={{ fontSize: 56, marginBottom: 16, color: '#22c55e' }}>✓</div>
+                <h3 style={S.modalTitle}>已收到您的資訊</h3>
+                <p style={S.modalDesc}>策略工程師將在 24 小時內與您聯繫</p>
+                <button style={S.ctaBtn} onClick={() => setCtaOpen(false)}>關閉</button>
               </div>
             ) : (
               <>
-                <h3 style={styles.ctaModalTitle}>è¯çµ¡ç­ç¥å·¥ç¨å¸«</h3>
-                <p style={styles.ctaModalDesc}>é¸ææ¨åå¥½çè¯ç¹«æ¹å¼ï¼æçä¸è³è¨ç±æåä¸»åè¯ç¹«</p>
-
-                {/* å¿«ééé */}
-                <div style={styles.ctaQuickLinks}>
-                  <a
-                    href="https://line.me/R/ti/p/@orion_ai"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={styles.ctaQuickBtn}
-                  >
-                    <span style={{ fontSize: 20 }}>ð¬</span>
-                    <span>LINE @orion_ai</span>
+                <h3 style={S.modalTitle}>聯絡策略工程師</h3>
+                <p style={S.modalDesc}>留下聯絡方式，我們主動聯繫</p>
+                <div style={S.quickLinks}>
+                  <a href="https://line.me/R/ti/p/@orion_ai" target="_blank" rel="noopener noreferrer" style={S.quickBtn}>
+                    <span style={{ fontSize: 22 }}>💬</span><span>LINE</span>
                   </a>
-                  <a
-                    href="https://t.me/orion_ai_group"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={styles.ctaQuickBtn}
-                  >
-                    <span style={{ fontSize: 20 }}>â</span>
-                    <span>Telegram</span>
+                  <a href="https://t.me/orion_ai_group" target="_blank" rel="noopener noreferrer" style={S.quickBtn}>
+                    <span style={{ fontSize: 22 }}>✈</span><span>Telegram</span>
                   </a>
                 </div>
-
-                <div style={styles.ctaDivider}>
-                  <span style={styles.ctaDividerText}>æçä¸è¯çµ¡è³è¨</span>
+                <div style={S.orDivider}><span style={S.orText}>或留下聯絡資訊</span></div>
+                <div style={S.formGroup}>
+                  <input type="text" placeholder="您的姓名（選填）" value={ctaForm.name}
+                    onChange={e => setCtaForm(p => ({ ...p, name: e.target.value }))} style={S.formInput} />
+                  <input type="text" placeholder="電話 / Email / LINE ID *" value={ctaForm.contact}
+                    onChange={e => setCtaForm(p => ({ ...p, contact: e.target.value }))} style={S.formInput} />
+                  <textarea placeholder="補充說明（選填）" value={ctaForm.note} rows={3}
+                    onChange={e => setCtaForm(p => ({ ...p, note: e.target.value }))} style={S.formTextarea} />
                 </div>
-
-                {/* è¡¨å® */}
-                <div style={styles.ctaFormGroup}>
-                  <input
-                    type="text"
-                    placeholder="æ¨çå§åï¼é¸å¡«ï¼"
-                    value={ctaForm.name}
-                    onChange={e => setCtaForm(prev => ({ ...prev, name: e.target.value }))}
-                    style={styles.ctaInput}
-                  />
-                  <input
-                    type="text"
-                    placeholder="é»è©± / Email / LINE ID *"
-                    value={ctaForm.contact}
-                    onChange={e => setCtaForm(prev => ({ ...prev, contact: e.target.value }))}
-                    style={styles.ctaInput}
-                  />
-                  <textarea
-                    placeholder="è£åèªªæï¼é¸å¡«ï¼"
-                    value={ctaForm.note}
-                    onChange={e => setCtaForm(prev => ({ ...prev, note: e.target.value }))}
-                    style={styles.ctaTextarea}
-                    rows={3}
-                  />
-                </div>
-
-                <button
-                  onClick={handleCtaSubmit}
+                <button onClick={handleCtaSubmit}
                   disabled={ctaSubmitting || !ctaForm.contact.trim()}
-                  style={{
-                    ...styles.ctaButton,
-                    opacity: ctaSubmitting || !ctaForm.contact.trim() ? 0.5 : 1,
-                    cursor: ctaSubmitting || !ctaForm.contact.trim() ? 'not-allowed' : 'pointer',
-                    width: '100%',
-                  }}
-                >
-                  {ctaSubmitting ? 'æäº¤ä¸­...' : 'æäº¤è¯çµ¡è³è¨'}
+                  style={{ ...S.ctaBtn, width: '100%', opacity: ctaSubmitting || !ctaForm.contact.trim() ? .5 : 1 }}>
+                  {ctaSubmitting ? '提交中...' : '提交聯絡資訊'}
                 </button>
               </>
             )}
@@ -351,110 +254,127 @@ export default function Report() {
         </>
       )}
 
-      {/* ââ å ±åå§å®¹ ââ */}
-      <div style={styles.reportContainer}>
+      {/* ══════ 報告內容 ══════ */}
+      <div style={S.container}>
+
         {/* Header */}
-        <div style={styles.reportHeader}>
-          <p style={styles.reportLabel}>ORION AI DIAGNOSTIC REPORT</p>
-          <h1 style={styles.reportTitle}>æºè½è¨ºæ·å ±å</h1>
-          <div style={styles.divider} />
+        <div style={S.header}>
+          <p style={S.headerLabel}>ORION AI DIAGNOSTIC REPORT</p>
+          <h1 style={S.headerTitle}>智能診斷報告</h1>
+          <div style={S.headerLine} />
         </div>
 
-        {/* Score Ring */}
+        {/* ── 評分圓環（放大 + 動畫）── */}
         {report && (
-          <div style={styles.scoreSection}>
-            <div style={styles.scoreRing}>
-              <svg viewBox="0 0 120 120" width="120" height="120">
-                <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(201,168,76,0.15)" strokeWidth="8" />
-                <circle
-                  cx="60" cy="60" r="52" fill="none" stroke="#c9a84c" strokeWidth="8"
-                  strokeDasharray={2 * Math.PI * 52}
-                  strokeDashoffset={2 * Math.PI * 52 * (1 - (report.overallScore || 75) / 100)}
+          <div style={S.scoreWrap}>
+            <div style={S.scoreRingOuter}>
+              {/* 外光暈 */}
+              <div style={{
+                position: 'absolute', inset: -16,
+                borderRadius: '50%',
+                background: `radial-gradient(circle, ${tier.bg} 0%, transparent 70%)`,
+              }} />
+              <svg viewBox="0 0 180 180" width="180" height="180" style={{ position: 'relative', zIndex: 1 }}>
+                <defs>
+                  <linearGradient id="scoreGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor={tier.color} />
+                    <stop offset="100%" stopColor="#e8c96a" />
+                  </linearGradient>
+                </defs>
+                <circle cx="90" cy="90" r="76" fill="none" stroke="rgba(201,168,76,.08)" strokeWidth="10" />
+                <circle cx="90" cy="90" r="76" fill="none" stroke="url(#scoreGrad)" strokeWidth="10"
+                  strokeDasharray={2 * Math.PI * 76}
+                  strokeDashoffset={2 * Math.PI * 76 * (1 - scoreAnimated / 100)}
                   strokeLinecap="round"
-                  style={{ transform: 'rotate(-90deg)', transformOrigin: 'center' }}
+                  style={{ transition: 'stroke-dashoffset 0.05s linear', transform: 'rotate(-90deg)', transformOrigin: 'center' }}
                 />
               </svg>
-              <span style={styles.scoreNumber}>{report.overallScore || 75}</span>
+              <div style={S.scoreInner}>
+                <span style={{ ...S.scoreNum, color: tier.color }}>{scoreAnimated}</span>
+                <span style={S.scoreOf}>/100</span>
+              </div>
             </div>
-            <p style={styles.scoreLabel}>AI è³¦è½æ½åææ¸</p>
+            <div style={{ ...S.scoreBadge, background: tier.bg, color: tier.color }}>{tier.label}</div>
+            <p style={S.scoreSubLabel}>AI 賦能潛力指數</p>
           </div>
         )}
 
-        {/* Report Cards */}
+        {/* ── 四大卡片 ── */}
         {report && (
-          <div style={styles.cardsGrid}>
-            {/* Card 1: æ ¸å¿åé¡ */}
-            <div style={styles.card}>
-              <div style={styles.cardHeader}>
-                <span style={styles.cardIcon}>â</span>
-                <h3 style={styles.cardTitle}>{report.coreProblem.title}</h3>
+          <div style={S.cards}>
+
+            {/* Card 1: 核心問題 */}
+            <div style={S.card}>
+              <div style={S.cardNum}>01</div>
+              <div style={S.cardHead}>
+                <span style={S.cardEmoji}>🔍</span>
+                <h3 style={S.cardTitle}>{report.coreProblem.title}</h3>
               </div>
-              <p style={styles.cardText}>{report.coreProblem.description}</p>
+              <p style={S.cardBody}>{report.coreProblem.description}</p>
             </div>
 
-            {/* Card 2: çé»éå */}
-            <div style={styles.card}>
-              <div style={styles.cardHeader}>
-                <span style={styles.cardIcon}>â</span>
-                <h3 style={styles.cardTitle}>{report.painQuantification.title}</h3>
+            {/* Card 2: 痛點量化 */}
+            <div style={{ ...S.card, ...S.cardAccent }}>
+              <div style={S.cardNum}>02</div>
+              <div style={S.cardHead}>
+                <span style={S.cardEmoji}>📊</span>
+                <h3 style={S.cardTitle}>{report.painQuantification.title}</h3>
               </div>
-              <div style={styles.metricsRow}>
-                <div style={styles.metric}>
-                  <span style={styles.metricValue}>{report.painQuantification.monthlyTimeLoss}</span>
-                  <span style={styles.metricLabel}>æ¯ææéæå¤±</span>
+              {/* 大數字 metrics */}
+              <div style={S.metricsGrid}>
+                <div style={S.metricBox}>
+                  <div style={S.metricBig}>{report.painQuantification.monthlyTimeLoss}</div>
+                  <div style={S.metricSub}>每月時間損失</div>
                 </div>
-                <div style={styles.metricDivider} />
-                <div style={styles.metric}>
-                  <span style={styles.metricValue}>{report.painQuantification.monthlyMoneyCost}</span>
-                  <span style={styles.metricLabel}>æ¯æéé¢ææ¬</span>
+                <div style={S.metricDivider} />
+                <div style={S.metricBox}>
+                  <div style={S.metricBig}>{report.painQuantification.monthlyMoneyCost}</div>
+                  <div style={S.metricSub}>每月金額成本</div>
                 </div>
               </div>
-              <p style={styles.cardText}>{report.painQuantification.description}</p>
+              <p style={S.cardBody}>{report.painQuantification.description}</p>
             </div>
 
-            {/* Card 3: AI è³¦è½æ¹æ¡ */}
-            <div style={styles.card}>
-              <div style={styles.cardHeader}>
-                <span style={styles.cardIcon}>â</span>
-                <h3 style={styles.cardTitle}>{report.aiSolution.title}</h3>
+            {/* Card 3: AI 賦能方案 */}
+            <div style={S.card}>
+              <div style={S.cardNum}>03</div>
+              <div style={S.cardHead}>
+                <span style={S.cardEmoji}>⚡</span>
+                <h3 style={S.cardTitle}>{report.aiSolution.title}</h3>
               </div>
-              <div style={styles.capabilities}>
+              <div style={S.capList}>
                 {report.aiSolution.capabilities.map((cap, i) => (
-                  <div key={i} style={styles.capItem}>
-                    <span style={styles.capBullet}>âº</span>
-                    {cap}
+                  <div key={i} style={S.capRow}>
+                    <span style={S.capCheck}>✦</span>
+                    <span>{cap}</span>
                   </div>
                 ))}
               </div>
-              <p style={styles.cardText}>{report.aiSolution.description}</p>
+              <p style={S.cardBody}>{report.aiSolution.description}</p>
             </div>
 
-            {/* Card 4: å»ºè­°é¦æ­¥è¡å */}
-            <div style={{ ...styles.card, ...styles.cardHighlight }}>
-              <div style={styles.cardHeader}>
-                <span style={styles.cardIcon}>â</span>
-                <h3 style={styles.cardTitle}>{report.firstAction.title}</h3>
+            {/* Card 4: 建議首步行動 — Highlight */}
+            <div style={{ ...S.card, ...S.cardGold }}>
+              <div style={{ ...S.cardNum, color: '#0a0d14' }}>04</div>
+              <div style={S.cardHead}>
+                <span style={S.cardEmoji}>🚀</span>
+                <h3 style={{ ...S.cardTitle, color: '#0a0d14' }}>{report.firstAction.title}</h3>
               </div>
-              <div style={styles.actionBox}>
-                <p style={styles.actionText}>{report.firstAction.action}</p>
+              <div style={S.actionHighlight}>
+                <p style={S.actionBig}>{report.firstAction.action}</p>
               </div>
-              <p style={styles.cardText}>{report.firstAction.description}</p>
+              <p style={{ ...S.cardBody, color: 'rgba(10,13,20,.7)' }}>{report.firstAction.description}</p>
             </div>
           </div>
         )}
 
-        {/* CTA åå */}
-        <div style={styles.ctaSection}>
-          <button onClick={handleContactEngineer} style={styles.ctaButton}>
-            è¯çµ¡ç­ç¥å·¥ç¨å¸«
-          </button>
-          <button onClick={handleReAnalyze} style={styles.ctaSecondary}>
-            éæ°åæ
-          </button>
+        {/* CTA 區 */}
+        <div style={S.ctaSection}>
+          <button onClick={handleContactEngineer} style={S.ctaBtn}>聯絡策略工程師</button>
+          <button onClick={handleReAnalyze} style={S.ctaSecondary}>重新分析</button>
         </div>
 
-        {/* Footer */}
-        <div style={styles.footer}>
+        <div style={S.footer}>
           <p>Powered by ORION AI GROUP &copy; 2026</p>
         </div>
       </div>
@@ -462,495 +382,111 @@ export default function Report() {
   );
 }
 
-/* âââââââââââââââââââââââââââââââââââââââââââ
-   Inline Styles â Dark Theme + Gold Accents
-   âââââââââââââââââââââââââââââââââââââââââââ */
-
-const styles: Record<string, React.CSSProperties> = {
-  pageContainer: {
-    minHeight: '100vh',
-    background: '#0a0d14',
-    color: '#e8e8f0',
+/* ═══════════════════════════════════════════════════
+   Styles — Dark Theme + Gold Accents + Mobile
+   ═══════════════════════════════════════════════════ */
+const S: Record<string, React.CSSProperties> = {
+  page: {
+    minHeight: '100vh', background: '#0a0d14', color: '#e8e8f0',
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
     position: 'relative',
   },
 
-  // ââ Loading ââ
-  loadingCenter: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '100vh',
-    padding: '0 20px',
-  },
-  loadingIcon: {
-    position: 'relative',
-    width: 60,
-    height: 60,
-    marginBottom: 24,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  loadingPercent: {
-    position: 'absolute',
-    fontSize: 14,
-    fontWeight: 600,
-    color: '#c9a84c',
-    fontFamily: 'monospace',
-  },
-  loadingTitle: {
-    fontSize: 20,
-    fontWeight: 600,
-    color: '#e8c96a',
-    marginBottom: 8,
-  },
-  loadingSubtitle: {
-    fontSize: 11,
-    letterSpacing: '0.15em',
-    color: '#7a8499',
-    marginBottom: 32,
-    fontFamily: 'monospace',
-  },
-  progressBar: {
-    width: '100%',
-    maxWidth: 320,
-    height: 3,
-    background: '#1a2235',
-    borderRadius: 2,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    background: 'linear-gradient(90deg, #c9a84c, #e8c96a)',
-    transition: 'width 0.2s ease',
-  },
-  // Task 3: hint text
-  hintText: {
-    marginTop: 24,
-    fontSize: 13,
-    color: '#7a8499',
-    letterSpacing: '0.02em',
-    textAlign: 'center',
-    minHeight: 20,
-    animation: 'fadeInHint 0.5s ease',
-  },
+  // Loading
+  loadCenter: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '0 24px' },
+  loadRingWrap: { position: 'relative', width: 140, height: 140, marginBottom: 32, display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  loadPct: { position: 'absolute', fontSize: 28, fontWeight: 700, color: '#e8c96a', fontFamily: 'monospace' },
+  loadTitle: { fontSize: 22, fontWeight: 700, color: '#e8c96a', marginBottom: 8 },
+  loadSub: { fontSize: 11, letterSpacing: '.18em', color: '#5a6575', marginBottom: 36, fontFamily: 'monospace' },
+  progressBar: { width: '100%', maxWidth: 340, height: 3, background: '#1a2235', borderRadius: 2, overflow: 'hidden' },
+  progressFill: { height: '100%', background: 'linear-gradient(90deg,#c9a84c,#e8c96a)', transition: 'width .8s ease' },
+  hintText: { marginTop: 28, fontSize: 13, color: '#7a8499', textAlign: 'center' as const, minHeight: 20 },
 
-  // ââ Hamburger ââ
-  hamburger: {
-    position: 'fixed',
-    top: 18,
-    left: 18,
-    zIndex: 100,
-    background: 'rgba(10,13,20,0.8)',
-    border: '1px solid rgba(201,168,76,0.3)',
-    borderRadius: 8,
-    padding: '10px 11px',
-    cursor: 'pointer',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 4,
-  },
-  hamburgerLine: {
-    display: 'block',
-    width: 18,
-    height: 2,
-    background: '#c9a84c',
-    borderRadius: 1,
-  },
+  // Hamburger
+  hamburger: { position: 'fixed', top: 18, left: 18, zIndex: 100, background: 'rgba(10,13,20,.85)', border: '1px solid rgba(201,168,76,.3)', borderRadius: 8, padding: '10px 11px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 4 },
+  hbLine: { display: 'block', width: 18, height: 2, background: '#c9a84c', borderRadius: 1 },
 
-  // ââ Sidebar ââ
-  sidebarBackdrop: {
-    position: 'fixed',
-    inset: 0,
-    background: 'rgba(0,0,0,0.6)',
-    zIndex: 89,
-  },
-  sidebar: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: 260,
-    height: '100vh',
-    background: '#0d1120',
-    borderRight: '1px solid rgba(201,168,76,0.2)',
-    zIndex: 90,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  sidebarHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '20px 18px',
-    borderBottom: '1px solid rgba(201,168,76,0.15)',
-  },
-  sidebarTitle: {
-    fontSize: 16,
-    fontWeight: 700,
-    color: '#c9a84c',
-    letterSpacing: '0.1em',
-  },
-  sidebarClose: {
-    background: 'none',
-    border: 'none',
-    color: '#7a8499',
-    fontSize: 24,
-    cursor: 'pointer',
-    lineHeight: 1,
-  },
-  sidebarNav: {
-    padding: '12px 0',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  sidebarItem: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 12,
-    padding: '14px 20px',
-    background: 'none',
-    border: 'none',
-    color: '#c9cdd6',
-    fontSize: 14,
-    cursor: 'pointer',
-    textAlign: 'left',
-    transition: 'background 0.15s',
-  },
-  sidebarIcon: {
-    fontSize: 16,
-    color: '#c9a84c',
-    width: 24,
-    textAlign: 'center',
-  },
-  sidebarDivider: {
-    height: 1,
-    background: 'rgba(201,168,76,0.12)',
-    margin: '8px 18px',
-  },
+  // Sidebar
+  sbBackdrop: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,.6)', zIndex: 89 },
+  sidebar: { position: 'fixed', top: 0, left: 0, width: 260, height: '100vh', background: '#0d1120', borderRight: '1px solid rgba(201,168,76,.2)', zIndex: 90, display: 'flex', flexDirection: 'column' },
+  sbHead: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 18px', borderBottom: '1px solid rgba(201,168,76,.15)' },
+  sbTitle: { fontSize: 16, fontWeight: 700, color: '#c9a84c', letterSpacing: '.1em' },
+  sbClose: { background: 'none', border: 'none', color: '#7a8499', fontSize: 24, cursor: 'pointer', lineHeight: 1 },
+  sbNav: { padding: '12px 0', display: 'flex', flexDirection: 'column' },
+  sbItem: { display: 'flex', alignItems: 'center', gap: 12, padding: '14px 20px', background: 'none', border: 'none', color: '#c9cdd6', fontSize: 14, cursor: 'pointer', textAlign: 'left' as const },
+  sbIcon: { fontSize: 16, color: '#c9a84c', width: 24, textAlign: 'center' as const },
+  sbDivider: { height: 1, background: 'rgba(201,168,76,.12)', margin: '8px 18px' },
 
-  // ââ Report Container ââ
-  reportContainer: {
-    maxWidth: 720,
-    margin: '0 auto',
-    padding: '48px 20px 32px',
-  },
-  reportHeader: {
-    textAlign: 'center',
-    marginBottom: 40,
-  },
-  reportLabel: {
-    fontSize: 11,
-    letterSpacing: '0.2em',
-    color: '#7a8499',
-    marginBottom: 8,
-    fontFamily: 'monospace',
-  },
-  reportTitle: {
-    fontSize: 28,
-    fontWeight: 700,
-    color: '#e8c96a',
-    marginBottom: 16,
-  },
-  divider: {
-    height: 1,
-    background: 'linear-gradient(90deg, transparent, #c9a84c, transparent)',
-    margin: '0 auto',
-    maxWidth: 200,
-  },
+  // Container
+  container: { maxWidth: 720, margin: '0 auto', padding: '52px 20px 32px' },
 
-  // ââ Score ââ
-  scoreSection: {
-    textAlign: 'center',
-    marginBottom: 40,
-  },
-  scoreRing: {
-    position: 'relative',
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 120,
-    height: 120,
-  },
-  scoreNumber: {
-    position: 'absolute',
-    fontSize: 32,
-    fontWeight: 700,
-    color: '#e8c96a',
-    fontFamily: 'monospace',
-  },
-  scoreLabel: {
-    marginTop: 12,
-    fontSize: 13,
-    color: '#7a8499',
-    letterSpacing: '0.05em',
-  },
+  // Header
+  header: { textAlign: 'center' as const, marginBottom: 48 },
+  headerLabel: { fontSize: 10, letterSpacing: '.25em', color: '#5a6575', marginBottom: 10, fontFamily: 'monospace' },
+  headerTitle: { fontSize: 32, fontWeight: 800, color: '#e8c96a', marginBottom: 20, letterSpacing: '.02em' },
+  headerLine: { height: 2, background: 'linear-gradient(90deg, transparent, #c9a84c, transparent)', margin: '0 auto', maxWidth: 240 },
 
-  // ââ Cards ââ
-  cardsGrid: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 20,
-    marginBottom: 40,
-  },
+  // Score
+  scoreWrap: { textAlign: 'center' as const, marginBottom: 52, display: 'flex', flexDirection: 'column', alignItems: 'center' },
+  scoreRingOuter: { position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 180, height: 180, marginBottom: 16 },
+  scoreInner: { position: 'absolute', display: 'flex', alignItems: 'baseline', justifyContent: 'center', zIndex: 2 },
+  scoreNum: { fontSize: 52, fontWeight: 800, fontFamily: 'monospace', lineHeight: 1 },
+  scoreOf: { fontSize: 16, color: '#5a6575', marginLeft: 2, fontFamily: 'monospace' },
+  scoreBadge: { padding: '6px 20px', borderRadius: 20, fontSize: 13, fontWeight: 700, letterSpacing: '.05em', marginBottom: 8 },
+  scoreSubLabel: { fontSize: 12, color: '#5a6575', letterSpacing: '.08em' },
+
+  // Cards
+  cards: { display: 'flex', flexDirection: 'column', gap: 24, marginBottom: 48 },
   card: {
-    background: '#0d1120',
-    border: '1px solid rgba(201,168,76,0.2)',
-    borderRadius: 12,
-    padding: '24px',
+    background: '#0d1120', border: '1px solid rgba(201,168,76,.15)', borderRadius: 16,
+    padding: '28px 24px', position: 'relative', overflow: 'hidden',
   },
-  cardHighlight: {
-    borderColor: '#c9a84c',
-    boxShadow: '0 0 20px rgba(201,168,76,0.1)',
+  cardAccent: { borderColor: 'rgba(201,168,76,.35)', background: 'linear-gradient(135deg, #0d1120 0%, #111a2e 100%)' },
+  cardGold: {
+    background: 'linear-gradient(135deg, #e8c96a 0%, #c9a84c 100%)',
+    border: 'none', color: '#0a0d14',
   },
-  cardHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 10,
-    marginBottom: 16,
-  },
-  cardIcon: {
-    color: '#c9a84c',
-    fontSize: 14,
-  },
-  cardTitle: {
-    fontSize: 17,
-    fontWeight: 600,
-    color: '#e8c96a',
-  },
-  cardText: {
-    fontSize: 14,
-    lineHeight: 1.7,
-    color: '#b8bfc9',
-  },
+  cardNum: { position: 'absolute', top: 16, right: 20, fontSize: 48, fontWeight: 800, color: 'rgba(201,168,76,.06)', fontFamily: 'monospace', lineHeight: 1 },
+  cardHead: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 },
+  cardEmoji: { fontSize: 20 },
+  cardTitle: { fontSize: 18, fontWeight: 700, color: '#e8c96a' },
+  cardBody: { fontSize: 14, lineHeight: 1.75, color: '#b0b8c4' },
 
-  // ââ Metrics ââ
-  metricsRow: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 24,
-    marginBottom: 16,
-    padding: '16px 0',
-    borderTop: '1px solid rgba(201,168,76,0.1)',
-    borderBottom: '1px solid rgba(201,168,76,0.1)',
-  },
-  metric: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: 4,
-  },
-  metricValue: {
-    fontSize: 18,
-    fontWeight: 700,
-    color: '#e8c96a',
-    fontFamily: 'monospace',
-  },
-  metricLabel: {
-    fontSize: 11,
-    color: '#7a8499',
-  },
-  metricDivider: {
-    width: 1,
-    height: 40,
-    background: 'rgba(201,168,76,0.2)',
-  },
+  // Metrics (Card 2)
+  metricsGrid: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0, marginBottom: 20, padding: '20px 0', borderTop: '1px solid rgba(201,168,76,.12)', borderBottom: '1px solid rgba(201,168,76,.12)' },
+  metricBox: { flex: 1, textAlign: 'center' as const },
+  metricBig: { fontSize: 28, fontWeight: 800, color: '#e8c96a', fontFamily: 'monospace', lineHeight: 1.2, marginBottom: 6 },
+  metricSub: { fontSize: 11, color: '#7a8499', letterSpacing: '.03em' },
+  metricDivider: { width: 1, height: 48, background: 'rgba(201,168,76,.2)', flexShrink: 0 },
 
-  // ââ Capabilities ââ
-  capabilities: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 8,
-    marginBottom: 16,
-  },
-  capItem: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8,
-    fontSize: 14,
-    color: '#c9cdd6',
-  },
-  capBullet: {
-    color: '#c9a84c',
-    fontSize: 18,
-    fontWeight: 700,
-  },
+  // Capabilities (Card 3)
+  capList: { display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 },
+  capRow: { display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 14, color: '#c9cdd6', lineHeight: 1.6 },
+  capCheck: { color: '#c9a84c', fontSize: 16, fontWeight: 700, flexShrink: 0, marginTop: 2 },
 
-  // ââ Action Box ââ
-  actionBox: {
-    background: 'rgba(201,168,76,0.08)',
-    border: '1px solid rgba(201,168,76,0.25)',
-    borderRadius: 8,
-    padding: '14px 18px',
-    marginBottom: 16,
-  },
-  actionText: {
-    fontSize: 16,
-    fontWeight: 600,
-    color: '#e8c96a',
-    textAlign: 'center',
-  },
+  // Action (Card 4)
+  actionHighlight: { background: 'rgba(10,13,20,.15)', borderRadius: 10, padding: '16px 20px', marginBottom: 16 },
+  actionBig: { fontSize: 18, fontWeight: 700, color: '#0a0d14', textAlign: 'center' as const, lineHeight: 1.5 },
 
-  // ââ CTA ââ
-  ctaSection: {
-    textAlign: 'center',
-    marginBottom: 40,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: 12,
-  },
-  ctaButton: {
-    padding: '14px 48px',
-    background: 'linear-gradient(135deg, #c9a84c, #e8c96a)',
-    color: '#0a0d14',
-    border: 'none',
-    borderRadius: 8,
-    fontSize: 16,
-    fontWeight: 700,
-    cursor: 'pointer',
-    letterSpacing: '0.05em',
-  },
-  ctaSecondary: {
-    padding: '12px 36px',
-    background: 'transparent',
-    color: '#c9a84c',
-    border: '1px solid rgba(201,168,76,0.4)',
-    borderRadius: 8,
-    fontSize: 14,
-    fontWeight: 500,
-    cursor: 'pointer',
-  },
+  // CTA
+  ctaSection: { textAlign: 'center' as const, marginBottom: 48, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 },
+  ctaBtn: { padding: '16px 56px', background: 'linear-gradient(135deg,#c9a84c,#e8c96a)', color: '#0a0d14', border: 'none', borderRadius: 10, fontSize: 16, fontWeight: 700, cursor: 'pointer', letterSpacing: '.04em', boxShadow: '0 4px 24px rgba(201,168,76,.25)' },
+  ctaSecondary: { padding: '12px 40px', background: 'transparent', color: '#c9a84c', border: '1px solid rgba(201,168,76,.35)', borderRadius: 10, fontSize: 14, fontWeight: 500, cursor: 'pointer' },
 
-  // ââ Task 4: CTA Modal ââ
-  ctaBackdrop: {
-    position: 'fixed',
-    inset: 0,
-    background: 'rgba(0,0,0,0.7)',
-    zIndex: 200,
-  },
-  ctaModal: {
-    position: 'fixed',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    zIndex: 201,
-    background: '#0d1120',
-    border: '1px solid rgba(201,168,76,0.3)',
-    borderRadius: 16,
-    padding: '32px 28px',
-    width: '90%',
-    maxWidth: 420,
-    maxHeight: '85vh',
-    overflowY: 'auto',
-  },
-  ctaModalClose: {
-    position: 'absolute',
-    top: 12,
-    right: 16,
-    background: 'none',
-    border: 'none',
-    color: '#7a8499',
-    fontSize: 28,
-    cursor: 'pointer',
-    lineHeight: 1,
-  },
-  ctaModalTitle: {
-    fontSize: 20,
-    fontWeight: 700,
-    color: '#e8c96a',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  ctaModalDesc: {
-    fontSize: 13,
-    color: '#7a8499',
-    textAlign: 'center',
-    marginBottom: 24,
-    lineHeight: 1.5,
-  },
-  ctaQuickLinks: {
-    display: 'flex',
-    gap: 12,
-    marginBottom: 20,
-  },
-  ctaQuickBtn: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: 6,
-    padding: '16px 12px',
-    background: 'rgba(201,168,76,0.08)',
-    border: '1px solid rgba(201,168,76,0.25)',
-    borderRadius: 12,
-    color: '#e8c96a',
-    fontSize: 13,
-    fontWeight: 600,
-    textDecoration: 'none',
-    cursor: 'pointer',
-    transition: 'background 0.15s',
-  },
-  ctaDivider: {
-    position: 'relative',
-    textAlign: 'center',
-    marginBottom: 20,
-    borderBottom: '1px solid rgba(201,168,76,0.15)',
-    lineHeight: 0,
-    paddingBottom: 0,
-  },
-  ctaDividerText: {
-    background: '#0d1120',
-    padding: '0 12px',
-    fontSize: 12,
-    color: '#5a6575',
-    position: 'relative',
-    top: 8,
-  },
-  ctaFormGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 12,
-    marginBottom: 20,
-  },
-  ctaInput: {
-    width: '100%',
-    padding: '12px 14px',
-    background: '#0a0d14',
-    border: '1px solid rgba(201,168,76,0.2)',
-    borderRadius: 8,
-    color: '#e8e8f0',
-    fontSize: 14,
-    outline: 'none',
-    boxSizing: 'border-box',
-  },
-  ctaTextarea: {
-    width: '100%',
-    padding: '12px 14px',
-    background: '#0a0d14',
-    border: '1px solid rgba(201,168,76,0.2)',
-    borderRadius: 8,
-    color: '#e8e8f0',
-    fontSize: 14,
-    outline: 'none',
-    resize: 'vertical',
-    boxSizing: 'border-box',
-    fontFamily: 'inherit',
-  },
-  ctaSuccessBox: {
-    textAlign: 'center',
-    padding: '20px 0',
-    color: '#4ade80',
-  },
+  // Modal
+  modalBg: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,.75)', zIndex: 200 },
+  modal: { position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', zIndex: 201, background: '#0d1120', border: '1px solid rgba(201,168,76,.25)', borderRadius: 20, padding: '36px 28px', width: '90%', maxWidth: 420, maxHeight: '85vh', overflowY: 'auto' as const },
+  modalClose: { position: 'absolute', top: 14, right: 18, background: 'none', border: 'none', color: '#7a8499', fontSize: 28, cursor: 'pointer', lineHeight: 1 },
+  modalTitle: { fontSize: 20, fontWeight: 700, color: '#e8c96a', marginBottom: 8, textAlign: 'center' as const },
+  modalDesc: { fontSize: 13, color: '#7a8499', textAlign: 'center' as const, marginBottom: 24, lineHeight: 1.5 },
+  quickLinks: { display: 'flex', gap: 12, marginBottom: 20 },
+  quickBtn: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: '16px 12px', background: 'rgba(201,168,76,.08)', border: '1px solid rgba(201,168,76,.25)', borderRadius: 12, color: '#e8c96a', fontSize: 13, fontWeight: 600, textDecoration: 'none', cursor: 'pointer' },
+  orDivider: { position: 'relative', textAlign: 'center' as const, marginBottom: 20, borderBottom: '1px solid rgba(201,168,76,.15)', lineHeight: '0', paddingBottom: 0 },
+  orText: { background: '#0d1120', padding: '0 14px', fontSize: 12, color: '#5a6575', position: 'relative', top: 8 },
+  formGroup: { display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 },
+  formInput: { width: '100%', padding: '13px 16px', background: '#0a0d14', border: '1px solid rgba(201,168,76,.2)', borderRadius: 10, color: '#e8e8f0', fontSize: 14, outline: 'none', boxSizing: 'border-box' as const },
+  formTextarea: { width: '100%', padding: '13px 16px', background: '#0a0d14', border: '1px solid rgba(201,168,76,.2)', borderRadius: 10, color: '#e8e8f0', fontSize: 14, outline: 'none', resize: 'vertical' as const, boxSizing: 'border-box' as const, fontFamily: 'inherit' },
 
-  // ââ Footer ââ
-  footer: {
-    textAlign: 'center',
-    padding: '20px 0',
-    fontSize: 11,
-    color: '#5a6575',
-    borderTop: '1px solid rgba(201,168,76,0.1)',
-  },
+  // Footer
+  footer: { textAlign: 'center' as const, padding: '24px 0', fontSize: 11, color: '#3a4555', borderTop: '1px solid rgba(201,168,76,.08)' },
 };
