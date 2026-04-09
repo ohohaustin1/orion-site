@@ -36,13 +36,12 @@ type PageState = 'loading' | 'ready' | 'error';
 
 // ââ Task 3: è¼ªæ­æç¤ºæå­ ââ
 const LOADING_HINTS = [
-  'æ­£å¨æææ¨çè¡æ¥­çé»è³æåº«...',
-  'æ¯å° 200+ ç¢æ¥­ AI æåæ¡ä¾...',
-  'éåæ¯ææéèéé¢æå¤±...',
-  'çæå®¢è£½å AI è³¦è½æ¹æ¡...',
-  'è¨ç®æè³å ±é¬çé ä¼°...',
-  'æ´åç­ç¥å»ºè­°èè¡åæ¹æ¡...',
-  'æçµæ ¡æºå ±åæºç¢ºåº¦...',
+  { text: '正在抓取您的行業的黑資料庫...', pct: 15 },
+  { text: '比對 200+ 產業 AI 成功案例...', pct: 30 },
+  { text: '運算每月隱藏费用與損失...', pct: 50 },
+  { text: '生成客製化 AI 賦能方案...', pct: 65 },
+  { text: '計算投資報酬的預估...', pct: 80 },
+  { text: '整合策略建議與行動方案...', pct: 90 },
 ];
 
 export default function Report() {
@@ -63,12 +62,18 @@ export default function Report() {
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get('session');
 
-  // ââ Task 3: æ¯ 5 ç§è¼ªæ­æç¤º ââ
+  // ── Task 8: 6-stage progress bar synced to hints ──
   useEffect(() => {
     if (state !== 'loading') return;
     const interval = setInterval(() => {
-      setHintIndex(prev => (prev + 1) % LOADING_HINTS.length);
+      setHintIndex(prev => {
+        const next = prev + 1;
+        if (next >= LOADING_HINTS.length) return prev;
+        setProgress(LOADING_HINTS[next].pct);
+        return next;
+      });
     }, 5000);
+    setProgress(LOADING_HINTS[0].pct);
     return () => clearInterval(interval);
   }, [state]);
 
@@ -80,12 +85,7 @@ export default function Report() {
     }
 
     // æ¨¡æ¬é²åº¦æ¢
-    let progressValue = 0;
-    const progressInterval = setInterval(() => {
-      progressValue += Math.random() * 8;
-      if (progressValue > 90) progressValue = 90;
-      setProgress(progressValue);
-    }, 200);
+    // Progress now synced to LOADING_HINTS via useEffect above
 
     // å¼å« API
     const controller = new AbortController();
@@ -104,14 +104,14 @@ export default function Report() {
         setProgress(100);
         if (data.success && data.report) {
           setReport(data.report);
-          setTimeout(() => setState('ready'), 600);
+          setTimeout(() => setState('ready'), 800);
         } else {
           throw new Error(data.error || 'Unknown error');
         }
       })
       .catch(err => {
         clearTimeout(timeout);
-        clearInterval(progressInterval);
+        // progress now managed by hint useEffect
         setError(err.name === 'AbortError' ? 'åæè¶æï¼è«éè©¦' : 'å ±åçæå¤±æ');
         setState('error');
       });
@@ -184,7 +184,7 @@ export default function Report() {
           </div>
           {/* Task 3: è¼ªæ­æç¤ºæå­ */}
           <p style={styles.hintText} key={hintIndex}>
-            {LOADING_HINTS[hintIndex]}
+            {LOADING_HINTS[hintIndex].text}
           </p>
         </div>
       </div>
