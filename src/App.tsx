@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { SplashScreen } from "./components/SplashScreen";
+import Sidebar from "./components/Sidebar";
+import CTAFloat from "./components/CTAFloat";
 // Pages
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -16,8 +18,46 @@ import Clients from "./pages/Clients";
 import WarRoom from "./pages/WarRoom";
 import NotFound from "./pages/NotFound";
 import Report from "./pages/Report";
+import HomePage from "./pages/HomePage";
+import CasesPage from "./pages/CasesPage";
+import InsightsPage from "./pages/InsightsPage";
+import AboutPage from "./pages/AboutPage";
+import ResourcesPage from "./pages/ResourcesPage";
+
+// Pages that show sidebar
+const SIDEBAR_ROUTES = ['/home', '/cases', '/insights', '/about', '/resources'];
+
+function SidebarLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="orion-layout-with-sidebar">
+      <Sidebar />
+      <main className="orion-main-content">
+        {children}
+      </main>
+      <CTAFloat />
+    </div>
+  );
+}
 
 function Router() {
+  const [location] = useLocation();
+  const showSidebar = SIDEBAR_ROUTES.some(r => location === r || location.startsWith(r + '/'));
+
+  if (showSidebar) {
+    return (
+      <SidebarLayout>
+        <Switch>
+          <Route path="/home" component={HomePage} />
+          <Route path="/cases" component={CasesPage} />
+          <Route path="/insights" component={InsightsPage} />
+          <Route path="/about" component={AboutPage} />
+          <Route path="/resources" component={ResourcesPage} />
+          <Route component={NotFound} />
+        </Switch>
+      </SidebarLayout>
+    );
+  }
+
   return (
     <Switch>
       {/* Public */}
@@ -25,8 +65,13 @@ function Router() {
       <Route path="/register" component={Register} />
       <Route path="/forgot-password" component={ForgotPassword} />
 
-      {/* / → War Room（主要入口，訪客可直接進入） */}
-      <Route path="/" component={WarRoom} />
+      {/* / → HomePage（主要入口） */}
+      <Route path="/">
+        {() => {
+          window.location.replace('/home');
+          return null;
+        }}
+      </Route>
 
       {/* /war-room → War Room */}
       <Route path="/war-room" component={WarRoom} />
@@ -52,19 +97,19 @@ function Router() {
 
       {/* Legacy redirects */}
       <Route path="/dashboard">
-        {() => { window.location.replace('/'); return null; }}
+        {() => { window.location.replace('/home'); return null; }}
       </Route>
       <Route path="/analysis/new">
-        {() => { window.location.replace('/'); return null; }}
+        {() => { window.location.replace('/home'); return null; }}
       </Route>
       <Route path="/analysis/:id">
-        {() => { window.location.replace('/'); return null; }}
+        {() => { window.location.replace('/home'); return null; }}
       </Route>
       <Route path="/projects/:id">
         {() => { window.location.replace('/projects'); return null; }}
       </Route>
       <Route path="/handoff">
-        {() => { window.location.replace('/'); return null; }}
+        {() => { window.location.replace('/home'); return null; }}
       </Route>
 
       {/* 404 */}
@@ -78,13 +123,12 @@ function App() {
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
-    // Skip splash screen if accessing /report route
-    const isReportRoute = window.location.pathname === '/report';
-    if (isReportRoute) {
+    const path = window.location.pathname;
+    const skipSplash = ['/report', '/war-room', '/home', '/cases', '/insights', '/about', '/resources'];
+    if (skipSplash.some(r => path.startsWith(r))) {
       setShowSplash(false);
       return;
     }
-
     const hasSeenSplash = sessionStorage.getItem('hasSeenSplash');
     if (hasSeenSplash) {
       setShowSplash(false);
