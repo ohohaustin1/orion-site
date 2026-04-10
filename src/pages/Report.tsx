@@ -2,9 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 /*
  ═══════════════════════════════════════════════════
-  Orion Report Page — V3 美化版
-  深色金色主題 / 評分圓環更醒目 / 卡片化 / 數字量化放大
-  手機版優化 / 更有說服力和專業感
+  Orion Report Page — V3.1 解鎖版
+  深色金色主題 / 40% 免費 + 解鎖閘門 + 60% 鎖定
+  Session ID 驗證 / Email 解鎖 / 帳號登入
  ═══════════════════════════════════════════════════
 */
 
@@ -20,6 +20,7 @@ interface ReportData {
 }
 
 type PageState = 'loading' | 'ready' | 'error';
+type UnlockMode = 'email' | 'account' | null;
 
 const LOADING_HINTS = [
   { text: '正在抓取您的行業的黑資料庫...', pct: 15 },
@@ -43,8 +44,26 @@ export default function Report() {
   const [ctaSuccess, setCtaSuccess] = useState(false);
   const [scoreAnimated, setScoreAnimated] = useState(0);
 
+  // ── 解鎖狀態 ──
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [unlockMode, setUnlockMode] = useState<UnlockMode>(null);
+  const [unlockEmail, setUnlockEmail] = useState('');
+  const [unlockPassword, setUnlockPassword] = useState('');
+  const [unlockError, setUnlockError] = useState('');
+  const [unlockSubmitting, setUnlockSubmitting] = useState(false);
+
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get('session');
+
+  // ── 檢查 session_id ──
+  useEffect(() => {
+    if (!sessionId) {
+      setError('無效的分析連結，請重新進行診斷');
+      setState('error');
+      return;
+    }
+    // session_id 存在，繼續載入
+  }, [sessionId]);
 
   // ── 6-stage progress bar ──
   useEffect(() => {
@@ -77,7 +96,7 @@ export default function Report() {
 
   // ── Fetch report ──
   useEffect(() => {
-    if (!sessionId) { setError('缺少 session 參數'); setState('error'); return; }
+    if (!sessionId) return;
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 45000);
@@ -97,396 +116,719 @@ export default function Report() {
         setError(err.name === 'AbortError' ? '回應逾時，請重試' : '報告生成失敗');
         setState('error');
       });
-
-    return () => { clearTimeout(timeout); controller.abort(); };
   }, [sessionId]);
 
-  const handleReAnalyze = () => { sessionStorage.removeItem('hasSeenSplash'); window.location.href = '/'; };
-
-  const handleContactEngineer = () => { setCtaOpen(true); setCtaSuccess(false); setCtaForm({ name: '', contact: '', note: '' }); };
-
-  const handleCtaSubmit = useCallback(async () => {
-    if (!ctaForm.contact.trim()) return;
-    setCtaSubmitting(true);
+  // ── Email 解鎖 ──
+  const handleEmailUnlock = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!unlockEmail.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      setUnlockError('請輸入有效的電子郵件');
+      return;
+    }
+    setUnlockSubmitting(true);
+    setUnlockError('');
     try {
-      const res = await fetch('https://orion-hub.zeabur.app/api/contact-engineer', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId, name: ctaForm.name.trim(), contact: ctaForm.contact.trim(), note: ctaForm.note.trim() }),
+      const res = await fetch('https://orion-hub.zeabur.app/api/unlock', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          session_id: sessionId,
+          email: unlockEmail,
+          unlock_method: 'email'
+        })
       });
-      if (res.ok) setCtaSuccess(true);
-    } catch { setCtaSuccess(true); }
-    setCtaSubmitting(false);
-  }, [ctaForm, sessionId]);
-
-  // ── Score 等級 ──
-  const getScoreTier = (score: number) => {
-    if (score >= 80) return { label: '極高潛力', color: '#22c55e', bg: 'rgba(34,197,94,.12)' };
-    if (score >= 60) return { label: '高潛力', color: '#e8c96a', bg: 'rgba(232,201,106,.12)' };
-    if (score >= 40) return { label: '中等潛力', color: '#f59e0b', bg: 'rgba(245,158,11,.12)' };
-    return { label: '待培育', color: '#9ca3af', bg: 'rgba(156,163,175,.12)' };
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (data.ok) {
+        setIsUnlocked(true);
+        setUnlockMode('email');
+        localStorage.setItem(`unlock_${sessionId}`, 'true');
+      } else {
+        setUnlockError(data.error || '解鎖失敗，請重試');
+      }
+    } catch (err: any) {
+      setUnlockError(err.message || '網路錯誤');
+    } finally {
+      setUnlockSubmitting(false);
+    }
   };
 
-  /* ══════════════════════════
-     Loading State
-     ══════════════════════════ */
-  if (state === 'loading') {
-    return (
-      <div style={S.page}>
-        <div style={S.loadCenter}>
-          {/* 大圓環 loading */}
-          <div style={S.loadRingWrap}>
-            <svg viewBox="0 0 140 140" width="140" height="140">
-              <defs>
-                <linearGradient id="gld" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#c9a84c" />
-                  <stop offset="100%" stopColor="#e8c96a" />
-                </linearGradient>
-              </defs>
-              <circle cx="70" cy="70" r="60" fill="none" stroke="rgba(201,168,76,.1)" strokeWidth="6" />
-              <circle cx="70" cy="70" r="60" fill="none" stroke="url(#gld)" strokeWidth="6"
-                strokeDasharray={2 * Math.PI * 60}
-                strokeDashoffset={2 * Math.PI * 60 * (1 - progress / 100)}
-                strokeLinecap="round"
-                style={{ transition: 'stroke-dashoffset 0.8s ease', transform: 'rotate(-90deg)', transformOrigin: 'center' }}
-              />
-            </svg>
-            <span style={S.loadPct}>{Math.round(progress)}%</span>
-          </div>
-          <h2 style={S.loadTitle}>AI 正在分析您的需求</h2>
-          <p style={S.loadSub}>ORION INTELLIGENCE ENGINE</p>
-          <div style={S.progressBar}>
-            <div style={{ ...S.progressFill, width: `${progress}%` }} />
-          </div>
-          <p style={S.hintText} key={hintIndex}>{LOADING_HINTS[hintIndex].text}</p>
-        </div>
+  // ── 帳號登入 ──
+  const handleAccountLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!unlockEmail.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      setUnlockError('請輸入有效的電子郵件');
+      return;
+    }
+    if (unlockPassword.length < 6) {
+      setUnlockError('密碼至少 6 個字元');
+      return;
+    }
+    setUnlockSubmitting(true);
+    setUnlockError('');
+    try {
+      const res = await fetch('https://orion-hub.zeabur.app/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: unlockEmail,
+          password: unlockPassword,
+          session_id: sessionId
+        })
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (data.ok && data.token) {
+        localStorage.setItem('auth_token', data.token);
+        setIsUnlocked(true);
+        setUnlockMode('account');
+        localStorage.setItem(`unlock_${sessionId}`, 'true');
+      } else {
+        setUnlockError(data.error || '登入失敗，請檢查帳號密碼');
+      }
+    } catch (err: any) {
+      setUnlockError(err.message || '網路錯誤');
+    } finally {
+      setUnlockSubmitting(false);
+    }
+  };
+
+  // ── Render 解鎖閘門 ──
+  const renderUnlockGate = () => (
+    <div className="unlock-gate">
+      <div className="unlock-header">
+        <div className="unlock-title">🔒 解鎖完整 AI 分析報告</div>
+        <div className="unlock-subtitle">選擇一種方式繼續，即可查看完整策略、建議與落地方案</div>
       </div>
-    );
-  }
 
-  /* ══════════════════════════
-     Error State
-     ══════════════════════════ */
-  if (state === 'error') {
-    return (
-      <div style={S.page}>
-        <div style={S.loadCenter}>
-          <div style={{ fontSize: 56, marginBottom: 20 }}>⚠</div>
-          <h2 style={S.loadTitle}>{error}</h2>
-          <button onClick={handleReAnalyze} style={S.ctaBtn}>重新分析</button>
-        </div>
+      {unlockError && <div className="unlock-error">{unlockError}</div>}
+
+      {/* Email 快速解鎖 */}
+      <div className="unlock-section">
+        <div className="unlock-section-title">─── 快速解鎖（推薦）───</div>
+        <form onSubmit={handleEmailUnlock} className="unlock-form">
+          <input
+            type="email"
+            placeholder="輸入您的電子郵件"
+            value={unlockEmail}
+            onChange={(e) => setUnlockEmail(e.target.value)}
+            disabled={unlockSubmitting}
+            className="unlock-input"
+          />
+          <button
+            type="submit"
+            disabled={unlockSubmitting}
+            className="unlock-button"
+          >
+            {unlockSubmitting ? '解鎖中...' : '👉 立即解鎖'}
+          </button>
+        </form>
       </div>
-    );
-  }
 
-  const tier = getScoreTier(report?.overallScore || 0);
-
-  /* ══════════════════════════
-     Report Ready
-     ══════════════════════════ */
-  return (
-    <div style={S.page}>
-      {/* 漢堡選單 */}
-      <button onClick={() => setSidebarOpen(true)} style={S.hamburger} aria-label="開啟選單">
-        <span style={S.hbLine} /><span style={S.hbLine} /><span style={S.hbLine} />
-      </button>
-
-      {/* Sidebar */}
-      {sidebarOpen && (
-        <>
-          <div style={S.sbBackdrop} onClick={() => setSidebarOpen(false)} />
-          <div style={S.sidebar}>
-            <div style={S.sbHead}>
-              <h3 style={S.sbTitle}>ORION</h3>
-              <button onClick={() => setSidebarOpen(false)} style={S.sbClose}>&times;</button>
-            </div>
-            <div style={S.sbNav}>
-              <button onClick={handleReAnalyze} style={S.sbItem}><span style={S.sbIcon}>↻</span>重新分析</button>
-              <button onClick={handleContactEngineer} style={S.sbItem}><span style={S.sbIcon}>✦</span>聯絡工程師</button>
-              <div style={S.sbDivider} />
-              <button onClick={() => { window.location.href = '/'; }} style={S.sbItem}><span style={S.sbIcon}>⌂</span>返回首頁</button>
-            </div>
+      {/* 帳號登入 */}
+      <div className="unlock-section">
+        <div className="unlock-section-title">─── 或使用帳號登入 ───</div>
+        <form onSubmit={handleAccountLogin} className="unlock-form">
+          <input
+            type="email"
+            placeholder="電子郵件"
+            value={unlockEmail}
+            onChange={(e) => setUnlockEmail(e.target.value)}
+            disabled={unlockSubmitting}
+            className="unlock-input"
+          />
+          <input
+            type="password"
+            placeholder="密碼"
+            value={unlockPassword}
+            onChange={(e) => setUnlockPassword(e.target.value)}
+            disabled={unlockSubmitting}
+            className="unlock-input"
+          />
+          <button
+            type="submit"
+            disabled={unlockSubmitting}
+            className="unlock-button"
+          >
+            {unlockSubmitting ? '登入中...' : '👉 登入並解鎖'}
+          </button>
+          <div className="unlock-forgot">
+            忘記密碼？→ <span className="text-gold">請聯絡客服</span>
           </div>
-        </>
-      )}
+        </form>
+      </div>
 
-      {/* CTA Modal */}
-      {ctaOpen && (
-        <>
-          <div style={S.modalBg} onClick={() => setCtaOpen(false)} />
-          <div style={S.modal}>
-            <button style={S.modalClose} onClick={() => setCtaOpen(false)}>&times;</button>
-            {ctaSuccess ? (
-              <div style={{ textAlign: 'center', padding: '24px 0' }}>
-                <div style={{ fontSize: 56, marginBottom: 16, color: '#22c55e' }}>✓</div>
-                <h3 style={S.modalTitle}>已收到您的資訊</h3>
-                <p style={S.modalDesc}>策略工程師將在 24 小時內與您聯繫</p>
-                <button style={S.ctaBtn} onClick={() => setCtaOpen(false)}>關閉</button>
-              </div>
-            ) : (
-              <>
-                <h3 style={S.modalTitle}>聯絡策略工程師</h3>
-                <p style={S.modalDesc}>留下聯絡方式，我們主動聯繫</p>
-                <div style={S.quickLinks}>
-                  <a href="https://line.me/R/ti/p/@orion_ai" target="_blank" rel="noopener noreferrer" style={S.quickBtn}>
-                    <span style={{ fontSize: 22 }}>💬</span><span>LINE</span>
-                  </a>
-                  <a href="https://t.me/orion_ai_group" target="_blank" rel="noopener noreferrer" style={S.quickBtn}>
-                    <span style={{ fontSize: 22 }}>✈</span><span>Telegram</span>
-                  </a>
-                </div>
-                <div style={S.orDivider}><span style={S.orText}>或留下聯絡資訊</span></div>
-                <div style={S.formGroup}>
-                  <input type="text" placeholder="您的姓名（選填）" value={ctaForm.name}
-                    onChange={e => setCtaForm(p => ({ ...p, name: e.target.value }))} style={S.formInput} />
-                  <input type="text" placeholder="電話 / Email / LINE ID *" value={ctaForm.contact}
-                    onChange={e => setCtaForm(p => ({ ...p, contact: e.target.value }))} style={S.formInput} />
-                  <textarea placeholder="補充說明（選填）" value={ctaForm.note} rows={3}
-                    onChange={e => setCtaForm(p => ({ ...p, note: e.target.value }))} style={S.formTextarea} />
-                </div>
-                <button onClick={handleCtaSubmit}
-                  disabled={ctaSubmitting || !ctaForm.contact.trim()}
-                  style={{ ...S.ctaBtn, width: '100%', opacity: ctaSubmitting || !ctaForm.contact.trim() ? .5 : 1 }}>
-                  {ctaSubmitting ? '提交中...' : '提交聯絡資訊'}
-                </button>
-              </>
-            )}
-          </div>
-        </>
-      )}
-
-      {/* ══════ 報告內容 ══════ */}
-      <div style={S.container}>
-
-        {/* Header */}
-        <div style={S.header}>
-          <p style={S.headerLabel}>ORION AI DIAGNOSTIC REPORT</p>
-          <h1 style={S.headerTitle}>智能診斷報告</h1>
-          <div style={S.headerLine} />
-        </div>
-
-        {/* ── 評分圓環（放大 + 動畫）── */}
-        {report && (
-          <div style={S.scoreWrap}>
-            <div style={S.scoreRingOuter}>
-              {/* 外光暈 */}
-              <div style={{
-                position: 'absolute', inset: -16,
-                borderRadius: '50%',
-                background: `radial-gradient(circle, ${tier.bg} 0%, transparent 70%)`,
-              }} />
-              <svg viewBox="0 0 180 180" width="180" height="180" style={{ position: 'relative', zIndex: 1 }}>
-                <defs>
-                  <linearGradient id="scoreGrad" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor={tier.color} />
-                    <stop offset="100%" stopColor="#e8c96a" />
-                  </linearGradient>
-                </defs>
-                <circle cx="90" cy="90" r="76" fill="none" stroke="rgba(201,168,76,.08)" strokeWidth="10" />
-                <circle cx="90" cy="90" r="76" fill="none" stroke="url(#scoreGrad)" strokeWidth="10"
-                  strokeDasharray={2 * Math.PI * 76}
-                  strokeDashoffset={2 * Math.PI * 76 * (1 - scoreAnimated / 100)}
-                  strokeLinecap="round"
-                  style={{ transition: 'stroke-dashoffset 0.05s linear', transform: 'rotate(-90deg)', transformOrigin: 'center' }}
-                />
-              </svg>
-              <div style={S.scoreInner}>
-                <span style={{ ...S.scoreNum, color: tier.color }}>{scoreAnimated}</span>
-                <span style={S.scoreOf}>/100</span>
-              </div>
-            </div>
-            <div style={{ ...S.scoreBadge, background: tier.bg, color: tier.color }}>{tier.label}</div>
-            <p style={S.scoreSubLabel}>AI 賦能潛力指數</p>
-          </div>
-        )}
-
-        {/* ── 四大卡片 ── */}
-        {report && (
-          <div style={S.cards}>
-
-            {/* Card 1: 核心問題 */}
-            <div style={S.card}>
-              <div style={S.cardNum}>01</div>
-              <div style={S.cardHead}>
-                <span style={S.cardEmoji}>🔍</span>
-                <h3 style={S.cardTitle}>{report.coreProblem.title}</h3>
-              </div>
-              <p style={S.cardBody}>{report.coreProblem.description}</p>
-            </div>
-
-            {/* Card 2: 痛點量化 */}
-            <div style={{ ...S.card, ...S.cardAccent }}>
-              <div style={S.cardNum}>02</div>
-              <div style={S.cardHead}>
-                <span style={S.cardEmoji}>📊</span>
-                <h3 style={S.cardTitle}>{report.painQuantification.title}</h3>
-              </div>
-              {/* 大數字 metrics */}
-              <div style={S.metricsGrid}>
-                <div style={S.metricBox}>
-                  <div style={S.metricBig}>{report.painQuantification.monthlyTimeLoss}</div>
-                  <div style={S.metricSub}>每月時間損失</div>
-                </div>
-                <div style={S.metricDivider} />
-                <div style={S.metricBox}>
-                  <div style={S.metricBig}>{report.painQuantification.monthlyMoneyCost}</div>
-                  <div style={S.metricSub}>每月金額成本</div>
-                </div>
-              </div>
-              <p style={S.cardBody}>{report.painQuantification.description}</p>
-            </div>
-
-            {/* Card 3: AI 賦能方案 */}
-            <div style={S.card}>
-              <div style={S.cardNum}>03</div>
-              <div style={S.cardHead}>
-                <span style={S.cardEmoji}>⚡</span>
-                <h3 style={S.cardTitle}>{report.aiSolution.title}</h3>
-              </div>
-              <div style={S.capList}>
-                {report.aiSolution.capabilities.map((cap, i) => (
-                  <div key={i} style={S.capRow}>
-                    <span style={S.capCheck}>✦</span>
-                    <span>{cap}</span>
-                  </div>
-                ))}
-              </div>
-              <p style={S.cardBody}>{report.aiSolution.description}</p>
-            </div>
-
-            {/* Card 4: 建議首步行動 — Highlight */}
-            <div style={{ ...S.card, ...S.cardGold }}>
-              <div style={{ ...S.cardNum, color: '#0a0d14' }}>04</div>
-              <div style={S.cardHead}>
-                <span style={S.cardEmoji}>🚀</span>
-                <h3 style={{ ...S.cardTitle, color: '#0a0d14' }}>{report.firstAction.title}</h3>
-              </div>
-              <div style={S.actionHighlight}>
-                <p style={S.actionBig}>{report.firstAction.action}</p>
-              </div>
-              <p style={{ ...S.cardBody, color: 'rgba(10,13,20,.7)' }}>{report.firstAction.description}</p>
-            </div>
-          </div>
-        )}
-
-        {/* CTA 區 */}
-        <div style={S.ctaSection}>
-          <button onClick={handleContactEngineer} style={S.ctaBtn}>聯絡策略工程師</button>
-          <button onClick={handleReAnalyze} style={S.ctaSecondary}>重新分析</button>
-        </div>
-
-        <div style={S.footer}>
-          <p>Powered by ORION AI GROUP &copy; 2026</p>
+      {/* SSO（disabled） */}
+      <div className="unlock-section">
+        <div className="unlock-section-title">─── 或一鍵登入（即將推出）───</div>
+        <div className="unlock-sso">
+          <button className="sso-button" disabled title="即將推出">
+            使用 Google 繼續
+          </button>
+          <button className="sso-button" disabled title="即將推出">
+            使用 Apple 繼續
+          </button>
+          <button className="sso-button" disabled title="即將推出">
+            使用 Facebook 繼續
+          </button>
         </div>
       </div>
     </div>
   );
+
+  // ── 40% 免費內容 ──
+  const renderFreeContent = () => (
+    <div className="free-content">
+      <div className="score-ring-container">
+        <svg className="score-ring" viewBox="0 0 200 200">
+          <defs>
+            <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style={{ stopColor: '#e8c96a', stopOpacity: 1 }} />
+              <stop offset="100%" style={{ stopColor: '#d4a853', stopOpacity: 1 }} />
+            </linearGradient>
+          </defs>
+          {/* 背景圓環 */}
+          <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(212, 168, 83, 0.1)" strokeWidth="8" />
+          {/* 進度圓環 */}
+          <circle
+            cx="100" cy="100" r="85" fill="none" stroke="url(#gold-grad)" strokeWidth="8"
+            strokeDasharray={`${(scoreAnimated / 100) * 2 * Math.PI * 85} ${2 * Math.PI * 85}`}
+            strokeLinecap="round"
+            className="score-progress"
+          />
+          {/* 分數文字 */}
+          <text x="100" y="85" textAnchor="middle" className="score-number">{scoreAnimated}</text>
+          <text x="100" y="110" textAnchor="middle" className="score-label">AI 就緒度</text>
+        </svg>
+      </div>
+
+      {/* 核心問題 */}
+      {report?.coreProblem && (
+        <div className="card card-1">
+          <div className="card-number">01</div>
+          <div className="card-title">{report.coreProblem.title}</div>
+          <div className="card-text">{report.coreProblem.description}</div>
+        </div>
+      )}
+
+      {/* 痛點量化 */}
+      {report?.painQuantification && (
+        <div className="card card-2">
+          <div className="card-number">02</div>
+          <div className="card-title">{report.painQuantification.title}</div>
+          <div className="metrics-row">
+            <div className="metric">
+              <div className="metric-value">{report.painQuantification.monthlyTimeLoss}</div>
+              <div className="metric-label">月時間損失</div>
+            </div>
+            <div className="metric">
+              <div className="metric-value">{report.painQuantification.monthlyMoneyCost}</div>
+              <div className="metric-label">月費用損失</div>
+            </div>
+          </div>
+          <div className="card-text">{report.painQuantification.description}</div>
+        </div>
+      )}
+
+      {/* 模糊遮罩 */}
+      <div className="blur-overlay"></div>
+    </div>
+  );
+
+  // ── 60% 鎖定內容 ──
+  const renderLockedContent = () => (
+    <div className="locked-content">
+      {/* AI 解決方案 */}
+      {report?.aiSolution && (
+        <div className="card card-3">
+          <div className="card-number">03</div>
+          <div className="card-title">{report.aiSolution.title}</div>
+          <div className="capabilities-list">
+            {report.aiSolution.capabilities.map((cap, i) => (
+              <div key={i} className="capability-item">✓ {cap}</div>
+            ))}
+          </div>
+          <div className="card-text">{report.aiSolution.description}</div>
+        </div>
+      )}
+
+      {/* 第一步行動 */}
+      {report?.firstAction && (
+        <div className="card card-4">
+          <div className="card-number">04</div>
+          <div className="card-title">{report.firstAction.title}</div>
+          <div className="action-box">{report.firstAction.action}</div>
+          <div className="card-text">{report.firstAction.description}</div>
+        </div>
+      )}
+
+      {/* CTA 區塊 */}
+      <div className="cta-section">
+        <div className="cta-main">👉 預約 AI 導入拆解（30分鐘）</div>
+        <div className="cta-secondary">👉 聯絡策略工程師</div>
+      </div>
+    </div>
+  );
+
+  // ── 主渲染 ──
+  if (state === 'error') {
+    return (
+      <div className="report-container error-state">
+        <div className="error-box">
+          <div className="error-icon">⚠️</div>
+          <div className="error-title">{error}</div>
+          <button onClick={() => window.location.href = '/'} className="error-button">
+            返回首頁
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (state === 'loading') {
+    return (
+      <div className="report-container loading-state">
+        <div className="loading-box">
+          <div className="loading-ring"></div>
+          <div className="loading-hint">{LOADING_HINTS[hintIndex]?.text}</div>
+          <div className="progress-bar">
+            <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="report-container">
+      <style>{CSS_STYLES}</style>
+
+      {renderFreeContent()}
+
+      {!isUnlocked ? (
+        renderUnlockGate()
+      ) : (
+        renderLockedContent()
+      )}
+    </div>
+  );
 }
 
-/* ═══════════════════════════════════════════════════
-   Styles — Dark Theme + Gold Accents + Mobile
-   ═══════════════════════════════════════════════════ */
-const S: Record<string, React.CSSProperties> = {
-  page: {
-    minHeight: '100vh', background: '#0a0d14', color: '#e8e8f0',
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-    position: 'relative',
-  },
+const CSS_STYLES = `
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  // Loading
-  loadCenter: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '0 24px' },
-  loadRingWrap: { position: 'relative', width: 140, height: 140, marginBottom: 32, display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  loadPct: { position: 'absolute', fontSize: 28, fontWeight: 700, color: '#e8c96a', fontFamily: 'monospace' },
-  loadTitle: { fontSize: 22, fontWeight: 700, color: '#e8c96a', marginBottom: 8 },
-  loadSub: { fontSize: 11, letterSpacing: '.18em', color: '#5a6575', marginBottom: 36, fontFamily: 'monospace' },
-  progressBar: { width: '100%', maxWidth: 340, height: 3, background: '#1a2235', borderRadius: 2, overflow: 'hidden' },
-  progressFill: { height: '100%', background: 'linear-gradient(90deg,#c9a84c,#e8c96a)', transition: 'width .8s ease' },
-  hintText: { marginTop: 28, fontSize: 13, color: '#7a8499', textAlign: 'center' as const, minHeight: 20 },
+  body {
+    background: #0a0d14;
+    color: #e8eaf0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans TC', sans-serif;
+  }
 
-  // Hamburger
-  hamburger: { position: 'fixed', top: 18, left: 18, zIndex: 100, background: 'rgba(10,13,20,.85)', border: '1px solid rgba(201,168,76,.3)', borderRadius: 8, padding: '10px 11px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 4 },
-  hbLine: { display: 'block', width: 18, height: 2, background: '#c9a84c', borderRadius: 1 },
+  .report-container {
+    min-height: 100vh;
+    padding: 20px;
+    background: linear-gradient(135deg, #0a0d14 0%, #0c1024 100%);
+    position: relative;
+    overflow-y: auto;
+  }
 
-  // Sidebar
-  sbBackdrop: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,.6)', zIndex: 89 },
-  sidebar: { position: 'fixed', top: 0, left: 0, width: 260, height: '100vh', background: '#0d1120', borderRight: '1px solid rgba(201,168,76,.2)', zIndex: 90, display: 'flex', flexDirection: 'column' },
-  sbHead: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 18px', borderBottom: '1px solid rgba(201,168,76,.15)' },
-  sbTitle: { fontSize: 16, fontWeight: 700, color: '#c9a84c', letterSpacing: '.1em' },
-  sbClose: { background: 'none', border: 'none', color: '#7a8499', fontSize: 24, cursor: 'pointer', lineHeight: 1 },
-  sbNav: { padding: '12px 0', display: 'flex', flexDirection: 'column' },
-  sbItem: { display: 'flex', alignItems: 'center', gap: 12, padding: '14px 20px', background: 'none', border: 'none', color: '#c9cdd6', fontSize: 14, cursor: 'pointer', textAlign: 'left' as const },
-  sbIcon: { fontSize: 16, color: '#c9a84c', width: 24, textAlign: 'center' as const },
-  sbDivider: { height: 1, background: 'rgba(201,168,76,.12)', margin: '8px 18px' },
+  .report-container.error-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-  // Container
-  container: { maxWidth: 720, margin: '0 auto', padding: '52px 20px 32px' },
+  .error-box {
+    text-align: center;
+    background: rgba(244, 63, 94, 0.1);
+    border: 1px solid #f43f5e;
+    border-radius: 8px;
+    padding: 40px;
+    max-width: 400px;
+  }
 
-  // Header
-  header: { textAlign: 'center' as const, marginBottom: 48 },
-  headerLabel: { fontSize: 10, letterSpacing: '.25em', color: '#5a6575', marginBottom: 10, fontFamily: 'monospace' },
-  headerTitle: { fontSize: 32, fontWeight: 800, color: '#e8c96a', marginBottom: 20, letterSpacing: '.02em' },
-  headerLine: { height: 2, background: 'linear-gradient(90deg, transparent, #c9a84c, transparent)', margin: '0 auto', maxWidth: 240 },
+  .error-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
 
-  // Score
-  scoreWrap: { textAlign: 'center' as const, marginBottom: 52, display: 'flex', flexDirection: 'column', alignItems: 'center' },
-  scoreRingOuter: { position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 180, height: 180, marginBottom: 16 },
-  scoreInner: { position: 'absolute', display: 'flex', alignItems: 'baseline', justifyContent: 'center', zIndex: 2 },
-  scoreNum: { fontSize: 52, fontWeight: 800, fontFamily: 'monospace', lineHeight: 1 },
-  scoreOf: { fontSize: 16, color: '#5a6575', marginLeft: 2, fontFamily: 'monospace' },
-  scoreBadge: { padding: '6px 20px', borderRadius: 20, fontSize: 13, fontWeight: 700, letterSpacing: '.05em', marginBottom: 8 },
-  scoreSubLabel: { fontSize: 12, color: '#5a6575', letterSpacing: '.08em' },
+  .error-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: #f43f5e;
+  }
 
-  // Cards
-  cards: { display: 'flex', flexDirection: 'column', gap: 24, marginBottom: 48 },
-  card: {
-    background: '#0d1120', border: '1px solid rgba(201,168,76,.15)', borderRadius: 16,
-    padding: '28px 24px', position: 'relative', overflow: 'hidden',
-  },
-  cardAccent: { borderColor: 'rgba(201,168,76,.35)', background: 'linear-gradient(135deg, #0d1120 0%, #111a2e 100%)' },
-  cardGold: {
-    background: 'linear-gradient(135deg, #e8c96a 0%, #c9a84c 100%)',
-    border: 'none', color: '#0a0d14',
-  },
-  cardNum: { position: 'absolute', top: 16, right: 20, fontSize: 48, fontWeight: 800, color: 'rgba(201,168,76,.06)', fontFamily: 'monospace', lineHeight: 1 },
-  cardHead: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 },
-  cardEmoji: { fontSize: 20 },
-  cardTitle: { fontSize: 18, fontWeight: 700, color: '#e8c96a' },
-  cardBody: { fontSize: 14, lineHeight: 1.75, color: '#b0b8c4' },
+  .error-button {
+    background: #d4a853;
+    color: #0a0d14;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
 
-  // Metrics (Card 2)
-  metricsGrid: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0, marginBottom: 20, padding: '20px 0', borderTop: '1px solid rgba(201,168,76,.12)', borderBottom: '1px solid rgba(201,168,76,.12)' },
-  metricBox: { flex: 1, textAlign: 'center' as const },
-  metricBig: { fontSize: 28, fontWeight: 800, color: '#e8c96a', fontFamily: 'monospace', lineHeight: 1.2, marginBottom: 6 },
-  metricSub: { fontSize: 11, color: '#7a8499', letterSpacing: '.03em' },
-  metricDivider: { width: 1, height: 48, background: 'rgba(201,168,76,.2)', flexShrink: 0 },
+  .error-button:hover {
+    background: #e8c96a;
+  }
 
-  // Capabilities (Card 3)
-  capList: { display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 },
-  capRow: { display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 14, color: '#c9cdd6', lineHeight: 1.6 },
-  capCheck: { color: '#c9a84c', fontSize: 16, fontWeight: 700, flexShrink: 0, marginTop: 2 },
+  .report-container.loading-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-  // Action (Card 4)
-  actionHighlight: { background: 'rgba(10,13,20,.15)', borderRadius: 10, padding: '16px 20px', marginBottom: 16 },
-  actionBig: { fontSize: 18, fontWeight: 700, color: '#0a0d14', textAlign: 'center' as const, lineHeight: 1.5 },
+  .loading-box {
+    text-align: center;
+    background: rgba(212, 168, 83, 0.05);
+    border: 1px solid rgba(212, 168, 83, 0.2);
+    border-radius: 8px;
+    padding: 40px;
+    max-width: 400px;
+  }
 
-  // CTA
-  ctaSection: { textAlign: 'center' as const, marginBottom: 48, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 },
-  ctaBtn: { padding: '16px 56px', background: 'linear-gradient(135deg,#c9a84c,#e8c96a)', color: '#0a0d14', border: 'none', borderRadius: 10, fontSize: 16, fontWeight: 700, cursor: 'pointer', letterSpacing: '.04em', boxShadow: '0 4px 24px rgba(201,168,76,.25)' },
-  ctaSecondary: { padding: '12px 40px', background: 'transparent', color: '#c9a84c', border: '1px solid rgba(201,168,76,.35)', borderRadius: 10, fontSize: 14, fontWeight: 500, cursor: 'pointer' },
+  .loading-ring {
+    width: 60px;
+    height: 60px;
+    border: 3px solid rgba(212, 168, 83, 0.2);
+    border-top-color: #d4a853;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 24px;
+  }
 
-  // Modal
-  modalBg: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,.75)', zIndex: 200 },
-  modal: { position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', zIndex: 201, background: '#0d1120', border: '1px solid rgba(201,168,76,.25)', borderRadius: 20, padding: '36px 28px', width: '90%', maxWidth: 420, maxHeight: '85vh', overflowY: 'auto' as const },
-  modalClose: { position: 'absolute', top: 14, right: 18, background: 'none', border: 'none', color: '#7a8499', fontSize: 28, cursor: 'pointer', lineHeight: 1 },
-  modalTitle: { fontSize: 20, fontWeight: 700, color: '#e8c96a', marginBottom: 8, textAlign: 'center' as const },
-  modalDesc: { fontSize: 13, color: '#7a8499', textAlign: 'center' as const, marginBottom: 24, lineHeight: 1.5 },
-  quickLinks: { display: 'flex', gap: 12, marginBottom: 20 },
-  quickBtn: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: '16px 12px', background: 'rgba(201,168,76,.08)', border: '1px solid rgba(201,168,76,.25)', borderRadius: 12, color: '#e8c96a', fontSize: 13, fontWeight: 600, textDecoration: 'none', cursor: 'pointer' },
-  orDivider: { position: 'relative', textAlign: 'center' as const, marginBottom: 20, borderBottom: '1px solid rgba(201,168,76,.15)', lineHeight: '0', paddingBottom: 0 },
-  orText: { background: '#0d1120', padding: '0 14px', fontSize: 12, color: '#5a6575', position: 'relative', top: 8 },
-  formGroup: { display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 },
-  formInput: { width: '100%', padding: '13px 16px', background: '#0a0d14', border: '1px solid rgba(201,168,76,.2)', borderRadius: 10, color: '#e8e8f0', fontSize: 14, outline: 'none', boxSizing: 'border-box' as const },
-  formTextarea: { width: '100%', padding: '13px 16px', background: '#0a0d14', border: '1px solid rgba(201,168,76,.2)', borderRadius: 10, color: '#e8e8f0', fontSize: 14, outline: 'none', resize: 'vertical' as const, boxSizing: 'border-box' as const, fontFamily: 'inherit' },
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-  // Footer
-  footer: { textAlign: 'center' as const, padding: '24px 0', fontSize: 11, color: '#3a4555', borderTop: '1px solid rgba(201,168,76,.08)' },
-};
+  .loading-hint {
+    font-size: 14px;
+    color: #8a93a8;
+    margin-bottom: 16px;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(212, 168, 83, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 16px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #d4a853, #e8c96a);
+    transition: width 0.3s ease;
+  }
+
+  .free-content {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .score-ring-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+
+  .score-ring {
+    width: 200px;
+    height: 200px;
+    filter: drop-shadow(0 0 30px rgba(212, 168, 83, 0.3));
+  }
+
+  .score-number {
+    font-size: 48px;
+    font-weight: 700;
+    fill: #e8c96a;
+  }
+
+  .score-label {
+    font-size: 12px;
+    fill: #8a93a8;
+  }
+
+  .card {
+    background: rgba(17, 24, 39, 0.8);
+    border: 1px solid rgba(212, 168, 83, 0.2);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(212, 168, 83, 0.5), transparent);
+  }
+
+  .card-number {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 48px;
+    font-weight: 900;
+    color: rgba(212, 168, 83, 0.1);
+    line-height: 1;
+  }
+
+  .card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #e8c96a;
+    margin-bottom: 12px;
+  }
+
+  .card-text {
+    font-size: 14px;
+    color: #8a93a8;
+    line-height: 1.8;
+  }
+
+  .card-2 .metrics-row {
+    display: flex;
+    gap: 24px;
+    margin: 16px 0;
+  }
+
+  .metric {
+    flex: 1;
+    background: rgba(212, 168, 83, 0.05);
+    border: 1px solid rgba(212, 168, 83, 0.15);
+    border-radius: 6px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .metric-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #d4a853;
+  }
+
+  .metric-label {
+    font-size: 12px;
+    color: #8a93a8;
+    margin-top: 8px;
+  }
+
+  .blur-overlay {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(10, 13, 20, 0.9) 80%, #0a0d14 100%);
+    pointer-events: none;
+  }
+
+  .unlock-gate {
+    background: rgba(17, 24, 39, 0.9);
+    border: 2px solid rgba(212, 168, 83, 0.3);
+    border-radius: 12px;
+    padding: 40px;
+    margin-bottom: 40px;
+    box-shadow: 0 0 40px rgba(212, 168, 83, 0.15);
+  }
+
+  .unlock-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .unlock-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #d4a853;
+    margin-bottom: 8px;
+  }
+
+  .unlock-subtitle {
+    font-size: 14px;
+    color: #8a93a8;
+  }
+
+  .unlock-error {
+    background: rgba(244, 63, 94, 0.1);
+    border: 1px solid #f43f5e;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    color: #f43f5e;
+    font-size: 13px;
+  }
+
+  .unlock-section {
+    margin-bottom: 24px;
+  }
+
+  .unlock-section-title {
+    font-size: 12px;
+    color: #d4a853;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .unlock-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .unlock-input {
+    padding: 12px 16px;
+    background: rgba(212, 168, 83, 0.05);
+    border: 1px solid rgba(212, 168, 83, 0.2);
+    border-radius: 6px;
+    color: #e8eaf0;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .unlock-input:focus {
+    border-color: #d4a853;
+    box-shadow: 0 0 0 3px rgba(212, 168, 83, 0.1);
+  }
+
+  .unlock-input::placeholder {
+    color: #4a5268;
+  }
+
+  .unlock-button {
+    padding: 12px;
+    background: linear-gradient(135deg, #d4a853, #e8c96a);
+    color: #0a0d14;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .unlock-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(212, 168, 83, 0.3);
+  }
+
+  .unlock-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .unlock-forgot {
+    font-size: 12px;
+    color: #8a93a8;
+    text-align: center;
+    margin-top: 8px;
+  }
+
+  .text-gold {
+    color: #d4a853;
+  }
+
+  .unlock-sso {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .sso-button {
+    padding: 12px;
+    background: rgba(212, 168, 83, 0.08);
+    border: 1px solid rgba(212, 168, 83, 0.2);
+    color: #8a93a8;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .locked-content {
+    max-width: 900px;
+    margin: 0 auto;
+    animation: fadeIn 0.5s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .capabilities-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 16px 0;
+  }
+
+  .capability-item {
+    font-size: 14px;
+    color: #4ade80;
+  }
+
+  .action-box {
+    background: rgba(212, 168, 83, 0.05);
+    border-left: 3px solid #d4a853;
+    border-radius: 4px;
+    padding: 16px;
+    margin: 16px 0;
+    color: #e8c96a;
+    font-weight: 600;
+  }
+
+  .cta-section {
+    text-align: center;
+    margin-top: 40px;
+    padding: 32px;
+    background: rgba(212, 168, 83, 0.08);
+    border: 1px solid rgba(212, 168, 83, 0.2);
+    border-radius: 8px;
+  }
+
+  .cta-main {
+    font-size: 18px;
+    font-weight: 700;
+    color: #e8c96a;
+    margin-bottom: 16px;
+  }
+
+  .cta-secondary {
+    font-size: 14px;
+    color: #8a93a8;
+  }
+
+  @media (max-width: 768px) {
+    .report-container {
+      padding: 12px;
+    }
+
+    .card {
+      padding: 16px;
+    }
+
+    .unlock-gate {
+      padding: 24px;
+    }
+
+    .score-ring {
+      width: 160px;
+      height: 160px;
+    }
+
+    .card-2 .metrics-row {
+      flex-direction: column;
+    }
+  }
+`;
