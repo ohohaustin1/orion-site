@@ -1317,3 +1317,128 @@ body {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }
 }
+
+/* ================================================
+   TRUST DASHBOARD (Home Page)
+   ================================================ */
+
+.orion-trust-dashboard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-top: 28px;
+  padding: 20px 32px;
+  background: var(--orion-bg-raised);
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius: 14px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.trust-item {
+  flex: 1;
+  text-align: center;
+  padding: 0 16px;
+}
+
+.trust-number {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--orion-gold);
+  font-variant-numeric: tabular-nums;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.trust-number.trust-bounce {
+  transform: scale(1.15);
+}
+
+.trust-label {
+  font-size: 0.72rem;
+  color: var(--orion-text-secondary);
+  margin-top: 4px;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+
+.trust-divider {
+  width: 1px;
+  height: 40px;
+  background: rgba(201,168,76,0.2);
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .orion-trust-dashboard {
+    padding: 16px 12px;
+    gap: 0;
+  }
+  .trust-item { padding: 0 8px; }
+  .trust-number { font-size: 1.2rem; }
+  .trust-label { font-size: 0.65rem; }
+}
+
+/* ================================================
+   MAGNETIC LINK + GOLD SWEEP EFFECTS
+   ================================================ */
+
+.magnetic-link {
+  transition: transform 0.15s ease-out, box-shadow 0.2s;
+  will-change: transform;
+}
+
+.gold-sweep {
+  position: relative;
+  overflow: hidden;
+}
+
+.gold-sweep::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle 80px at var(--mx, 50%) var(--my, 50%),
+    rgba(255,255,255,0.25) 0%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.gold-sweep:hover::after {
+  opacity: 1;
+}
+
+/* ================================================
+   SPLASH SCREEN LOGO ENTRANCE
+   ================================================ */
+
+@keyframes splashLogoEntrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+    filter: drop-shadow(0 0 0 rgba(201,168,76,0));
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 40px rgba(201,168,76,0.9));
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: drop-shadow(0 0 24px rgba(201,168,76,0.6));
+  }
+}
+
+@keyframes splashTextLine {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
