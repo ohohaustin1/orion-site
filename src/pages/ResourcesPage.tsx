@@ -1,6 +1,30 @@
 import React, { useState } from 'react';
-import { useLocation } from 'wouter';
-import { BookOpen, Zap, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
+import { BookOpen, Zap, ChevronDown, ChevronUp, ExternalLink, AlertTriangle, ArrowRight } from 'lucide-react';
+
+const DIAG_URL = 'https://orion-hub.zeabur.app';
+
+const articles = [
+  {
+    title: '為什麼你的成交漏斗正在失血？',
+    desc: '90% 企業的成交漏斗存在 3 個以上致命漏洞，而他們完全不知道自己每天在燒多少錢。本文揭露最常見的漏斗病灶，以及 AI 如何在 2 週內止血。',
+    type: '深度分析',
+  },
+  {
+    title: 'AI 導入失敗的 3 個真實病灶',
+    desc: '你以為買了 AI 工具就等於數位轉型？錯。我們拆解了 47 個失敗案例，歸納出導入失敗的 3 個致命原因——而這些錯誤，你現在可能正在犯。',
+    type: '案例拆解',
+  },
+  {
+    title: '你越努力營銷越虧的真正原因',
+    desc: '廣告費越投越多、轉換率越來越低？問題不在行銷，在你的客戶篩選系統根本不存在。AI 成交引擎如何讓你「少做」卻「多賺」。',
+    type: '策略洞察',
+  },
+  {
+    title: '90% 的策略從一開始就錯了',
+    desc: '你的商業策略是基於數據還是直覺？我們分析了 200+ 家企業的決策流程，發現 9 成的策略起點就已經偏離。AI 診斷如何幫你從根源修正。',
+    type: '數據報告',
+  },
+];
 
 const faqs = [
   {
@@ -25,50 +49,98 @@ const faqs = [
   },
 ];
 
-const resources = [
-  {
-    title: 'AI 導入完整指南',
-    desc: '從零開始，手把手教你如何為企業導入 AI',
-    type: '文章',
-    link: '#',
-  },
-  {
-    title: '企業 AI 健檢工具',
-    desc: '免費使用 War Room 智能診斷系統',
-    type: '工具',
-    link: '/war-room',
-    internal: true,
-  },
-];
-
 export default function ResourcesPage() {
-  const [, setLocation] = useLocation();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   return (
     <div className="orion-page">
       <div className="orion-page-header">
         <h1>資源中心</h1>
-        <p>幫助您做出最佳 AI 導入決策</p>
+        <p>你不知道的真相，正在讓你的企業慢性失血</p>
       </div>
 
-      {/* 資源連結 */}
+      {/* 文章列表 — 焦慮標題 + CTA */}
       <section className="orion-resource-section">
-        <h2 className="resource-section-title"><BookOpen size={20} /> 學習資源</h2>
-        <div className="orion-resource-cards">
-          {resources.map((r, i) => (
+        <h2 className="resource-section-title">
+          <AlertTriangle size={20} style={{ color: '#e74c3c' }} /> 策略洞察
+        </h2>
+        <div className="orion-resource-cards" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
+          {articles.map((a, i) => (
             <div
               key={i}
               className="orion-resource-card"
-              onClick={() => r.internal ? setLocation(r.link) : null}
-              style={{ cursor: 'pointer' }}
+              style={{
+                background: 'var(--orion-bg-raised)',
+                border: '1px solid rgba(201,168,76,0.12)',
+                borderRadius: 12,
+                padding: '24px 20px',
+                display: 'flex',
+                flexDirection: 'column',
+                transition: 'all 0.3s',
+                cursor: 'default',
+              }}
             >
-              <div className="resource-type">{r.type}</div>
-              <h3>{r.title}</h3>
-              <p>{r.desc}</p>
-              <span className="resource-link">
-                {r.internal ? '前往使用' : '閱讀全文'} <ExternalLink size={14} />
-              </span>
+              <div style={{
+                display: 'inline-block',
+                padding: '3px 10px',
+                background: 'rgba(231,76,60,0.12)',
+                color: '#e74c3c',
+                borderRadius: 4,
+                fontSize: '0.68rem',
+                fontWeight: 700,
+                marginBottom: 12,
+                alignSelf: 'flex-start',
+              }}>
+                {a.type}
+              </div>
+              <h3 style={{
+                fontSize: '1.05rem',
+                fontWeight: 700,
+                color: 'var(--orion-text-primary)',
+                marginBottom: 10,
+                lineHeight: 1.5,
+              }}>
+                {a.title}
+              </h3>
+              <p style={{
+                fontSize: '0.82rem',
+                color: 'var(--orion-text-secondary)',
+                lineHeight: 1.7,
+                flex: 1,
+                marginBottom: 16,
+              }}>
+                {a.desc}
+              </p>
+
+              {/* 每篇文章底部 CTA */}
+              <a
+                href={DIAG_URL}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  padding: '10px 14px',
+                  background: 'rgba(201,168,76,0.08)',
+                  border: '1px solid rgba(201,168,76,0.2)',
+                  borderRadius: 8,
+                  color: 'var(--orion-gold)',
+                  fontSize: '0.76rem',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLElement).style.background = 'rgba(201,168,76,0.15)';
+                  (e.currentTarget as HTMLElement).style.borderColor = 'var(--orion-gold)';
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLElement).style.background = 'rgba(201,168,76,0.08)';
+                  (e.currentTarget as HTMLElement).style.borderColor = 'rgba(201,168,76,0.2)';
+                }}
+              >
+                立即啟動 AI 診斷，檢測你的策略漏洞
+                <ArrowRight size={14} />
+              </a>
             </div>
           ))}
         </div>
@@ -95,12 +167,16 @@ export default function ResourcesPage() {
       </section>
 
       <section className="orion-bottom-cta">
-        <h2>還有其他問題？</h2>
-        <p>直接進入 War Room，讓 AI 為你診斷</p>
-        <button className="orion-btn-fill large" onClick={() => setLocation('/war-room')}>
+        <h2>你的企業正在流失多少潛在收入？</h2>
+        <p>3 分鐘 AI 診斷，揪出隱藏的策略漏洞</p>
+        <a
+          href={DIAG_URL}
+          className="orion-btn-fill large magnetic-link gold-sweep"
+          style={{ textDecoration: 'none' }}
+        >
           <Zap size={18} />
-          <span>免費 AI 診斷</span>
-        </button>
+          <span>立即啟動 AI 商業診斷</span>
+        </a>
       </section>
     </div>
   );

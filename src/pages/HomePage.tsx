@@ -126,8 +126,8 @@ export default function HomePage() {
             <div key={c.id} className="orion-case-card">
               <div className="case-tag" style={{ background: industryColors[c.industry] || '#c9a84c' }}>{c.industry}</div>
               <h3 className="case-company">{c.company}</h3>
-              <div className="case-row"><span className="case-label">問題</span><p>{c.problem}</p></div>
-              <div className="case-row"><span className="case-label solution">解法</span><p>{c.solution}</p></div>
+              <div className="case-row"><span className="case-label">原始挑戰</span><p>{c.challenge}</p></div>
+              <div className="case-row"><span className="case-label solution">獵戶座策略</span><p>{c.strategy}</p></div>
               <div className="case-results"><TrendingUp size={14} /><p>{c.results}</p></div>
               <div className="case-duration">{c.duration}</div>
             </div>
