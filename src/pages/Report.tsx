@@ -44,6 +44,13 @@ export default function Report() {
   const [ctaSuccess, setCtaSuccess] = useState(false);
   const [scoreAnimated, setScoreAnimated] = useState(0);
 
+  // ── 補充需求分析升級 ──
+  const [refineInput, setRefineInput] = useState('');
+  const [refineLoading, setRefineLoading] = useState(false);
+  const [refineError, setRefineError] = useState('');
+  const [reportVersion, setReportVersion] = useState(1);
+  const [showLengthWarning, setShowLengthWarning] = useState(false);
+
   // ── 解鎖狀態 ──
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [unlockMode, setUnlockMode] = useState<UnlockMode>(null);
@@ -191,6 +198,101 @@ export default function Report() {
     } finally {
       setUnlockSubmitting(false);
     }
+  };
+
+  // ── 補充需求重新生成 ──
+  const handleRefine = async () => {
+    const trimmed = refineInput.trim();
+    if (trimmed.length < 15) {
+      // 顯示閃爍提醒但不阻擋
+      setShowLengthWarning(true);
+      setTimeout(() => setShowLengthWarning(false), 1600);
+    }
+    if (trimmed.length < 15) {
+      // 太短仍然送出但後端會擋 — 這裡前端也擋
+      setRefineError('補充描述至少需要 15 個字');
+      return;
+    }
+    if (trimmed.length > 800) {
+      setRefineError('補充描述不可超過 800 字');
+      return;
+    }
+
+    setRefineLoading(true);
+    setRefineError('');
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 45000);
+      const res = await fetch('https://orion-hub.zeabur.app/api/report/refine', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sessionId, extra_input: trimmed }),
+        signal: controller.signal,
+      });
+      clearTimeout(timeout);
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || data.message || `HTTP ${res.status}`);
+      }
+      if (data.success && data.report) {
+        setReport(data.report);
+        setReportVersion(data.version || reportVersion + 1);
+        setRefineInput('');
+        // 重新觸發分數動畫
+        setScoreAnimated(0);
+      } else {
+        throw new Error(data.error || '生成失敗');
+      }
+    } catch (err: any) {
+      setRefineError(
+        err.name === 'AbortError'
+          ? 'AI 回應逾時，請重試'
+          : err.message || '生成失敗，請重試'
+      );
+    } finally {
+      setRefineLoading(false);
+    }
+  };
+
+  // ── Render 補充需求區塊 ──
+  const renderRefineSection = () => {
+    const charCount = refineInput.trim().length;
+    const charColor = charCount >= 15 ? '#4ade80' : '#f59e0b';
+    return (
+      <div className="refine-section">
+        <div className="refine-title">補充您的需求，獲得更精準的策略</div>
+        <div className="refine-textarea-wrapper">
+          <textarea
+            className="refine-textarea"
+            placeholder="例如：預算有限、需要3個月內見效、團隊只有2人..."
+            value={refineInput}
+            onChange={(e) => setRefineInput(e.target.value)}
+            disabled={refineLoading}
+            maxLength={800}
+          />
+          <div className="refine-char-count" style={{ color: charColor }}>
+            已輸入 {charCount} 字 / 建議 15 字以上
+          </div>
+        </div>
+        <p className="refine-hint-red">
+          🔴 重要提醒：描述越具體（預算 / 人力 / 時間 / 客群），策略會更精準
+        </p>
+        <button
+          className="refine-button"
+          onClick={handleRefine}
+          disabled={refineLoading}
+        >
+          {refineLoading ? '正在根據補充條件優化策略...' : '重新生成分析'}
+        </button>
+        {showLengthWarning && (
+          <div className="refine-length-warning">
+            描述建議更具體一些，以獲得最佳策略建議
+          </div>
+        )}
+        {refineError && <div className="refine-error">{refineError}</div>}
+      </div>
+    );
   };
 
   // ── Render 解鎖閘門 ──
@@ -403,12 +505,20 @@ export default function Report() {
     <div className="report-container">
       <style>{CSS_STYLES}</style>
 
+      {/* 版本標籤 */}
+      {reportVersion > 1 && (
+        <div className="version-badge">V{reportVersion} 策略已更新</div>
+      )}
+
       {renderFreeContent()}
 
       {!isUnlocked ? (
         renderUnlockGate()
       ) : (
-        renderLockedContent()
+        <>
+          {renderLockedContent()}
+          {renderRefineSection()}
+        </>
       )}
     </div>
   );
@@ -830,5 +940,147 @@ const CSS_STYLES = `
     .card-2 .metrics-row {
       flex-direction: column;
     }
+  }
+
+  /* ── Version Badge ── */
+  .version-badge {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    background: linear-gradient(135deg, #d4a853, #e8c96a);
+    color: #0a0d14;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    z-index: 100;
+    box-shadow: 0 0 20px rgba(212, 168, 83, 0.4);
+    animation: badgePulse 2s ease-in-out;
+  }
+
+  @keyframes badgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+
+  /* ── Refine Section ── */
+  .refine-section {
+    max-width: 900px;
+    margin: 40px auto 0;
+    background: rgba(17, 24, 39, 0.8);
+    border: 1px solid rgba(212, 168, 83, 0.25);
+    border-radius: 8px;
+    padding: 28px;
+  }
+
+  .refine-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #e8c96a;
+    margin-bottom: 16px;
+  }
+
+  .refine-textarea-wrapper {
+    position: relative;
+    margin-bottom: 8px;
+  }
+
+  .refine-textarea {
+    width: 100%;
+    max-height: 120px;
+    min-height: 80px;
+    padding: 12px 16px;
+    background: rgba(212, 168, 83, 0.05);
+    border: 1px solid rgba(212, 168, 83, 0.2);
+    border-radius: 6px;
+    color: #e8eaf0;
+    font-size: 14px;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+  }
+
+  .refine-textarea:focus {
+    border-color: #d4a853;
+    box-shadow: 0 0 0 3px rgba(212, 168, 83, 0.1);
+  }
+
+  .refine-textarea::placeholder {
+    color: #4a5268;
+  }
+
+  .refine-textarea:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .refine-char-count {
+    text-align: right;
+    font-size: 12px;
+    margin-top: 4px;
+    transition: color 0.2s;
+  }
+
+  .refine-hint-red {
+    color: #ef4444;
+    font-weight: 700;
+    margin-top: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+
+  .refine-button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #d4a853, #e8c96a);
+    color: #0a0d14;
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .refine-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(212, 168, 83, 0.3);
+  }
+
+  .refine-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    animation: refineLoadPulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes refineLoadPulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+  }
+
+  .refine-length-warning {
+    color: #f59e0b;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 8px;
+    text-align: center;
+    animation: warningBlink 0.4s ease-in-out 2;
+  }
+
+  @keyframes warningBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  .refine-error {
+    background: rgba(244, 63, 94, 0.1);
+    border: 1px solid #f43f5e;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-top: 12px;
+    color: #f43f5e;
+    font-size: 13px;
   }
 `;
