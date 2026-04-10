@@ -4,12 +4,12 @@ import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 const bootMessages = {
   'zh-CN': [
-    '[ OK ] æ ¸å¿æ¨¡ç»è½½å¥å®æ',
-    '[ OK ] çæ·åº§åæå¼æåå§å',
-    '[ OK ] å®å¨éªè¯éè¿',
-    '[ OK ] è¿æ¥ææ¥æ°æ®åº',
-    '[ OK ] AI æ¨è®ºå±å°±ç»ª',
-    '[ RDY ] ç³»ç»å°±ç»ª Â· æ¬¢è¿ï¼ææ¥å®',
+    '[ OK ] 核心模块载入完成',
+    '[ OK ] 猎户座分析引擎初始化',
+    '[ OK ] 安全验证通过',
+    '[ OK ] 连接情报数据库',
+    '[ OK ] AI 推论层就绪',
+    '[ RDY ] 系统就绪 · 欢迎，指挥官',
   ],
   'en': [
     '[ OK ] Core modules loaded',
@@ -17,27 +17,27 @@ const bootMessages = {
     '[ OK ] Security verification passed',
     '[ OK ] Connected to intelligence database',
     '[ OK ] AI inference layer ready',
-    '[ RDY ] System ready Â· Welcome, Commander',
+    '[ RDY ] System ready · Welcome, Commander',
   ],
   'zh-TW': [
-    '[ OK ] æ ¸å¿æ¨¡çµè¼å¥å®æ',
-    '[ OK ] çµæ¶åº§åæå¼æåå§å',
-    '[ OK ] å®å¨é©è­éé',
-    '[ OK ] é£æ¥æå ±è³æåº«',
-    '[ OK ] AI æ¨è«å±¤å°±ç·',
-    '[ RDY ] ç³»çµ±å°±ç· Â· æ­¡è¿ï¼ææ®å®',
+    '[ OK ] 核心模組載入完成',
+    '[ OK ] 獵戶座分析引擎初始化',
+    '[ OK ] 安全驗證通過',
+    '[ OK ] 連接情報資料庫',
+    '[ OK ] AI 推論層就緒',
+    '[ RDY ] 系統就緒 · 歡迎，指揮官',
   ],
 };
 
 const sidebarLabels = {
-  'zh-TW': { diagnose: 'ç«å³è¨ºæ·', warRoom: 'War Room', history: 'æ­·å²æ¡ä»¶', services: 'æåä»ç´¹', contact: 'è¯çµ¡æå' },
-  'zh-CN': { diagnose: 'ç«å³è¯æ­', warRoom: 'War Room', history: 'åå²æ¡ä»¶', services: 'æå¡ä»ç»', contact: 'èç³»æä»¬' },
+  'zh-TW': { diagnose: '立即診斷', warRoom: 'War Room', history: '歷史案件', services: '服務介紹', contact: '聯絡我們' },
+  'zh-CN': { diagnose: '立即诊断', warRoom: 'War Room', history: '历史案件', services: '服务介绍', contact: '联系我们' },
   'en': { diagnose: 'Start Diagnosis', warRoom: 'War Room', history: 'Case History', services: 'Services', contact: 'Contact Us' },
 };
 
 const btnLabels = {
-  'zh-TW': 'ç«å³è¨ºæ·',
-  'zh-CN': 'ç«å³è¯æ­',
+  'zh-TW': '立即診斷',
+  'zh-CN': '立即诊断',
   'en': 'Start Diagnosis',
 };
 
@@ -114,7 +114,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
             borderColor: 'rgba(201,168,76,0.3)',
             backdropFilter: 'blur(8px)',
           }}
-          aria-label="é¸å®"
+          aria-label="選單"
         >
           <span className="block w-5 h-[2px] rounded" style={{ background: '#c9a84c' }} />
           <span className="block w-5 h-[2px] rounded" style={{ background: '#c9a84c' }} />
@@ -132,9 +132,9 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
               color: '#c9a84c',
               fontSize: 18,
             }}
-            aria-label="è¿å"
+            aria-label="返回"
           >
-            â
+            ←
           </button>
           <LanguageSwitcher />
         </div>
@@ -167,11 +167,11 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
             </div>
             <nav className="flex flex-col py-3">
               {[
-                { icon: 'â', label: labels.diagnose, action: handleDiagnose },
-                { icon: 'â', label: labels.warRoom, action: onComplete },
-                { icon: 'â', label: labels.history, action: () => { window.location.href = '/projects'; } },
-                { icon: 'â°', label: labels.services, action: () => {} },
-                { icon: 'â', label: labels.contact, action: () => {} },
+                { icon: '⚡', label: labels.diagnose, action: handleDiagnose },
+                { icon: '⬡', label: labels.warRoom, action: onComplete },
+                { icon: '◈', label: labels.history, action: () => { window.location.href = '/projects'; } },
+                { icon: '⚙', label: labels.services, action: () => {} },
+                { icon: '✉', label: labels.contact, action: () => {} },
               ].map((item, i) => (
                 <button
                   key={i}
@@ -197,7 +197,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
 
       {/* Main content */}
       <div className="relative z-10 text-center w-full max-w-2xl px-4">
-        {/* Enlarged constellation icon â fills top area */}
+        {/* Enlarged constellation icon — fills top area */}
         <div className="relative mb-8 flex justify-center">
           <div
             className="absolute"
@@ -251,12 +251,12 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
           />
         </div>
 
-        <h1 className="orion-title mb-2">çµæ¶æºé</h1>
-        <p className="orion-subtitle mb-6">ORION AI INTELLIGENCE SYSTEM Â· STRATEGY & DOMINANCE</p>
+        <h1 className="orion-title mb-2" style={{ letterSpacing: '0.06em' }}>獵戶智鑑</h1>
+        <p className="orion-subtitle mb-6">ORION AI INTELLIGENCE SYSTEM · STRATEGY & DOMINANCE</p>
 
         <div className="h-px bg-gradient-to-r from-transparent via-[#c9a84c] to-transparent mb-6" />
 
-        {/* SYSTEM BOOT LOG â enlarged text */}
+        {/* SYSTEM BOOT LOG — enlarged text */}
         <div
           className="rounded p-6 mb-6 font-mono text-left min-h-[180px]"
           style={{
@@ -295,7 +295,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
           <p className="text-xs mt-2 font-mono" style={{ color: '#7a8499' }}>{Math.round(progress)}%</p>
         </div>
 
-        {/* CTA Button â ç«å³è¨ºæ· â orion-hub */}
+        {/* CTA Button — 立即診斷 → orion-hub */}
         {showButton && (
           <button
             onClick={handleDiagnose}
