@@ -40,21 +40,37 @@ function useAnimatedCounter(
   return { value, flash };
 }
 
-/* ── Count-up animation on mount ── */
+/* ── Count-up animation on mount only, then pass through live value ── */
 function useCountUp(target: number, duration = 1500) {
   const [display, setDisplay] = useState(0);
+  const initialTarget = useRef(target);
+  const animDone = useRef(false);
+
   useEffect(() => {
+    // Only animate once on mount
+    const finalVal = initialTarget.current;
     const start = performance.now();
     const tick = (now: number) => {
       const elapsed = now - start;
       const progress = Math.min(elapsed / duration, 1);
-      // ease-out quad
       const eased = 1 - (1 - progress) * (1 - progress);
-      setDisplay(Math.round(eased * target));
-      if (progress < 1) requestAnimationFrame(tick);
+      setDisplay(Math.round(eased * finalVal));
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        animDone.current = true;
+      }
     };
     requestAnimationFrame(tick);
-  }, [target, duration]);
+  }, [duration]);
+
+  // After initial animation, pass through live value directly
+  useEffect(() => {
+    if (animDone.current) {
+      setDisplay(target);
+    }
+  }, [target]);
+
   return display;
 }
 
