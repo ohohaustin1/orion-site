@@ -4,7 +4,7 @@ import { ChevronRight, TrendingUp, Zap, ArrowRight, Star } from 'lucide-react';
 import { featuredCases, industryColors } from '../data/cases';
 import AnalysisCounter from '../components/AnalysisCounter';
 
-const ORION_LOGO = 'https://d2xsxph8kpxj0f.cloudfront.net/310519663363086045/AT6eHx6ujNfSNacHbhaScT/9FA5B95E-A268-4F60-9751-F2D7D9CCEFF5_3606b99d.png';
+const ORION_LOGO = '/ORIONLOGO.png';
 
 export default function HomePage() {
   const [, setLocation] = useLocation();

@@ -384,11 +384,12 @@ body {
   margin-bottom: 24px;
 }
 .orion-hero-logo {
-  width: 72px;
-  height: 72px;
+  width: auto;
+  height: 150px;
   object-fit: contain;
-  filter: drop-shadow(0 0 20px rgba(201,168,76,0.4));
-  margin-bottom: 16px;
+  filter: drop-shadow(0 0 24px rgba(212,168,83,0.8));
+  margin-bottom: 20px;
+  animation: logoGlow 2.5s ease-in-out infinite;
 }
 .orion-hero-title {
   font-size: clamp(2rem, 5vw, 3rem);
