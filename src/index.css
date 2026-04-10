@@ -142,6 +142,11 @@ body {
   }
 }
 
+@keyframes logoGlow {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(201,168,76,0.4)); }
+  50% { filter: drop-shadow(0 0 20px rgba(201,168,76,0.8)); }
+}
+
 .animate-fadeUp {
   animation: fadeUp 0.5s ease-out;
 }
