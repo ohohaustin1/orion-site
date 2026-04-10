@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
-import { Trophy, BarChart3, Building2, BookOpen, Zap, Home, Menu, X } from 'lucide-react';
+import { Trophy, BarChart3, Building2, BookOpen, Zap, Home, Menu, X, Shield } from 'lucide-react';
 
 const ORION_LOGO = '/ORIONLOGO.png';
 
@@ -71,6 +71,14 @@ export default function Sidebar() {
           >
             <Zap size={16} />
             <span>War Room</span>
+          </button>
+          <button
+            className="orion-sidebar-warroom-btn"
+            style={{ marginTop: 8, background: 'rgba(201,168,76,0.08)', color: 'var(--orion-text-secondary)', fontSize: '0.75rem' }}
+            onClick={() => window.location.href = 'https://orion-hub.zeabur.app/admin'}
+          >
+            <Shield size={14} />
+            <span>後台管理</span>
           </button>
         </div>
       </aside>

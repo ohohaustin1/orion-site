@@ -34,7 +34,7 @@ export default function Register() {
     setError(null);
 
     try {
-      const res = await fetch("/api/auth/register", {
+      const res = await fetch("https://orion-hub.zeabur.app/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

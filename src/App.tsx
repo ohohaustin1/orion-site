@@ -25,7 +25,7 @@ import AboutPage from "./pages/AboutPage";
 import ResourcesPage from "./pages/ResourcesPage";
 
 // Pages that show sidebar
-const SIDEBAR_ROUTES = ['/home', '/cases', '/insights', '/about', '/resources', '/war-room'];
+const SIDEBAR_ROUTES = ['/home', '/cases', '/insights', '/about', '/resources'];
 
 function SidebarLayout({ children }: { children: React.ReactNode }) {
   return (
