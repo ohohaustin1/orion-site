@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BookOpen, Zap, ChevronDown, ChevronUp, ExternalLink, AlertTriangle, ArrowRight } from 'lucide-react';
+import { setSEO } from '../lib/seo';
 
 const DIAG_URL = 'https://orion-hub.zeabur.app';
 
 const articles = [
   {
-    title: '為什麼你的成交漏斗正在失血？',
+    title: '為什麼你一直成交不了？',
     desc: '90% 企業的成交漏斗存在 3 個以上致命漏洞，而他們完全不知道自己每天在燒多少錢。本文揭露最常見的漏斗病灶，以及 AI 如何在 2 週內止血。',
     type: '深度分析',
   },
   {
-    title: 'AI 導入失敗的 3 個真實病灶',
+    title: '你正在浪費的 40% 客戶',
     desc: '你以為買了 AI 工具就等於數位轉型？錯。我們拆解了 47 個失敗案例，歸納出導入失敗的 3 個致命原因——而這些錯誤，你現在可能正在犯。',
     type: '案例拆解',
   },
@@ -20,7 +21,7 @@ const articles = [
     type: '策略洞察',
   },
   {
-    title: '90% 的策略從一開始就錯了',
+    title: 'AI 導入失敗的 3 個真實病灶',
     desc: '你的商業策略是基於數據還是直覺？我們分析了 200+ 家企業的決策流程，發現 9 成的策略起點就已經偏離。AI 診斷如何幫你從根源修正。',
     type: '數據報告',
   },
@@ -51,6 +52,13 @@ const faqs = [
 
 export default function ResourcesPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  useEffect(() => {
+    setSEO({
+      title: '為什麼你的成交漏斗正在失血 | Orion 資源中心',
+      description: '揭露 AI 導入失敗的真實病灶，找回流失的成交機會。',
+    });
+  }, []);
 
   return (
     <div className="orion-page">
@@ -175,7 +183,7 @@ export default function ResourcesPage() {
           style={{ textDecoration: 'none' }}
         >
           <Zap size={18} />
-          <span>立即啟動 AI 商業診斷</span>
+          <span>立即看懂你為什麼成交不了</span>
         </a>
       </section>
     </div>

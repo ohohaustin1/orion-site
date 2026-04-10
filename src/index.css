@@ -1139,8 +1139,47 @@ body {
 
 @media (max-width: 768px) {
   .orion-cta-float {
-    right: 12px;
-    bottom: 76px;
+    display: none;
+  }
+  /* ── Mobile fixed bottom CTA ── */
+  .orion-mobile-fixed-cta {
+    display: flex !important;
+    position: fixed;
+    bottom: 64px; /* above mobile tab */
+    left: 0;
+    right: 0;
+    z-index: 99;
+    padding: 0 12px 8px;
+  }
+  .orion-mobile-fixed-cta a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    height: 56px;
+    background: linear-gradient(135deg, var(--orion-gold), var(--orion-gold-bright));
+    color: #0a0d14;
+    font-size: 1rem;
+    font-weight: 800;
+    border-radius: 12px;
+    text-decoration: none;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.4);
+    letter-spacing: 0.03em;
+  }
+  /* ── Sticky filter bar on mobile ── */
+  .orion-filter-bar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: var(--orion-bg-void);
+    border-radius: 0;
+    margin-left: -16px;
+    margin-right: -16px;
+    padding: 10px 16px;
+  }
+  .orion-main-content {
+    padding-bottom: 140px; /* space for both CTA + tab */
   }
 }
 
@@ -1354,6 +1393,17 @@ body {
 
 .trust-number.trust-bounce {
   transform: scale(1.15);
+}
+
+.trust-number.trust-flash {
+  transform: scale(1.12);
+  text-shadow: 0 0 18px rgba(232,201,106,0.9), 0 0 36px rgba(201,168,76,0.5);
+  animation: trustFlash 0.6s ease-out;
+}
+
+@keyframes trustFlash {
+  0% { text-shadow: 0 0 24px rgba(232,201,106,1), 0 0 48px rgba(201,168,76,0.7); transform: scale(1.18); }
+  100% { text-shadow: none; transform: scale(1); }
 }
 
 .trust-label {

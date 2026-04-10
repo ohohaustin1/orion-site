@@ -27,6 +27,16 @@ import ResourcesPage from "./pages/ResourcesPage";
 // Pages that show sidebar
 const SIDEBAR_ROUTES = ['/home', '/cases', '/insights', '/about', '/resources'];
 
+function MobileFixedCTA() {
+  return (
+    <div className="orion-mobile-fixed-cta" style={{ display: 'none' }}>
+      <a href="https://orion-hub.zeabur.app">
+        ⚡ 立即診斷
+      </a>
+    </div>
+  );
+}
+
 function SidebarLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="orion-layout-with-sidebar">
@@ -35,6 +45,7 @@ function SidebarLayout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <CTAFloat />
+      <MobileFixedCTA />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Cpu, Workflow, Cloud, Zap, ArrowRight, Users, MessageSquare, Video, FileText, ShoppingCart, UserCheck, Server, BarChart3, Lightbulb, Clock, Target, CheckCircle2, Shield } from 'lucide-react';
+import { setSEO } from '../lib/seo';
 
 const DIAG_URL = 'https://orion-hub.zeabur.app';
 
@@ -174,7 +175,13 @@ export default function AboutPage() {
   const [visible, setVisible] = useState(false);
   const [expandedService, setExpandedService] = useState<number | null>(null);
 
-  useEffect(() => { setTimeout(() => setVisible(true), 100); }, []);
+  useEffect(() => {
+    setTimeout(() => setVisible(true), 100);
+    setSEO({
+      title: '服務介紹 | Orion 獵戶座智鑑',
+      description: 'AI 導入顧問、系統開發、自動化流程，先顧問後開發的高端服務。',
+    });
+  }, []);
 
   return (
     <div className="orion-page">
@@ -192,7 +199,7 @@ export default function AboutPage() {
           lineHeight: 1.8,
           letterSpacing: '0.04em',
         }}>
-          Orion 不服務短視的投機者，
+          Orion 不服務想試試看的人，
         </div>
         <div style={{
           fontSize: 'clamp(1.1rem, 3vw, 1.5rem)',
@@ -201,7 +208,16 @@ export default function AboutPage() {
           lineHeight: 1.8,
           letterSpacing: '0.04em',
         }}>
-          我們只為領袖建構大腦。
+          我們只服務要結果的人。
+        </div>
+        <div style={{
+          fontSize: 'clamp(0.82rem, 2vw, 0.95rem)',
+          fontWeight: 600,
+          color: '#e74c3c',
+          lineHeight: 1.8,
+          marginTop: 8,
+        }}>
+          如果您沒有決策權，這套系統不適合您。
         </div>
         <div style={{
           width: 60,
@@ -393,15 +409,15 @@ export default function AboutPage() {
       </section>
 
       <section className="orion-bottom-cta">
-        <h2>準備好讓 AI 為你工作了嗎？</h2>
-        <p>3 分鐘免費診斷，找出你的企業成長突破口</p>
+        <h2>你的成交漏洞，每天都在燒錢</h2>
+        <p>3 分鐘免費診斷，揪出正在流失的營收缺口</p>
         <a
           href={DIAG_URL}
           className="orion-btn-fill large magnetic-link gold-sweep"
           style={{ textDecoration: 'none' }}
         >
           <Zap size={18} />
-          <span>立即啟動 AI 商業診斷</span>
+          <span>立即看懂你為什麼成交不了</span>
         </a>
       </section>
     </div>

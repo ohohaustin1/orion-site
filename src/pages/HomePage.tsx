@@ -2,19 +2,31 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'wouter';
 import { ChevronRight, TrendingUp, Zap, ArrowRight } from 'lucide-react';
 import { featuredCases, industryColors } from '../data/cases';
+import { setSEO } from '../lib/seo';
+import { LoadingRitual } from '../components/LoadingRitual';
 
 const ORION_LOGO = '/ORIONLOGO.png';
 
-/* ── Animated Counter Hook ── */
-function useAnimatedCounter(start: number, intervalMin: number, intervalMax: number, incrementMin = 1, incrementMax = 2) {
+/* ── Animated Counter Hook (realistic small numbers) ── */
+function useAnimatedCounter(
+  start: number,
+  intervalMin: number,
+  intervalMax: number,
+  incrementMin = 1,
+  incrementMax = 1,
+  allowDecrease = false,
+  minVal = 0,
+  maxVal = Infinity,
+) {
   const [value, setValue] = useState(start);
-  const [bounce, setBounce] = useState(false);
+  const [flash, setFlash] = useState(false);
   useEffect(() => {
     const tick = () => {
       const inc = Math.floor(Math.random() * (incrementMax - incrementMin + 1)) + incrementMin;
-      setValue(v => v + inc);
-      setBounce(true);
-      setTimeout(() => setBounce(false), 400);
+      const direction = allowDecrease && Math.random() < 0.35 ? -1 : 1;
+      setValue(v => Math.min(maxVal, Math.max(minVal, v + inc * direction)));
+      setFlash(true);
+      setTimeout(() => setFlash(false), 600);
       schedule();
     };
     let timer: ReturnType<typeof setTimeout>;
@@ -25,7 +37,25 @@ function useAnimatedCounter(start: number, intervalMin: number, intervalMax: num
     schedule();
     return () => clearTimeout(timer);
   }, []);
-  return { value, bounce };
+  return { value, flash };
+}
+
+/* ── Count-up animation on mount ── */
+function useCountUp(target: number, duration = 1500) {
+  const [display, setDisplay] = useState(0);
+  useEffect(() => {
+    const start = performance.now();
+    const tick = (now: number) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // ease-out quad
+      const eased = 1 - (1 - progress) * (1 - progress);
+      setDisplay(Math.round(eased * target));
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, [target, duration]);
+  return display;
 }
 
 /* ── Magnetic Link Effect ── */
@@ -54,63 +84,76 @@ function useMagnetic(ref: React.RefObject<HTMLElement | null>) {
 export default function HomePage() {
   const [, setLocation] = useLocation();
   const [loaded, setLoaded] = useState(false);
+  const [showRitual, setShowRitual] = useState(false);
   const ctaRef = useRef<HTMLButtonElement>(null);
   const casesRef = useRef<HTMLButtonElement>(null);
   useMagnetic(ctaRef);
   useMagnetic(casesRef);
 
-  useEffect(() => { setTimeout(() => setLoaded(true), 100); }, []);
+  useEffect(() => {
+    setTimeout(() => setLoaded(true), 100);
+    setSEO({
+      title: 'Orion 獵戶座智鑑 | 企業級 AI 成交引擎',
+      description: '企業級 AI 成交引擎，快速找回流失的營收。3分鐘揭露您的業務卡點與 ROI 缺口。',
+      url: 'https://orion01.com',
+    });
+  }, []);
 
-  // Trust dashboard counters
-  const companies = useAnimatedCounter(563, 5 * 60000, 10 * 60000, 1, 3);
-  const reports = useAnimatedCounter(12500, 5 * 60000, 10 * 60000, 1, 2);
-  const efficiency = { value: '30%–60%', bounce: false };
+  // Trust dashboard counters — realistic small numbers
+  // 已完成 AI 分析：126 起，每 5-10 分鐘 +1
+  const analyses = useAnimatedCounter(126, 5 * 60000, 10 * 60000, 1, 1);
+  const analysesDisplay = useCountUp(analyses.value, 1800);
+  // 今日策略生成：7 筆，白天偶爾 +1
+  const strategies = useAnimatedCounter(7, 8 * 60000, 15 * 60000, 1, 1);
+  const strategiesDisplay = useCountUp(strategies.value, 1200);
+  // 活躍使用者：38 位，每 30-90 秒 +1 或 -1
+  const activeUsers = useAnimatedCounter(38, 30000, 90000, 1, 1, true, 12, 67);
+  const activeUsersDisplay = useCountUp(activeUsers.value, 1000);
 
   return (
     <div className="orion-home-page">
+      <LoadingRitual active={showRitual} onComplete={() => { window.location.href = 'https://orion-hub.zeabur.app'; }} />
       {/* Hero */}
       <section className="orion-hero" style={{ opacity: loaded ? 1 : 0, transform: loaded ? 'translateY(0)' : 'translateY(20px)', transition: 'all 0.8s cubic-bezier(0.16,1,0.3,1)' }}>
         <img src={ORION_LOGO} alt="ORION" className="orion-hero-logo" />
-        <h1 className="orion-hero-title">獵戶座智鑑：企業級 AI 成交引擎</h1>
-        <p className="orion-hero-subtitle" style={{ maxWidth: 420, margin: '0 auto', lineHeight: 1.7 }}>
-          3 分鐘揭露您的成交卡點，<br />自動生成 ROI 提升方案。
+        <h1 className="orion-hero-title">你正在漏掉的成交機會，AI 幫你 3 分鐘找出來</h1>
+        <p className="orion-hero-subtitle" style={{ maxWidth: 480, margin: '0 auto', lineHeight: 1.7 }}>
+          不講廢話，直接揭露您的業務卡點與 ROI 缺口。
         </p>
 
         <div className="orion-hero-actions" style={{ marginTop: 28 }}>
           <button
             ref={ctaRef}
             className="orion-btn-fill magnetic-link gold-sweep"
-            onClick={() => window.location.href = 'https://orion-hub.zeabur.app'}
+            onClick={() => setShowRitual(true)}
             style={{ fontSize: '1.05rem', padding: '16px 36px', position: 'relative', overflow: 'hidden' }}
           >
             <Zap size={18} />
-            <span>立即啟動 AI 商業診斷</span>
+            <span>立即看懂你為什麼成交不了</span>
           </button>
         </div>
 
-        <p style={{ color: '#f44336', fontSize: '0.78rem', fontWeight: 600, marginTop: 14, lineHeight: 1.6, textAlign: 'center' }}>
-          已有 {companies.value.toLocaleString()}+ 企業完成優化，<br />平均效率提升 30%-60%
-        </p>
-
-        {/* ── Trust Dashboard ── */}
+        {/* ── Trust Dashboard (realistic small numbers) ── */}
         <div className="orion-trust-dashboard">
           <div className="trust-item">
-            <div className={`trust-number ${companies.bounce ? 'trust-bounce' : ''}`}>
-              {companies.value.toLocaleString()}+
+            <div className={`trust-number ${analyses.flash ? 'trust-flash' : ''}`}>
+              {analysesDisplay}
             </div>
-            <div className="trust-label">企業合作診斷</div>
+            <div className="trust-label">已完成 AI 分析</div>
           </div>
           <div className="trust-divider" />
           <div className="trust-item">
-            <div className={`trust-number ${reports.bounce ? 'trust-bounce' : ''}`}>
-              {reports.value.toLocaleString()}+
+            <div className={`trust-number ${strategies.flash ? 'trust-flash' : ''}`}>
+              {strategiesDisplay}
             </div>
-            <div className="trust-label">深度分析報告</div>
+            <div className="trust-label">今日策略生成</div>
           </div>
           <div className="trust-divider" />
           <div className="trust-item">
-            <div className="trust-number">30%–60%</div>
-            <div className="trust-label">平均效率提升</div>
+            <div className={`trust-number ${activeUsers.flash ? 'trust-flash' : ''}`}>
+              {activeUsersDisplay}
+            </div>
+            <div className="trust-label">活躍使用者</div>
           </div>
         </div>
       </section>
@@ -126,8 +169,8 @@ export default function HomePage() {
             <div key={c.id} className="orion-case-card">
               <div className="case-tag" style={{ background: industryColors[c.industry] || '#c9a84c' }}>{c.industry}</div>
               <h3 className="case-company">{c.company}</h3>
-              <div className="case-row"><span className="case-label">原始挑戰</span><p>{c.challenge}</p></div>
-              <div className="case-row"><span className="case-label solution">獵戶座策略</span><p>{c.strategy}</p></div>
+              <div className="case-row"><span className="case-label">原始問題</span><p>{c.problem}</p></div>
+              <div className="case-row"><span className="case-label solution">執行策略</span><p>{c.strategy}</p></div>
               <div className="case-results"><TrendingUp size={14} /><p>{c.results}</p></div>
               <div className="case-duration">{c.duration}</div>
             </div>
@@ -162,22 +205,22 @@ export default function HomePage() {
         </div>
         <div style={{ textAlign: 'center', marginTop: '24px' }}>
           <button className="orion-btn-outline magnetic-link gold-sweep" onClick={() => setLocation('/about')}>
-            了解更多 <ArrowRight size={16} />
+            查看完整服務與定價 <ArrowRight size={16} />
           </button>
         </div>
       </section>
 
       {/* Bottom CTA */}
       <section className="orion-bottom-cta">
-        <h2>準備好讓 AI 為你工作了嗎？</h2>
-        <p>現在不導入 AI 的企業，3 年後面臨的不是競爭，而是淘汰。</p>
+        <h2>你的成交漏洞，每天都在燒錢</h2>
+        <p>3 分鐘免費診斷，揪出正在流失的營收缺口。</p>
         <button
           className="orion-btn-fill large magnetic-link gold-sweep"
-          onClick={() => window.location.href = 'https://orion-hub.zeabur.app'}
+          onClick={() => setShowRitual(true)}
           style={{ position: 'relative', overflow: 'hidden' }}
         >
           <Zap size={20} />
-          <span>立即啟動 AI 商業診斷</span>
+          <span>立即看懂你為什麼成交不了</span>
         </button>
       </section>
     </div>
