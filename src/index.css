@@ -143,8 +143,8 @@ body {
 }
 
 @keyframes logoGlow {
-  0%, 100% { filter: drop-shadow(0 0 8px rgba(201,168,76,0.4)); }
-  50% { filter: drop-shadow(0 0 20px rgba(201,168,76,0.8)); }
+  0%, 100% { filter: drop-shadow(0 0 16px rgba(212,168,83,0.5)); }
+  50% { filter: drop-shadow(0 0 40px rgba(212,168,83,1)); }
 }
 
 .animate-fadeUp {
@@ -385,10 +385,11 @@ body {
 }
 .orion-hero-logo {
   width: auto;
-  height: 150px;
+  height: 200px;
   object-fit: contain;
-  filter: drop-shadow(0 0 24px rgba(212,168,83,0.8));
-  margin-bottom: 20px;
+  display: block;
+  margin: 0 auto 20px;
+  filter: drop-shadow(0 0 32px rgba(212,168,83,0.9));
   animation: logoGlow 2.5s ease-in-out infinite;
 }
 .orion-hero-title {
