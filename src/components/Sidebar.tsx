@@ -12,10 +12,9 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { path: '/home', label: '首頁', icon: Home },
-  { path: '/cases', label: '成功案例', icon: Trophy },
-  { path: '/insights', label: '數據洞察', icon: BarChart3 },
-  { path: '/about', label: '集團介紹', icon: Building2 },
-  { path: '/resources', label: '資源中心', icon: BookOpen },
+  { path: '/cases', label: '歷史案件', icon: Trophy },
+  { path: '/about', label: '服務介紹', icon: Building2 },
+  { path: '/resources', label: '聯絡我們', icon: BookOpen },
 ];
 
 export default function Sidebar() {
@@ -60,10 +59,18 @@ export default function Sidebar() {
         <div className="orion-sidebar-cta">
           <button
             className="orion-sidebar-warroom-btn"
-            onClick={() => setLocation('/war-room')}
+            onClick={() => window.location.href = 'https://orion-hub.zeabur.app'}
           >
             <Zap size={16} />
-            <span>AI 診斷</span>
+            <span>立即診斷</span>
+          </button>
+          <button
+            className="orion-sidebar-warroom-btn"
+            style={{ marginTop: 8, background: 'rgba(201,168,76,0.12)', color: 'var(--orion-gold)' }}
+            onClick={() => window.location.href = 'https://orion-hub.zeabur.app'}
+          >
+            <Zap size={16} />
+            <span>War Room</span>
           </button>
         </div>
       </aside>
@@ -86,7 +93,7 @@ export default function Sidebar() {
         })}
         <button
           className="orion-mobile-tab-item warroom"
-          onClick={() => setLocation('/war-room')}
+          onClick={() => window.location.href = 'https://orion-hub.zeabur.app'}
         >
           <Zap size={20} />
           <span>診斷</span>
