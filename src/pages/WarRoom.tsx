@@ -1126,20 +1126,24 @@ export default function WarRoom() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  // Step 2: SSE analysis function
+  // ── API 絕對路徑（規範第3條：嚴禁相對路徑） ──
+  const API_BASE = 'https://orion-hub.zeabur.app';
+  const chatSessionId = useRef<string>('session-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8));
+  const [isAustinMode, setIsAustinMode] = useState(false);
+
+  // Step 2: SSE chat function — 對接 /api/chat 端點
   const runSSEAnalysis = useCallback(async (params: {
     inputText: string;
     conversationHistory: ConversationMessage[];
     confirmedDimensions: Record<string, unknown>;
     skipProbing?: boolean;
   }) => {
-    // FIX-2: Prevent duplicate Phase D triggers
+    // FIX-2: Prevent duplicate triggers
     if (isAnalyzingRef.current) {
       console.warn('[ORION] runSSEAnalysis blocked: already analyzing');
       return;
     }
     isAnalyzingRef.current = true;
-    // Abort any in-flight request
     if (abortControllerRef.current) abortControllerRef.current.abort();
     const controller = new AbortController();
     abortControllerRef.current = controller;
@@ -1147,22 +1151,37 @@ export default function WarRoom() {
     setIsAnalyzing(true);
     setStreamingTokens('');
 
+    // ── /AUSTIN 偵測 ──
+    const trimmedInput = params.inputText.trim();
+    const austinTriggered = trimmedInput === '/AUSTIN' || trimmedInput === '/austin';
+    const currentAustin = austinTriggered || isAustinMode;
+    if (austinTriggered && !isAustinMode) {
+      setIsAustinMode(true);
+    }
+
     try {
-      const response = await fetch('/api/warroom/analyze/stream', {
+      // ── 規範第3條：絕對路徑 + 45 秒逾時 ──
+      const response = await fetch(`${API_BASE}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(params),
+        body: JSON.stringify({
+          text: params.inputText,
+          session_id: chatSessionId.current,
+          is_austin_mode: currentAustin,
+          conversation_history: params.conversationHistory.slice(-8),
+        }),
         signal: controller.signal,
       });
 
       if (!response.ok || !response.body) {
-        throw new Error(`HTTP ${response.status}`);
+        const errText = await response.text().catch(() => '');
+        throw new Error(`HTTP ${response.status}: ${errText.substring(0, 200)}`);
       }
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
+      let fullResponse = '';
 
       while (true) {
         const { done, value } = await reader.read();
@@ -1175,115 +1194,56 @@ export default function WarRoom() {
         for (const line of lines) {
           const trimmed = line.trim();
           if (!trimmed || !trimmed.startsWith('data: ')) continue;
-          const eventLine = lines[lines.indexOf(line) - 1]?.trim();
-          const eventType = eventLine?.startsWith('event: ') ? eventLine.slice(7) : 'message';
 
-          // Parse event type from the raw buffer block
-          // SSE format: "event: type\ndata: {...}\n\n"
-          // We need to look back at the previous line for event type
-          // Simpler: parse the full block
           try {
             const dataStr = trimmed.slice(6);
             const data = JSON.parse(dataStr);
 
-            // Determine event type from the data itself
-            if ('phase' in data && 'message' in data) {
-              // phase event
+            if (data.chunk) {
+              // 流式文字累積
+              fullResponse += data.chunk;
+              setStreamingTokens(prev => prev + data.chunk);
+              // 即時更新最後一條 AI 訊息
               setMessages(prev => {
                 const last = prev[prev.length - 1];
-                if (last?.type === 'ai' && last.content.startsWith('🔍')) {
-                  return [...prev.slice(0, -1), { ...last, content: `🔍 ${data.message}` }];
+                if (last?.type === 'ai' && (last.content.startsWith('🔍') || last.id.startsWith('stream-'))) {
+                  return [...prev.slice(0, -1), { ...last, id: 'stream-' + Date.now(), content: fullResponse }];
                 }
                 return prev;
               });
-            } else if ('partial_analysis' in data) {
-              // partial event
-              setProbing(prev => prev ? { ...prev, partial_analysis: data.partial_analysis } : null);
-            } else if ('token' in data) {
-              // token event — accumulate streaming text
-              setStreamingTokens(prev => prev + data.token);
-            } else if ('status' in data && data.status === 'need_more_info') {
-              // need_more_info event — defensive normalize all array fields
-              const safeQuestions: string[] = Array.isArray(data.questions) ? data.questions : [];
-              const safeMissingDimensions: string[] = Array.isArray(data.missing_dimensions) ? data.missing_dimensions : [];
-              if (data.usage) setTokenUsage({ prompt: data.usage.prompt_tokens, completion: data.usage.completion_tokens });
+            } else if (data.done) {
+              // 流式結束
+              setStreamingTokens('');
+              setMessages(prev => {
+                const last = prev[prev.length - 1];
+                if (last?.type === 'ai') {
+                  return [...prev.slice(0, -1), { ...last, id: Date.now().toString(), content: fullResponse }];
+                }
+                return [...prev, { id: Date.now().toString(), type: 'ai' as const, content: fullResponse, timestamp: new Date() }];
+              });
 
-              // FIX: 若 missing_dimensions 為空（維度齊全），後端理論上不應發此 event，
-              // 但作為防禦性處理：直接帶 skipProbing:true 重新呼叫，跳過 Phase B 進入 Phase D
-              if (safeMissingDimensions.length === 0) {
+              // 更新對話歷史
+              setConversationHistory(prev => [
+                ...prev,
+                { role: 'user' as const, content: params.inputText },
+                { role: 'assistant' as const, content: fullResponse },
+              ]);
+
+              // 5 輪對話後觸發報告（[COMPLETE] 標記）
+              if (fullResponse.includes('[COMPLETE]')) {
+                setCurrentSessionId(chatSessionId.current as any);
                 setMessages(prev => [...prev, {
-                  id: Date.now().toString(), type: 'system',
-                  content: '維度確認完整，正在生成完整分析...',
+                  id: Date.now().toString(), type: 'system' as const,
+                  content: '資料收集完成！正在生成 AI 診斷報告...',
                   timestamp: new Date(),
                 }]);
-                // Re-invoke with skipProbing=true using latest state via refs
-                setTimeout(() => {
-                  runSSEAnalysis({
-                    inputText: currentInputTextRef.current,
-                    conversationHistory: conversationHistoryRef.current,
-                    confirmedDimensions: confirmedDimensionsRef.current,
-                    skipProbing: true,
-                  });
-                }, 100);
-                return;
               }
-
-              setProbing({
-                questions: safeQuestions,
-                missing_dimensions: safeMissingDimensions,
-                partial_analysis: data.partial_analysis,
-              });
+            } else if (data.error) {
               setMessages(prev => [...prev, {
-                id: Date.now().toString(), type: 'ai',
-                content: `需要補充 ${safeMissingDimensions.length} 個維度的資訊：${safeMissingDimensions.join('、')}`,
+                id: Date.now().toString(), type: 'system' as const,
+                content: `錯誤：${data.error}`,
                 timestamp: new Date(),
               }]);
-            } else if ('status' in data && data.status === 'ok' && 'result' in data) {
-              // result event
-              if (data.usage) setTokenUsage({ prompt: data.usage.prompt_tokens, completion: data.usage.completion_tokens });
-              // Defensive normalization: ensure all array fields default to [] to prevent .length crashes
-              const raw = data.result as Record<string, unknown>;
-              const result: AnalysisResult = {
-                ...(raw as unknown as AnalysisResult),
-                human_in_the_loop_points: Array.isArray(raw.human_in_the_loop_points) ? raw.human_in_the_loop_points as string[] : [],
-                open_questions_for_engineering: Array.isArray(raw.open_questions_for_engineering) ? raw.open_questions_for_engineering as string[] : [],
-                pain_quantification: {
-                  pains: Array.isArray((raw.pain_quantification as Record<string, unknown>)?.pains) ? (raw.pain_quantification as { pains: AnalysisResult['pain_quantification']['pains'] }).pains : [],
-                },
-                contradiction_detection: {
-                  level: ((raw.contradiction_detection as Record<string, unknown>)?.level as 'Low' | 'Mid' | 'High') ?? 'Low',
-                  desc: ((raw.contradiction_detection as Record<string, unknown>)?.desc as string) ?? '',
-                  contradictions: Array.isArray((raw.contradiction_detection as Record<string, unknown>)?.contradictions) ? (raw.contradiction_detection as { contradictions: AnalysisResult['contradiction_detection']['contradictions'] }).contradictions : [],
-                },
-                ai_entry_points: {
-                  opportunities: Array.isArray((raw.ai_entry_points as Record<string, unknown>)?.opportunities) ? (raw.ai_entry_points as { opportunities: AnalysisResult['ai_entry_points']['opportunities'] }).opportunities : [],
-                },
-                agent_blueprint: {
-                  agents: Array.isArray((raw.agent_blueprint as Record<string, unknown>)?.agents) ? (raw.agent_blueprint as { agents: AnalysisResult['agent_blueprint']['agents'] }).agents : [],
-                  workflow: ((raw.agent_blueprint as Record<string, unknown>)?.workflow as string) ?? '',
-                  tech_stack: Array.isArray((raw.agent_blueprint as Record<string, unknown>)?.tech_stack) ? (raw.agent_blueprint as { tech_stack: string[] }).tech_stack : [],
-                  human_in_the_loop_points: Array.isArray((raw.agent_blueprint as Record<string, unknown>)?.human_in_the_loop_points) ? (raw.agent_blueprint as { human_in_the_loop_points: string[] }).human_in_the_loop_points : [],
-                },
-              };
-              setAnalysisResult(result);
-              setProbing(null);
-              setStreamingTokens('');
-              // Capture session ID and show contact modal
-              if (data.sessionId) {
-                setCurrentSessionId(data.sessionId);
-                setIsUnlocked(false);
-                setShowContactModal(true);
-              }
-              setMessages(prev => [...prev, {
-                id: Date.now().toString(), type: 'ai',
-                content: `分析完成（Session #${data.sessionId}）。識別 ${result.pain_quantification.pains.length} 個痛點、${result.contradiction_detection.contradictions.length} 個矛盾、${result.ai_entry_points.opportunities.length} 個 AI 切入點。`,
-                timestamp: new Date(),
-              }]);
-              setActiveTab('summary');
-            } else if ('message' in data && !('phase' in data)) {
-              // error event
-              setMessages(prev => [...prev, { id: Date.now().toString(), type: 'system', content: `分析失敗：${data.message}`, timestamp: new Date() }]);
-              toast.error(`分析失敗：${data.message}`);
             }
           } catch {
             // skip malformed SSE data
@@ -1291,11 +1251,10 @@ export default function WarRoom() {
         }
       }
     } catch (err) {
-      if ((err as Error).name === 'AbortError') return; // user aborted
+      if ((err as Error).name === 'AbortError') return;
       const msg = err instanceof Error ? err.message : String(err);
-      setMessages(prev => [...prev, { id: Date.now().toString(), type: 'system', content: `分析失敗：${msg}`, timestamp: new Date() }]);
-      toast.error(`分析失敗：${msg}`);
-      // FIX-3: If it's a fatal crash (not a 429/network error), set fatalError for recovery UI
+      setMessages(prev => [...prev, { id: Date.now().toString(), type: 'system' as const, content: `回應失敗：${msg}`, timestamp: new Date() }]);
+      toast.error(`回應失敗：${msg}`);
       if (msg.includes('HTTP 5') || msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
         setFatalError(msg);
       }
@@ -1305,7 +1264,7 @@ export default function WarRoom() {
       setStreamingTokens('');
       abortControllerRef.current = null;
     }
-  }, []);
+  }, [isAustinMode]);
 
   useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
   useEffect(() => {
