@@ -1,8 +1,35 @@
-## graphify
+# Orion 系統 — Claude Code 工作指引
 
-This project has a graphify knowledge graph at graphify-out/.
+## 關於這個專案
+- 擁有者：Austin（許燿宸），AI 商業架構師
+- 核心產品：獵戶智囊（Orion AI 決策平台）
+- 其他在開發中：柬埔寨不動產實價登入、英文小教室
+- Austin 沒有技術背景，所有程式碼由 Claude Code 開發
 
-Rules:
-- Before answering architecture or codebase questions, read graphify-out/GRAPH_REPORT.md for god nodes and community structure
-- If graphify-out/wiki/index.md exists, navigate it instead of reading raw files
-- After modifying code files in this session, run `python3 -c "from graphify.watch import _rebuild_code; from pathlib import Path; _rebuild_code(Path('.'))"` to keep the graph current
+## 溝通原則
+- 用繁體中文回答
+- 用白話文解釋，不用技術術語
+- 每次動作前先說明「我要做什麼、為什麼」
+- 有疑問先問，不要自己猜測後亂動
+
+## 開發前必做
+1. 先列出計畫，等 Austin 確認後再執行
+2. 不要同時改太多東西
+3. 改完告訴 Austin 做了什麼、結果如何
+
+## 程式品質標準（Harness Engineering）
+每次開發都要考慮這五件事：
+1. **資源管理**：這個功能會不會消耗太多 token 或 API 費用？
+2. **狀態持久化**：資料會不會在重啟後消失？
+3. **安全邊界**：有沒有可能誤操作、刪錯資料？
+4. **信息流控制**：AI 每次看到的資訊是否精準、不雜亂？
+5. **任務編排**：複雜任務要拆小步驟，一步一步確認
+
+## 目前優先順序
+1. 獵戶智囊（核心，快完成）
+2. 柬埔寨不動產（進行中）
+3. 英文小教室（優化中）
+
+## graphify 知識圖譜
+- 回答架構問題前，先讀 graphify-out/GRAPH_REPORT.md
+- 修改程式碼後，執行圖譜更新指令保持同步
