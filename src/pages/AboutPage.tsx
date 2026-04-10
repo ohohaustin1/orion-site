@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
-import { Cpu, Workflow, Database, Target, Code2, Cloud, Zap, ArrowRight, Users } from 'lucide-react';
+import { Cpu, Workflow, Database, Target, Code2, Cloud, Zap, ArrowRight, Users, MessageSquare, Video, FileText, ShoppingCart, UserCheck, Server, BarChart3, Lightbulb } from 'lucide-react';
 
 const capabilities = [
-  { icon: Cpu, label: 'AI 商業架構設計' },
-  { icon: Workflow, label: '企業流程自動化' },
-  { icon: Database, label: '數據決策系統' },
-  { icon: Target, label: '成交轉化優化' },
-  { icon: Code2, label: '高複雜度系統開發' },
-  { icon: Cloud, label: '雲端架構規劃' },
+  { icon: Cpu, label: 'AI 需求診斷系統', desc: '5 分鐘精準定位企業痛點，生成專屬分析報告' },
+  { icon: MessageSquare, label: '智能客服自動化', desc: '7×24 全天候 AI 客服，處理 80% 常見問題' },
+  { icon: Video, label: '影片內容自動生成', desc: 'AI 腳本撰寫 + 素材生成，產能提升 10 倍' },
+  { icon: FileText, label: '帳務報表自動化', desc: '自動生成財務報表、對帳、異常偵測' },
+  { icon: ShoppingCart, label: '電商系統開發', desc: '高轉換率電商平台，整合金流物流 CRM' },
+  { icon: UserCheck, label: 'CRM 客戶管理系統', desc: '客戶分群、成交預測、自動化跟進流程' },
+  { icon: Server, label: 'ERP 企業資源管理', desc: '進銷存、生產排程、供應鏈一站式管理' },
+  { icon: Cloud, label: '雲端架構規劃（AWS/GCP）', desc: '高可用、自動擴展、成本最佳化架構設計' },
+  { icon: BarChart3, label: '數據分析儀表板', desc: '即時營運數據視覺化，AI 驅動決策建議' },
+  { icon: Lightbulb, label: 'AI 導入顧問諮詢', desc: '從策略到落地，全程陪跑的 AI 轉型顧問' },
 ];
 
 const team = [
@@ -78,16 +82,19 @@ export default function AboutPage() {
         <span className="orion-page-tag">先顧問、後開發</span>
       </div>
 
-      {/* 核心能力 */}
+      {/* 10 項服務 */}
       <section className="orion-about-section" style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.6s 0.1s' }}>
-        <h2 className="about-section-title">核心能力</h2>
+        <h2 className="about-section-title">服務介紹</h2>
         <div className="orion-capabilities-grid">
           {capabilities.map((c, i) => {
             const Icon = c.icon;
             return (
-              <div key={i} className="orion-capability-card">
-                <Icon size={28} style={{ color: 'var(--orion-gold)' }} />
-                <span>{c.label}</span>
+              <div key={i} className="orion-capability-card" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '8px', padding: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <Icon size={24} style={{ color: 'var(--orion-gold)', flexShrink: 0 }} />
+                  <span style={{ fontWeight: 600 }}>{c.label}</span>
+                </div>
+                <span style={{ fontSize: '0.78rem', color: 'var(--orion-text-secondary)', lineHeight: 1.5 }}>{c.desc}</span>
               </div>
             );
           })}
