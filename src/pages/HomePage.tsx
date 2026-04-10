@@ -40,39 +40,7 @@ function useAnimatedCounter(
   return { value, flash };
 }
 
-/* ── Count-up animation on mount only, then pass through live value ── */
-function useCountUp(target: number, duration = 1500) {
-  const [display, setDisplay] = useState(0);
-  const initialTarget = useRef(target);
-  const animDone = useRef(false);
-
-  useEffect(() => {
-    // Only animate once on mount
-    const finalVal = initialTarget.current;
-    const start = performance.now();
-    const tick = (now: number) => {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - (1 - progress) * (1 - progress);
-      setDisplay(Math.round(eased * finalVal));
-      if (progress < 1) {
-        requestAnimationFrame(tick);
-      } else {
-        animDone.current = true;
-      }
-    };
-    requestAnimationFrame(tick);
-  }, [duration]);
-
-  // After initial animation, pass through live value directly
-  useEffect(() => {
-    if (animDone.current) {
-      setDisplay(target);
-    }
-  }, [target]);
-
-  return display;
-}
+/* (count-up removed — direct display with flash effect) */
 
 /* ── Magnetic Link Effect ── */
 function useMagnetic(ref: React.RefObject<HTMLElement | null>) {
@@ -118,13 +86,10 @@ export default function HomePage() {
   // Trust dashboard counters — realistic small numbers
   // 已完成 AI 分析：126 起，每 5-10 分鐘 +1
   const analyses = useAnimatedCounter(126, 5 * 60000, 10 * 60000, 1, 1);
-  const analysesDisplay = useCountUp(analyses.value, 1800);
   // 今日策略生成：7 筆，白天偶爾 +1
   const strategies = useAnimatedCounter(7, 8 * 60000, 15 * 60000, 1, 1);
-  const strategiesDisplay = useCountUp(strategies.value, 1200);
   // 活躍使用者：38 位，每 30-90 秒 +1 或 -1
   const activeUsers = useAnimatedCounter(38, 30000, 90000, 1, 1, true, 12, 67);
-  const activeUsersDisplay = useCountUp(activeUsers.value, 1000);
 
   return (
     <div className="orion-home-page">
@@ -153,21 +118,21 @@ export default function HomePage() {
         <div className="orion-trust-dashboard">
           <div className="trust-item">
             <div className={`trust-number ${analyses.flash ? 'trust-flash' : ''}`}>
-              {analysesDisplay}
+              {analyses.value}
             </div>
             <div className="trust-label">已完成 AI 分析</div>
           </div>
           <div className="trust-divider" />
           <div className="trust-item">
             <div className={`trust-number ${strategies.flash ? 'trust-flash' : ''}`}>
-              {strategiesDisplay}
+              {strategies.value}
             </div>
             <div className="trust-label">今日策略生成</div>
           </div>
           <div className="trust-divider" />
           <div className="trust-item">
             <div className={`trust-number ${activeUsers.flash ? 'trust-flash' : ''}`}>
-              {activeUsersDisplay}
+              {activeUsers.value}
             </div>
             <div className="trust-label">活躍使用者</div>
           </div>
