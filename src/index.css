@@ -1141,33 +1141,7 @@ body {
   .orion-cta-float {
     display: none;
   }
-  /* ── Mobile fixed bottom CTA ── */
-  .orion-mobile-fixed-cta {
-    display: flex !important;
-    position: fixed;
-    bottom: 64px; /* above mobile tab */
-    left: 0;
-    right: 0;
-    z-index: 99;
-    padding: 0 12px 8px;
-  }
-  .orion-mobile-fixed-cta a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    height: 56px;
-    background: linear-gradient(135deg, var(--orion-gold), var(--orion-gold-bright));
-    color: #0a0d14;
-    font-size: 1rem;
-    font-weight: 800;
-    border-radius: 12px;
-    text-decoration: none;
-    box-shadow: 0 4px 20px rgba(201,168,76,0.4);
-    letter-spacing: 0.03em;
-  }
-  /* ── Sticky filter bar on mobile ── */
+  /* ── Mobile fixed bottom CTA ── */  /* ── Sticky filter bar on mobile ── */
   .orion-filter-bar {
     position: sticky;
     top: 0;
