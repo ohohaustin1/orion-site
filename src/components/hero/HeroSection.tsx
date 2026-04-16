@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import griffinLogo from '@/assets/images/griffin-logo.png';
 import heroMain from '@/assets/images/hero-main.png';
 
-/* Count-Up Animation Hook */
+/* ââ Count-Up Animation Hook ââ */
 function useCountUp(target: number, duration = 600, delay = 1000) {
   const [value, setValue] = useState(0);
   const [started, setStarted] = useState(false);
@@ -20,6 +20,7 @@ function useCountUp(target: number, duration = 600, delay = 1000) {
     const animate = (now: number) => {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
+      // ease-out cubic
       const eased = 1 - Math.pow(1 - progress, 3);
       setValue(Math.round(eased * target));
       if (progress < 1) {
@@ -34,7 +35,7 @@ function useCountUp(target: number, duration = 600, delay = 1000) {
   return value;
 }
 
-/* Scroll Parallax Hook */
+/* ââ Scroll Parallax Hook ââ */
 function useParallax(factor = 0.3) {
   const [offset, setOffset] = useState(0);
   const rafRef = useRef<number>(0);
@@ -56,16 +57,42 @@ function useParallax(factor = 0.3) {
   return offset;
 }
 
+/* ââ StatCard Component (æ¹é  3) ââ */
+function StatCard({ icon, number, label }: { icon: string; number: number; label: string }) {
+  return (
+    <div className="stat-card">
+      <div className="stat-icon">{icon}</div>
+      <div className="stat-number font-tabular">{number}</div>
+      <div className="stat-divider"></div>
+      <div className="stat-label">{label}</div>
+    </div>
+  );
+}
+
+/* ââ Orion Belt Divider (æ¹é  5) ââ */
+function OrionDivider() {
+  return (
+    <div className="orion-divider">
+      <div className="orion-divider-line"></div>
+      <div className="orion-divider-stars">â â â</div>
+      <div className="orion-divider-line"></div>
+    </div>
+  );
+}
+
+/* ââ Stagger Stage Type ââ */
 type Stage = 'bg' | 'image' | 'title' | 'subtitle' | 'cta' | 'stats';
 
 export default function HeroSection() {
   const [stages, setStages] = useState<Set<Stage>>(new Set());
   const parallaxY = useParallax(0.3);
 
+  // Count-up values (start after 1000ms stagger delay)
   const count1 = useCountUp(126, 600, 1000);
   const count2 = useCountUp(7, 600, 1000);
   const count3 = useCountUp(38, 600, 1000);
 
+  // Staggered entrance animation
   useEffect(() => {
     const timings: [number, Stage][] = [
       [0, 'bg'],
@@ -86,82 +113,128 @@ export default function HeroSection() {
 
   return (
     <section
-      className="relative w-full overflow-hidden"
+      className="hero-container relative w-full overflow-hidden"
       style={{
-        background: 'radial-gradient(ellipse at center, #0a0a0a 0%, #000000 70%)',
         opacity: visible('bg') ? 1 : 0,
         transition: `opacity 0.5s ${easing}`,
       }}
     >
-      <nav className="w-full max-w-[1200px] mx-auto flex items-center justify-between px-6 md:px-8 py-4">
+      {/* âââ A. Top Nav âââ */}
+      <nav className="w-full max-w-[1200px] mx-auto flex items-center justify-between px-6 md:px-8 py-4" style={{ position: 'relative', zIndex: 2 }}>
+        {/* Left: Griffin Logo + ORION AI */}
         <div className="flex items-center gap-3">
-          <img src={griffinLogo} alt="Orion Griffin" className="h-10 w-auto" />
-          <span className="font-inter font-bold text-white text-lg tracking-tight">ORION AI</span>
+          <img
+            src={griffinLogo}
+            alt="Orion Griffin"
+            className="h-10 w-auto"
+          />
+          <span className="font-inter font-bold text-white text-lg tracking-tight">
+            ORION AI
+          </span>
         </div>
+        {/* Right: Language Switcher */}
         <div className="flex items-center gap-1">
-          {['繁', '簡', 'EN'].map((lang) => (
-            <button key={lang} className="px-3 py-1.5 text-sm text-[#A0A0A0] hover:text-white hover:bg-white/10 rounded-md transition-colors duration-200">{lang}</button>
+          {['ç¹', 'ç°¡', 'EN'].map((lang) => (
+            <button
+              key={lang}
+              className="px-3 py-1.5 text-sm text-[#A0A0A0] hover:text-white hover:bg-white/10 rounded-md transition-colors duration-200"
+            >
+              {lang}
+            </button>
           ))}
         </div>
       </nav>
 
-      <div className="w-full max-w-[1200px] mx-auto px-6 md:px-0 mt-4 md:mt-8">
-        <div className="w-full overflow-hidden" style={{ opacity: visible('image') ? 1 : 0, transition: `opacity 0.5s ${easing}` }}>
-          <img src={heroMain} alt="Orion AI Hero" className="w-full h-auto object-contain" style={{ maxWidth: '100%', animation: 'breathing 3s ease-in-out infinite', transform: `translateY(${parallaxY}px)` }} />
+      {/* âââ B. Hero Image (parallax + breathing) âââ */}
+      <div className="w-full max-w-[1200px] mx-auto px-6 md:px-0 mt-4 md:mt-8" style={{ position: 'relative', zIndex: 1 }}>
+        <div
+          className="w-full overflow-hidden"
+          style={{
+            opacity: visible('image') ? 1 : 0,
+            transition: `opacity 0.5s ${easing}`,
+          }}
+        >
+          <img
+            src={heroMain}
+            alt="Orion AI Hero"
+            className="w-full h-auto object-contain"
+            style={{
+              maxWidth: '100%',
+              animation: 'breathing 3s ease-in-out infinite',
+              transform: `translateY(${parallaxY}px)`,
+            }}
+          />
         </div>
       </div>
-      <div className="w-full max-w-[1200px] mx-auto px-6 md:px-8 mt-8 md:mt-12">
+
+      {/* âââ Orion Belt Divider 1 âââ */}
+      <OrionDivider />
+
+      {/* âââ C. Main Title (æ¹é  1: éè²ç¼å) âââ */}
+      <div className="w-full max-w-[1200px] mx-auto px-6 md:px-8 mt-2 md:mt-4" style={{ position: 'relative', zIndex: 1 }}>
         <h1
-          className="text-center text-4xl md:text-6xl font-black"
+          className="hero-title-glow text-center text-4xl md:text-6xl"
           style={{
-            letterSpacing: '-0.02em',
-            background: 'linear-gradient(135deg, #FFFFFF 30%, #D4AF37 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
             opacity: visible('title') ? 1 : 0,
             transform: visible('title') ? 'translateY(0)' : 'translateY(20px)',
             transition: `all 0.5s ${easing}`,
           }}
         >
-          有想法，就能做成 AI
+          ææ³æ³ï¼å°±è½åæ AI
         </h1>
       </div>
 
-      <div className="w-full max-w-[1200px] mx-auto px-6 md:px-8 mt-4">
-        <p className="text-center text-base md:text-xl" style={{ color: '#A0A0A0', opacity: visible('subtitle') ? 1 : 0, transition: `opacity 0.5s ${easing}` }}>
-          從個人到企業，Orion 幫你把「想做」變成「在跑」
+      {/* âââ D. Subtitle âââ */}
+      <div className="w-full max-w-[1200px] mx-auto px-6 md:px-8 mt-4" style={{ position: 'relative', zIndex: 1 }}>
+        <p
+          className="text-center text-base md:text-xl"
+          style={{
+            color: '#A0A0A0',
+            opacity: visible('subtitle') ? 1 : 0,
+            transition: `opacity 0.5s ${easing}`,
+          }}
+        >
+          å¾åäººå°ä¼æ¥­ï¼Orion å¹«ä½ æãæ³åãè®æãå¨è·ã
         </p>
       </div>
 
-      <div className="w-full max-w-[1200px] mx-auto px-6 md:px-8 mt-8 flex justify-center" style={{ opacity: visible('cta') ? 1 : 0, transition: `opacity 0.5s ${easing}` }}>
+      {/* âââ E. CTA Button (æ¹é  2: éç£èå) âââ */}
+      <div
+        className="w-full max-w-[1200px] mx-auto px-6 md:px-8 mt-8 flex justify-center"
+        style={{
+          opacity: visible('cta') ? 1 : 0,
+          transition: `opacity 0.5s ${easing}`,
+          position: 'relative',
+          zIndex: 1,
+        }}
+      >
         <button
-          className="hero-cta-btn font-bold text-base md:text-lg"
-          style={{ background: '#D4AF37', color: '#000000', borderRadius: '10px', padding: '16px 32px', border: 'none', cursor: 'pointer', transition: 'all 200ms ease' }}
-          onClick={() => { window.location.href = 'https://orion-hub.zeabur.app'; }}
-          onMouseEnter={(e) => { (e.target as HTMLButtonElement).style.background = '#E6C76B'; (e.target as HTMLButtonElement).style.transform = 'scale(1.02)'; }}
-          onMouseLeave={(e) => { (e.target as HTMLButtonElement).style.background = '#D4AF37'; (e.target as HTMLButtonElement).style.transform = 'scale(1)'; }}
-          onMouseDown={(e) => { (e.target as HTMLButtonElement).style.transform = 'scale(0.98)'; }}
-          onMouseUp={(e) => { (e.target as HTMLButtonElement).style.transform = 'scale(1.02)'; }}
+          className="cta-premium font-bold text-base md:text-lg"
+          onClick={() => {
+            window.location.href = 'https://orion-hub.zeabur.app';
+          }}
         >
-          立即開始診斷 →
+          ç«å³éå§è¨ºæ· â
         </button>
       </div>
 
-      <div className="w-full max-w-[1200px] mx-auto px-6 md:px-8 mt-12 mb-16 md:mb-24" style={{ opacity: visible('stats') ? 1 : 0, transition: `opacity 0.5s ${easing}` }}>
-        <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
-          <div className="flex flex-col items-center gap-2">
-            <span className="font-inter font-bold text-5xl font-tabular" style={{ color: '#D4AF37', fontVariantNumeric: 'tabular-nums' }}>{count1}</span>
-            <span className="text-sm" style={{ color: '#A0A0A0' }}>AI 系統運行中</span>
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <span className="font-inter font-bold text-5xl font-tabular" style={{ color: '#D4AF37', fontVariantNumeric: 'tabular-nums' }}>{count2}</span>
-            <span className="text-sm" style={{ color: '#A0A0A0' }}>今日想法落地</span>
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <span className="font-inter font-bold text-5xl font-tabular" style={{ color: '#D4AF37', fontVariantNumeric: 'tabular-nums' }}>{count3}</span>
-            <span className="text-sm" style={{ color: '#A0A0A0' }}>正在賺錢 / 省時間</span>
-          </div>
+      {/* âââ Orion Belt Divider 2 âââ */}
+      <OrionDivider />
+
+      {/* âââ F. Stats Cards (æ¹é  3: ç¼åå¡ççµ) âââ */}
+      <div
+        className="w-full max-w-[1200px] mx-auto px-6 md:px-8 mt-4 mb-16 md:mb-24"
+        style={{
+          opacity: visible('stats') ? 1 : 0,
+          transition: `opacity 0.5s ${easing}`,
+          position: 'relative',
+          zIndex: 1,
+        }}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
+          <StatCard icon="â¡" number={count1} label="AI ç³»çµ±éè¡ä¸­" />
+          <StatCard icon="ð¡" number={count2} label="ä»æ¥æ³æ³è½å°" />
+          <StatCard icon="ð" number={count3} label="æ­£å¨è³ºé¢ / çæé" />
         </div>
       </div>
     </section>
