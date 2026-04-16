@@ -8,7 +8,6 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { SplashScreen } from "./components/SplashScreen";
 import Sidebar from "./components/Sidebar";
-import CTAFloat from "./components/CTAFloat";
 // Pages
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -27,25 +26,13 @@ import ResourcesPage from "./pages/ResourcesPage";
 // Pages that show sidebar
 const SIDEBAR_ROUTES = ['/home', '/cases', '/insights', '/about', '/resources'];
 
-function MobileFixedCTA() {
-  return (
-    <div className="orion-mobile-fixed-cta" style={{ display: 'none' }}>
-      <a href="https://orion-hub.zeabur.app">
-        ⚡ 立即診斷
-      </a>
-    </div>
-  );
-}
-
 function SidebarLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="orion-layout-with-sidebar">
       <Sidebar />
-      <main className="orion-main-content">
+      <main className="orion-main-content" style={{ paddingBottom: 80 }}>
         {children}
       </main>
-      <CTAFloat />
-      <MobileFixedCTA />
     </div>
   );
 }
