@@ -1,48 +1,12 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'wouter';
-import { ChevronRight, TrendingUp, Zap, ArrowRight } from 'lucide-react';
+import { TrendingUp, Zap, ArrowRight } from 'lucide-react';
 import { featuredCases, industryColors } from '../data/cases';
 import { setSEO } from '../lib/seo';
 import { LoadingRitual } from '../components/LoadingRitual';
+import HeroSection from '../components/hero/HeroSection';
 
-const ORION_LOGO = '/ORIONLOGO.png';
-
-/* ── Animated Counter Hook (realistic small numbers) ── */
-function useAnimatedCounter(
-  start: number,
-  intervalMin: number,
-  intervalMax: number,
-  incrementMin = 1,
-  incrementMax = 1,
-  allowDecrease = false,
-  minVal = 0,
-  maxVal = Infinity,
-) {
-  const [value, setValue] = useState(start);
-  const [flash, setFlash] = useState(false);
-  useEffect(() => {
-    const tick = () => {
-      const inc = Math.floor(Math.random() * (incrementMax - incrementMin + 1)) + incrementMin;
-      const direction = allowDecrease && Math.random() < 0.35 ? -1 : 1;
-      setValue(v => Math.min(maxVal, Math.max(minVal, v + inc * direction)));
-      setFlash(true);
-      setTimeout(() => setFlash(false), 600);
-      schedule();
-    };
-    let timer: ReturnType<typeof setTimeout>;
-    const schedule = () => {
-      const ms = Math.floor(Math.random() * (intervalMax - intervalMin)) + intervalMin;
-      timer = setTimeout(tick, ms);
-    };
-    schedule();
-    return () => clearTimeout(timer);
-  }, []);
-  return { value, flash };
-}
-
-/* (count-up removed — direct display with flash effect) */
-
-/* ── Magnetic Link Effect ── */
+/* Magnetic Link Effect */
 function useMagnetic(ref: React.RefObject<HTMLElement | null>) {
   useEffect(() => {
     const el = ref.current;
@@ -53,7 +17,6 @@ function useMagnetic(ref: React.RefObject<HTMLElement | null>) {
       const y = e.clientY - rect.top;
       el.style.setProperty('--mx', x + 'px');
       el.style.setProperty('--my', y + 'px');
-      // subtle magnetic pull
       const dx = (x - rect.width / 2) * 0.08;
       const dy = (y - rect.height / 2) * 0.08;
       el.style.transform = `translate(${dx}px, ${dy}px)`;
@@ -69,9 +32,7 @@ export default function HomePage() {
   const [, setLocation] = useLocation();
   const [loaded, setLoaded] = useState(false);
   const [showRitual, setShowRitual] = useState(false);
-  const ctaRef = useRef<HTMLButtonElement>(null);
   const casesRef = useRef<HTMLButtonElement>(null);
-  useMagnetic(ctaRef);
   useMagnetic(casesRef);
 
   useEffect(() => {
@@ -83,61 +44,11 @@ export default function HomePage() {
     });
   }, []);
 
-  // Trust dashboard counters — realistic small numbers
-  // 已完成 AI 分析：126 起，每 5-10 分鐘 +1
-  const analyses = useAnimatedCounter(126, 5 * 60000, 10 * 60000, 1, 1);
-  // 今日策略生成：7 筆，白天偶爾 +1
-  const strategies = useAnimatedCounter(7, 8 * 60000, 15 * 60000, 1, 1);
-  // 活躍使用者：38 位，每 30-90 秒 +1 或 -1
-  const activeUsers = useAnimatedCounter(38, 30000, 90000, 1, 1, true, 12, 67);
-
   return (
     <div className="orion-home-page">
       <LoadingRitual active={showRitual} onComplete={() => { window.location.href = 'https://orion-hub.zeabur.app'; }} />
-      {/* Hero */}
-      <section className="orion-hero" style={{ opacity: loaded ? 1 : 0, transform: loaded ? 'translateY(0)' : 'translateY(20px)', transition: 'all 0.8s cubic-bezier(0.16,1,0.3,1)' }}>
-        <img src={ORION_LOGO} alt="ORION" className="orion-hero-logo" />
-        <h1 className="orion-hero-title">你正在漏掉的成交機會，AI 幫你 3 分鐘找出來</h1>
-        <p className="orion-hero-subtitle" style={{ maxWidth: 480, margin: '0 auto', lineHeight: 1.7 }}>
-          不講廢話，直接揭露您的業務卡點與 ROI 缺口。
-        </p>
-
-        <div className="orion-hero-actions" style={{ marginTop: 28 }}>
-          <button
-            ref={ctaRef}
-            className="orion-btn-fill magnetic-link gold-sweep"
-            onClick={() => setShowRitual(true)}
-            style={{ fontSize: '1.05rem', padding: '16px 36px', position: 'relative', overflow: 'hidden' }}
-          >
-            <Zap size={18} />
-            <span>立即看懂你為什麼成交不了</span>
-          </button>
-        </div>
-
-        {/* ── Trust Dashboard (realistic small numbers) ── */}
-        <div className="orion-trust-dashboard">
-          <div className="trust-item">
-            <div className={`trust-number ${analyses.flash ? 'trust-flash' : ''}`}>
-              {analyses.value}
-            </div>
-            <div className="trust-label">已完成 AI 分析</div>
-          </div>
-          <div className="trust-divider" />
-          <div className="trust-item">
-            <div className={`trust-number ${strategies.flash ? 'trust-flash' : ''}`}>
-              {strategies.value}
-            </div>
-            <div className="trust-label">今日策略生成</div>
-          </div>
-          <div className="trust-divider" />
-          <div className="trust-item">
-            <div className={`trust-number ${activeUsers.flash ? 'trust-flash' : ''}`}>
-              {activeUsers.value}
-            </div>
-            <div className="trust-label">活躍使用者</div>
-          </div>
-        </div>
-      </section>
+      {/* Hero Section (Step 2/7) */}
+      <HeroSection />
 
       {/* Featured Cases */}
       <section className="orion-section" style={{ opacity: loaded ? 1 : 0, transition: 'opacity 1s 0.3s' }}>
