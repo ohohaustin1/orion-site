@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import griffinLogo from '@/assets/images/griffin-logo.png';
 import heroMain from '@/assets/images/hero-main.png';
 
-/* ââ Count-Up Animation Hook ââ */
+/* ── Count-Up Animation Hook ── */
 function useCountUp(target: number, duration = 600, delay = 1000) {
   const [value, setValue] = useState(0);
   const [started, setStarted] = useState(false);
@@ -35,7 +35,7 @@ function useCountUp(target: number, duration = 600, delay = 1000) {
   return value;
 }
 
-/* ââ Scroll Parallax Hook ââ */
+/* ── Scroll Parallax Hook ── */
 function useParallax(factor = 0.3) {
   const [offset, setOffset] = useState(0);
   const rafRef = useRef<number>(0);
@@ -57,7 +57,7 @@ function useParallax(factor = 0.3) {
   return offset;
 }
 
-/* ââ StatCard Component (æ¹é  3) ââ */
+/* ── StatCard Component (改造 3) ── */
 function StatCard({ icon, number, label }: { icon: string; number: number; label: string }) {
   return (
     <div className="stat-card">
@@ -69,18 +69,18 @@ function StatCard({ icon, number, label }: { icon: string; number: number; label
   );
 }
 
-/* ââ Orion Belt Divider (æ¹é  5) ââ */
+/* ── Orion Belt Divider (改造 5) ── */
 function OrionDivider() {
   return (
     <div className="orion-divider">
       <div className="orion-divider-line"></div>
-      <div className="orion-divider-stars">â â â</div>
+      <div className="orion-divider-stars">★ ★ ★</div>
       <div className="orion-divider-line"></div>
     </div>
   );
 }
 
-/* ââ Stagger Stage Type ââ */
+/* ── Stagger Stage Type ── */
 type Stage = 'bg' | 'image' | 'title' | 'subtitle' | 'cta' | 'stats';
 
 export default function HeroSection() {
@@ -119,7 +119,7 @@ export default function HeroSection() {
         transition: `opacity 0.5s ${easing}`,
       }}
     >
-      {/* âââ A. Top Nav âââ */}
+      {/* ─── A. Top Nav ─── */}
       <nav className="w-full max-w-[1200px] mx-auto flex items-center justify-between px-6 md:px-8 py-4" style={{ position: 'relative', zIndex: 2 }}>
         {/* Left: Griffin Logo + ORION AI */}
         <div className="flex items-center gap-3">
@@ -134,7 +134,7 @@ export default function HeroSection() {
         </div>
         {/* Right: Language Switcher */}
         <div className="flex items-center gap-1">
-          {['ç¹', 'ç°¡', 'EN'].map((lang) => (
+          {['繁', '簡', 'EN'].map((lang) => (
             <button
               key={lang}
               className="px-3 py-1.5 text-sm text-[#A0A0A0] hover:text-white hover:bg-white/10 rounded-md transition-colors duration-200"
@@ -145,7 +145,7 @@ export default function HeroSection() {
         </div>
       </nav>
 
-      {/* âââ B. Hero Image (parallax + breathing) âââ */}
+      {/* ─── B. Hero Image (parallax + breathing) ─── */}
       <div className="w-full max-w-[1200px] mx-auto px-6 md:px-0 mt-4 md:mt-8" style={{ position: 'relative', zIndex: 1 }}>
         <div
           className="w-full overflow-hidden"
@@ -167,10 +167,10 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* âââ Orion Belt Divider 1 âââ */}
+      {/* ─── Orion Belt Divider 1 ─── */}
       <OrionDivider />
 
-      {/* âââ C. Main Title (æ¹é  1: éè²ç¼å) âââ */}
+      {/* ─── C. Main Title (改造 1: 金色發光) ─── */}
       <div className="w-full max-w-[1200px] mx-auto px-6 md:px-8 mt-2 md:mt-4" style={{ position: 'relative', zIndex: 1 }}>
         <h1
           className="hero-title-glow text-center text-4xl md:text-6xl"
@@ -180,11 +180,11 @@ export default function HeroSection() {
             transition: `all 0.5s ${easing}`,
           }}
         >
-          ææ³æ³ï¼å°±è½åæ AI
+          有想法，就能做成 AI
         </h1>
       </div>
 
-      {/* âââ D. Subtitle âââ */}
+      {/* ─── D. Subtitle ─── */}
       <div className="w-full max-w-[1200px] mx-auto px-6 md:px-8 mt-4" style={{ position: 'relative', zIndex: 1 }}>
         <p
           className="text-center text-base md:text-xl"
@@ -194,11 +194,11 @@ export default function HeroSection() {
             transition: `opacity 0.5s ${easing}`,
           }}
         >
-          å¾åäººå°ä¼æ¥­ï¼Orion å¹«ä½ æãæ³åãè®æãå¨è·ã
+          從個人到企業，Orion 幫你把「想做」變成「在跑」
         </p>
       </div>
 
-      {/* âââ E. CTA Button (æ¹é  2: éç£èå) âââ */}
+      {/* ─── E. CTA Button (改造 2: 金磚脈動) ─── */}
       <div
         className="w-full max-w-[1200px] mx-auto px-6 md:px-8 mt-8 flex justify-center"
         style={{
@@ -214,14 +214,14 @@ export default function HeroSection() {
             window.location.href = 'https://orion-hub.zeabur.app';
           }}
         >
-          ç«å³éå§è¨ºæ· â
+          立即開始診斷 →
         </button>
       </div>
 
-      {/* âââ Orion Belt Divider 2 âââ */}
+      {/* ─── Orion Belt Divider 2 ─── */}
       <OrionDivider />
 
-      {/* âââ F. Stats Cards (æ¹é  3: ç¼åå¡ççµ) âââ */}
+      {/* ─── F. Stats Cards (改造 3: 發光卡片組) ─── */}
       <div
         className="w-full max-w-[1200px] mx-auto px-6 md:px-8 mt-4 mb-16 md:mb-24"
         style={{
@@ -232,9 +232,9 @@ export default function HeroSection() {
         }}
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
-          <StatCard icon="â¡" number={count1} label="AI ç³»çµ±éè¡ä¸­" />
-          <StatCard icon="ð¡" number={count2} label="ä»æ¥æ³æ³è½å°" />
-          <StatCard icon="ð" number={count3} label="æ­£å¨è³ºé¢ / çæé" />
+          <StatCard icon="⚡" number={count1} label="AI 系統運行中" />
+          <StatCard icon="💡" number={count2} label="今日想法落地" />
+          <StatCard icon="📈" number={count3} label="正在賺錢 / 省時間" />
         </div>
       </div>
     </section>
