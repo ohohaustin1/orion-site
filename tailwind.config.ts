@@ -11,6 +11,7 @@ const config = {
     extend: {
       fontFamily: {
         sans: ['Noto Sans TC', 'Inter', ...defaultTheme.fontFamily.sans],
+      inter: ['Inter', ...defaultTheme.fontFamily.sans],
         mono: ['Inter', 'Courier New', ...defaultTheme.fontFamily.mono],
       },
       colors: {
