@@ -282,10 +282,15 @@ body {
 /* æ¹é  4: çµæ¶åº§ëfèæåèæ¯ */
 .hero-container {
   position: relative;
-  background: radial-gradient(
-    ellipse at center,
-    #0a0a0a 0%,
-    #000000 70%
+  background: linear-gradient(
+    180deg,
+    #000000 0%,
+    #070b15 15%,
+    #0a0e1a 30%,
+    #0a0e1a 50%,
+    #070b15 70%,
+    #030508 85%,
+    #000000 100%
   );
   overflow: hidden;
 }
@@ -1676,4 +1681,120 @@ body {
 
 .font-tabular {
   font-variant-numeric: tabular-nums;
+}
+
+
+/* ================================================================
+   Step 5/7: Hero Image Mask, Shooting Stars, Stat Icon CSS
+   ================================================================ */
+
+/* Hero image edge feather — blend into background */
+.hero-image {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 8%,
+    black 85%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 8%,
+    black 85%,
+    transparent 100%
+  );
+}
+
+/* Shooting stars container */
+.shooting-stars-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Gold star dust — slow falling */
+.star-dust {
+  position: absolute;
+  top: -5px;
+  background: #D4AF37;
+  border-radius: 50%;
+  animation: dust-fall linear infinite;
+  box-shadow: 0 0 4px rgba(212, 175, 55, 0.4);
+}
+
+@keyframes dust-fall {
+  0% {
+    transform: translateY(-10px) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--dust-opacity, 0.3);
+  }
+  90% {
+    opacity: var(--dust-opacity, 0.3);
+  }
+  100% {
+    transform: translateY(100vh) translateX(20px);
+    opacity: 0;
+  }
+}
+
+/* Meteor — fast diagonal streak + tail */
+.meteor {
+  position: absolute;
+  top: -20px;
+  width: 2px;
+  height: 60px;
+  background: linear-gradient(
+    180deg,
+    rgba(212, 175, 55, 0) 0%,
+    rgba(212, 175, 55, 0.4) 30%,
+    rgba(212, 175, 55, 0.8) 70%,
+    rgba(244, 217, 112, 1) 100%
+  );
+  border-radius: 50%;
+  transform: rotate(-35deg);
+  animation: meteor-fall linear infinite;
+  opacity: 0;
+}
+
+@keyframes meteor-fall {
+  0% {
+    transform: translateY(-100px) translateX(0) rotate(-35deg);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  15% {
+    opacity: 1;
+  }
+  20% {
+    transform: translateY(100vh) translateX(-200px) rotate(-35deg);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .star-dust,
+  .meteor {
+    animation: none;
+    display: none;
+  }
+}
+
+/* Gold SVG stat icons */
+.stat-icon-css {
+  margin-bottom: 16px;
+  opacity: 0.7;
+}
+.stat-icon-css svg {
+  filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.3));
 }
