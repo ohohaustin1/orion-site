@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
-import { Trophy, BarChart3, Building2, BookOpen, Zap, Home, Menu, X, Shield } from 'lucide-react';
+import { Trophy, BarChart3, Building2, BookOpen, Zap, Home, Menu, X, Shield , Users} from 'lucide-react';
 
 const ORION_LOGO = '/ORIONLOGO.png';
 
@@ -14,6 +14,7 @@ const navItems: NavItem[] = [
   { path: '/home', label: '首頁', icon: Home },
   { path: '/cases', label: '歷史案件', icon: Trophy },
   { path: '/about', label: '服務介紹', icon: Building2 },
+  { path: '/team', label: '核心團隊', icon: Users },
   { path: '/resources', label: '聯絡我們', icon: BookOpen },
 ];
 
