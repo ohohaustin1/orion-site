@@ -34,7 +34,7 @@ export default function Sidebar() {
         <div className="orion-sidebar-logo" onClick={() => setLocation('/home')}>
           <img src={ORION_LOGO} alt="ORION" style={{ width: 48, height: 48, objectFit: 'contain', filter: 'drop-shadow(0 0 12px rgba(201,168,76,0.7))', animation: 'logoGlow 2.5s ease-in-out infinite' }} />
           <div>
-            <div style={{ fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', color: 'var(--orion-gold)' }}>ORION AI</div>
+            <div className="brand-text" style={{ fontSize: '0.75rem' }}>ORION AI</div>
             <div style={{ fontSize: '0.55rem', letterSpacing: '0.08em', color: 'var(--orion-text-tertiary)' }}>獵戶座智囊</div>
           </div>
         </div>
