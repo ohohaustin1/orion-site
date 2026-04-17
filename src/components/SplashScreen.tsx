@@ -94,7 +94,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
           color: '#7a8499',
           fontSize: '0.7rem',
           letterSpacing: '0.18em',
-          fontFamily: 'monospace',
+          fontFamily: "'Orbitron', 'Inter', sans-serif",
           marginBottom: 32,
           opacity: 0,
           animation: 'splashTextLine 0.5s ease-out 0.8s forwards',
@@ -106,7 +106,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
       {/* Boot lines */}
       <div
         style={{
-          fontFamily: 'monospace',
+          fontFamily: "'Orbitron', 'Inter', sans-serif",
           fontSize: '0.82rem',
           color: '#c9a84c',
           lineHeight: 2,
