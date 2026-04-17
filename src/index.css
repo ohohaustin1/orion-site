@@ -1,4 +1,61 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap');
+
+/* ========== GLOBAL STARFIELD BACKGROUND ========== */
+body,
+.app-container,
+#root {
+  background: linear-gradient(
+    180deg,
+    #000000 0%,
+    #070b15 10%,
+    #0a0e1a 30%,
+    #080c16 50%,
+    #060a12 70%,
+    #040710 85%,
+    #000000 100%
+  );
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 18%, rgba(255,255,255,0.12), transparent),
+    radial-gradient(1px 1px at 24% 34%, rgba(255,255,255,0.08), transparent),
+    radial-gradient(2px 2px at 75% 20%, rgba(255,255,255,0.1), transparent),
+    radial-gradient(1px 1px at 88% 42%, rgba(255,255,255,0.06), transparent),
+    radial-gradient(1.5px 1.5px at 6% 60%, rgba(255,255,255,0.08), transparent),
+    radial-gradient(1px 1px at 92% 75%, rgba(255,255,255,0.1), transparent),
+    radial-gradient(1.5px 1.5px at 45% 85%, rgba(255,255,255,0.07), transparent),
+    radial-gradient(1px 1px at 30% 55%, rgba(255,255,255,0.09), transparent),
+    radial-gradient(2.5px 2.5px at 40% 15%, rgba(212, 175, 55, 0.25), transparent),
+    radial-gradient(3px 3px at 50% 16%, rgba(212, 175, 55, 0.3), transparent),
+    radial-gradient(2.5px 2.5px at 60% 17%, rgba(212, 175, 55, 0.25), transparent);
+  opacity: 0.7;
+}
+
+main,
+.page-content,
+.sidebar,
+.app-container > *,
+section {
+  position: relative;
+  z-index: 1;
+}
+
+/* ========== BRAND TEXT ========== */
+.brand-text {
+  font-family: 'Orbitron', 'Inter', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
@@ -282,40 +339,10 @@ body {
 /* æ¹é  4: çµæ¶åº§ëfèæåèæ¯ */
 .hero-container {
   position: relative;
-  background: linear-gradient(
-    180deg,
-    #000000 0%,
-    #070b15 15%,
-    #0a0e1a 30%,
-    #0a0e1a 50%,
-    #070b15 70%,
-    #030508 85%,
-    #000000 100%
-  );
+  background: transparent;
   overflow: hidden;
 }
-.hero-container::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(1.5px 1.5px at 12% 18%, rgba(255,255,255,0.15), transparent),
-    radial-gradient(1px 1px at 24% 34%, rgba(255,255,255,0.1), transparent),
-    radial-gradient(2px 2px at 75% 20%, rgba(255,255,255,0.12), transparent),
-    radial-gradient(1px 1px at 88% 42%, rgba(255,255,255,0.08), transparent),
-    radial-gradient(1.5px 1.5px at 6% 60%, rgba(255,255,255,0.1), transparent),
-    radial-gradient(1px 1px at 92% 75%, rgba(255,255,255,0.12), transparent),
-    radial-gradient(2.5px 2.5px at 40% 50%, rgba(212, 175, 55, 0.4), transparent),
-    radial-gradient(3px 3px at 50% 52%, rgba(212, 175, 55, 0.5), transparent),
-    radial-gradient(2.5px 2.5px at 60% 54%, rgba(212, 175, 55, 0.4), transparent),
-    radial-gradient(2px 2px at 35% 30%, rgba(212, 175, 55, 0.3), transparent),
-    radial-gradient(2px 2px at 65% 30%, rgba(212, 175, 55, 0.3), transparent),
-    radial-gradient(2px 2px at 38% 78%, rgba(212, 175, 55, 0.3), transparent),
-    radial-gradient(2px 2px at 62% 78%, rgba(212, 175, 55, 0.3), transparent);
-  background-size: 100% 100%;
-  pointer-events: none;
-  opacity: 0.8;
-}
+/* hero-container::before stars removed — now in body::before */
 @keyframes star-twinkle {
   0%, 100% { opacity: 0.6; }
   50%      { opacity: 1; }
@@ -1707,94 +1734,85 @@ body {
 }
 
 /* Shooting stars container */
+/* ========== SHOOTING STARS + STAR DUST (reworked) ========== */
 .shooting-stars-container {
-  position: absolute;
+  position: fixed;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
-  z-index: 1;
+  z-index: 0;
 }
 
-/* Gold star dust — slow falling */
 .star-dust {
   position: absolute;
   top: -5px;
   background: #D4AF37;
   border-radius: 50%;
   animation: dust-fall linear infinite;
-  box-shadow: 0 0 4px rgba(212, 175, 55, 0.4);
+  box-shadow: 0 0 3px rgba(212, 175, 55, 0.3);
 }
 
 @keyframes dust-fall {
-  0% {
-    transform: translateY(-10px) translateX(0);
-    opacity: 0;
-  }
-  10% {
-    opacity: var(--dust-opacity, 0.3);
-  }
-  90% {
-    opacity: var(--dust-opacity, 0.3);
-  }
-  100% {
-    transform: translateY(100vh) translateX(20px);
-    opacity: 0;
-  }
+  0% { transform: translateY(-10px); opacity: 0; }
+  10% { opacity: 0.3; }
+  90% { opacity: 0.3; }
+  100% { transform: translateY(100vh); opacity: 0; }
 }
 
-/* Meteor — fast diagonal streak + tail */
 .meteor {
   position: absolute;
-  top: -20px;
-  width: 2px;
-  height: 60px;
-  background: linear-gradient(
-    180deg,
-    rgba(212, 175, 55, 0) 0%,
-    rgba(212, 175, 55, 0.4) 30%,
-    rgba(212, 175, 55, 0.8) 70%,
-    rgba(244, 217, 112, 1) 100%
-  );
-  border-radius: 50%;
-  transform: rotate(-35deg);
-  animation: meteor-fall linear infinite;
+  top: -100px;
+  width: 1px;
+  height: 0;
+  background: transparent;
+  transform: rotate(-45deg);
+  animation: meteor-streak linear infinite;
   opacity: 0;
 }
 
-@keyframes meteor-fall {
-  0% {
-    transform: translateY(-100px) translateX(0) rotate(-35deg);
-    opacity: 0;
-  }
-  5% {
-    opacity: 1;
-  }
-  15% {
-    opacity: 1;
-  }
-  20% {
-    transform: translateY(100vh) translateX(-200px) rotate(-35deg);
-    opacity: 0;
-  }
-  100% {
-    opacity: 0;
-  }
+.meteor::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -0.5px;
+  width: 2px;
+  height: 80px;
+  background: linear-gradient(
+    to bottom,
+    rgba(244, 217, 112, 0) 0%,
+    rgba(244, 217, 112, 0.1) 20%,
+    rgba(212, 175, 55, 0.4) 60%,
+    rgba(212, 175, 55, 0.8) 85%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  border-radius: 0 0 50% 50%;
 }
 
-/* Respect user motion preferences */
+.meteor::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: -2px;
+  width: 5px;
+  height: 5px;
+  background: #FFFFFF;
+  border-radius: 50%;
+  box-shadow:
+    0 0 8px 2px rgba(255, 255, 255, 0.8),
+    0 0 20px 4px rgba(212, 175, 55, 0.6);
+}
+
+@keyframes meteor-streak {
+  0% { transform: translateY(-100px) translateX(100px) rotate(-45deg); opacity: 0; }
+  2% { opacity: 1; }
+  8% { opacity: 1; }
+  12% { transform: translateY(100vh) translateX(-100vh) rotate(-45deg); opacity: 0; }
+  100% { opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .star-dust,
-  .meteor {
-    animation: none;
-    display: none;
-  }
+  .star-dust, .meteor { display: none; }
 }
 
-/* Gold SVG stat icons */
-.stat-icon-css {
-  margin-bottom: 16px;
-  opacity: 0.7;
-}
-.stat-icon-css svg {
-  filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.3));
-}
+.stat-icon-css { margin-bottom: 16px; opacity: 0.7; }
+.stat-icon-css svg { filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.3)); }
