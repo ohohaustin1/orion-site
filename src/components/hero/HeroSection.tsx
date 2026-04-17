@@ -58,10 +58,10 @@ function useParallax(factor = 0.3) {
 }
 
 /* ── StatCard Component (改造 3) ── */
-function StatCard({ icon, number, label }: { icon: string; number: number; label: string }) {
+function StatCard({ icon, number, label }: { icon: React.ReactNode; number: number; label: string }) {
   return (
     <div className="stat-card">
-      <div className="stat-icon">{icon}</div>
+      <div className="stat-icon-css">{icon}</div>
       <div className="stat-number font-tabular">{number}</div>
       <div className="stat-divider"></div>
       <div className="stat-label">{label}</div>
@@ -76,6 +76,41 @@ function OrionDivider() {
       <div className="orion-divider-line"></div>
       <div className="orion-divider-stars">★ ★ ★</div>
       <div className="orion-divider-line"></div>
+    </div>
+  );
+}
+
+
+/* ── Shooting Stars Component ── */
+function ShootingStars() {
+  return (
+    <div className="shooting-stars-container">
+      {Array.from({ length: 30 }).map((_, i) => (
+        <div
+          key={`dust-${i}`}
+          className="star-dust"
+          style={{
+            left: `${Math.random() * 100}%`,
+            animationDuration: `${8 + Math.random() * 12}s`,
+            animationDelay: `${Math.random() * 10}s`,
+            width: `${1 + Math.random() * 2}px`,
+            height: `${1 + Math.random() * 2}px`,
+            opacity: 0.15 + Math.random() * 0.45,
+          }}
+        />
+      ))}
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div
+          key={`meteor-${i}`}
+          className="meteor"
+          style={{
+            left: `${20 + Math.random() * 60}%`,
+            animationDuration: '1.5s',
+            animationDelay: `${i * 8 + Math.random() * 4}s`,
+            animationIterationCount: 'infinite',
+          }}
+        />
+      ))}
     </div>
   );
 }
@@ -119,6 +154,8 @@ export default function HeroSection() {
         transition: `opacity 0.5s ${easing}`,
       }}
     >
+      <ShootingStars />
+
       {/* ─── A. Top Nav ─── */}
       <nav className="w-full max-w-[1200px] mx-auto flex items-center justify-between px-6 md:px-8 py-4" style={{ position: 'relative', zIndex: 2 }}>
         {/* Left: Griffin Logo + ORION AI */}
@@ -157,7 +194,7 @@ export default function HeroSection() {
           <img
             src={heroMain}
             alt="Orion AI Hero"
-            className="w-full h-auto object-contain"
+            className="w-full h-auto object-contain hero-image"
             style={{
               maxWidth: '100%',
               animation: 'breathing 3s ease-in-out infinite',
@@ -232,9 +269,9 @@ export default function HeroSection() {
         }}
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
-          <StatCard icon="⚡" number={count1} label="AI 系統運行中" />
-          <StatCard icon="💡" number={count2} label="今日想法落地" />
-          <StatCard icon="📈" number={count3} label="正在賺錢 / 省時間" />
+          <StatCard icon={<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>} number={count1} label="AI 系統運行中" />
+          <StatCard icon={<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg>} number={count2} label="今日想法落地" />
+          <StatCard icon={<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>} number={count3} label="正在賺錢 / 省時間" />
         </div>
       </div>
     </section>
