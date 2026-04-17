@@ -199,7 +199,7 @@ export default function AboutPage() {
           lineHeight: 1.8,
           letterSpacing: '0.04em',
         }}>
-          Orion 不服務想試試看的人，
+          Orion 為有想法的人設計 AI 系統。
         </div>
         <div style={{
           fontSize: 'clamp(1.1rem, 3vw, 1.5rem)',
@@ -208,16 +208,16 @@ export default function AboutPage() {
           lineHeight: 1.8,
           letterSpacing: '0.04em',
         }}>
-          我們只服務要結果的人。
+          不管你是個人、團隊還是企業，只要你知道自己要什麼，我們就能幫你做出來。
         </div>
         <div style={{
           fontSize: 'clamp(0.82rem, 2vw, 0.95rem)',
           fontWeight: 600,
-          color: '#e74c3c',
+          color: 'transparent', display: 'none',
           lineHeight: 1.8,
           marginTop: 8,
         }}>
-          如果您沒有決策權，這套系統不適合您。
+          
         </div>
         <div style={{
           width: 60,
