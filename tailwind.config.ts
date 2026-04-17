@@ -12,6 +12,8 @@ const config = {
       fontFamily: {
         sans: ['Noto Sans TC', 'Inter', ...defaultTheme.fontFamily.sans],
       inter: ['Inter', ...defaultTheme.fontFamily.sans],
+        brand: ['Orbitron', 'Inter', 'system-ui', 'sans-serif'],
+        brand: ['Orbitron', 'Inter', 'system-ui', 'sans-serif'],
         mono: ['Inter', 'Courier New', ...defaultTheme.fontFamily.mono],
       },
       colors: {
