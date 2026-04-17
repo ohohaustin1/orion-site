@@ -67,7 +67,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
         src={ORION_LOGO}
         alt="ORION"
         style={{
-          width: 160,
+          width: window.innerWidth >= 768 ? 280 : 200,
           height: 'auto',
           objectFit: 'contain',
           animation: 'splashLogoEntrance 1.2s cubic-bezier(0.16,1,0.3,1) forwards',
