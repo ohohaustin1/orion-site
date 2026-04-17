@@ -409,15 +409,15 @@ export default function AboutPage() {
       </section>
 
       <section className="orion-bottom-cta">
-        <h2>你的成交漏洞，每天都在燒錢</h2>
-        <p>3 分鐘免費診斷，揪出正在流失的營收缺口</p>
+        <h2>準備好讓 AI 幫你工作了嗎？</h2>
+        <p>3 分鐘說出你的想法，我們告訴你怎麼做</p>
         <a
           href={DIAG_URL}
           className="orion-btn-fill large magnetic-link gold-sweep"
           style={{ textDecoration: 'none' }}
         >
           <Zap size={18} />
-          <span>立即看懂你為什麼成交不了</span>
+          <span>立即開始診斷 →</span>
         </a>
       </section>
     </div>
