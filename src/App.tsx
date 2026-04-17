@@ -24,7 +24,7 @@ import AboutPage from "./pages/AboutPage";
 import ResourcesPage from "./pages/ResourcesPage";
 
 // Pages that show sidebar
-const SIDEBAR_ROUTES = ['/home', '/cases', '/insights', '/about', '/resources'];
+const SIDEBAR_ROUTES = ['/home', '/cases', '/insights', '/about', '/team', '/resources'];
 
 function SidebarLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -49,6 +49,7 @@ function Router() {
           <Route path="/cases" component={CasesPage} />
           <Route path="/insights" component={InsightsPage} />
           <Route path="/about" component={AboutPage} />
+              <Route path="/team" component={TeamPage} />
           <Route path="/resources" component={ResourcesPage} />
           <Route component={NotFound} />
         </Switch>
