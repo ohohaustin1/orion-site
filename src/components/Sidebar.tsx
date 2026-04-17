@@ -65,14 +65,17 @@ export default function Sidebar() {
             <Zap size={16} />
             <span>立即診斷</span>
           </button>
-          <button
-            className="orion-sidebar-warroom-btn"
-            style={{ marginTop: 8, background: 'rgba(201,168,76,0.12)', color: 'var(--orion-gold)' }}
-            onClick={() => window.location.href = 'https://orion-hub.zeabur.app'}
+          <a
+            className="deep-space-entry"
+            href="https://orion-hub.zeabur.app"
+            style={{ textDecoration: 'none' }}
           >
-            <Zap size={16} />
-            <span>War Room</span>
-          </button>
+            <span className="entry-icon">🔭</span>
+            <div className="entry-text">
+              <div className="entry-main">獵戶座深空掃描</div>
+              <div className="entry-sub">僅限高階用戶進入</div>
+            </div>
+          </a>
           <button
             className="orion-sidebar-warroom-btn"
             style={{ marginTop: 8, background: 'rgba(201,168,76,0.08)', color: 'var(--orion-text-secondary)', fontSize: '0.75rem' }}
