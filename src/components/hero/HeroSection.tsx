@@ -82,38 +82,6 @@ function OrionDivider() {
 
 
 /* ── Shooting Stars Component ── */
-function ShootingStars() {
-  return (
-    <div className="shooting-stars-container">
-      {Array.from({ length: 30 }).map((_, i) => (
-        <div
-          key={`dust-${i}`}
-          className="star-dust"
-          style={{
-            left: `${Math.random() * 100}%`,
-            animationDuration: `${8 + Math.random() * 12}s`,
-            animationDelay: `${Math.random() * 10}s`,
-            width: `${1 + Math.random() * 2}px`,
-            height: `${1 + Math.random() * 2}px`,
-            opacity: 0.15 + Math.random() * 0.45,
-          }}
-        />
-      ))}
-      {Array.from({ length: 3 }).map((_, i) => (
-        <div
-          key={`meteor-${i}`}
-          className="meteor"
-          style={{
-            left: `${20 + Math.random() * 60}%`,
-            animationDuration: '1.5s',
-            animationDelay: `${i * 8 + Math.random() * 4}s`,
-            animationIterationCount: 'infinite',
-          }}
-        />
-      ))}
-    </div>
-  );
-}
 
 /* ── Stagger Stage Type ── */
 type Stage = 'bg' | 'image' | 'title' | 'subtitle' | 'cta' | 'stats';
@@ -154,8 +122,6 @@ export default function HeroSection() {
         transition: `opacity 0.5s ${easing}`,
       }}
     >
-      <ShootingStars />
-
       {/* ─── A. Top Nav ─── */}
       <nav className="w-full max-w-[1200px] mx-auto flex items-center justify-between px-6 md:px-8 py-4" style={{ position: 'relative', zIndex: 2 }}>
         {/* Left: Griffin Logo + ORION AI */}
@@ -165,7 +131,7 @@ export default function HeroSection() {
             alt="Orion Griffin"
             className="h-10 w-auto"
           />
-          <span className="font-inter font-bold text-white text-lg tracking-tight">
+          <span className="brand-text text-white text-lg">
             ORION AI
           </span>
         </div>
@@ -217,7 +183,7 @@ export default function HeroSection() {
             transition: `all 0.5s ${easing}`,
           }}
         >
-          有想法，就能做成 AI
+          <span>有想法，就能做成 </span><span className="brand-text">AI</span>
         </h1>
       </div>
 
