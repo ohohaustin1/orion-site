@@ -181,10 +181,13 @@ function App() {
       <ShootingStars />
       <LanguageProvider>        <SplashScreen onComplete={handleSplashComplete} />
       </LanguageProvider>
+      </>
     );
   }
 
   return (
+    <>
+    <ShootingStars />
     <ErrorBoundary>
       <ThemeProvider defaultTheme="dark">
         <LanguageProvider>
