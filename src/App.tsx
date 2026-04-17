@@ -22,6 +22,7 @@ import CasesPage from "./pages/CasesPage";
 import InsightsPage from "./pages/InsightsPage";
 import AboutPage from "./pages/AboutPage";
 import ResourcesPage from "./pages/ResourcesPage";
+import TeamPage from './pages/TeamPage';
 
 // Pages that show sidebar
 const SIDEBAR_ROUTES = ['/home', '/cases', '/insights', '/about', '/team', '/resources'];
