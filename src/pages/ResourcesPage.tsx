@@ -175,15 +175,15 @@ export default function ResourcesPage() {
       </section>
 
       <section className="orion-bottom-cta">
-        <h2>你的企業正在流失多少潛在收入？</h2>
-        <p>3 分鐘 AI 診斷，揪出隱藏的策略漏洞</p>
+        <h2>準備好讓 AI 幫你工作了嗎？</h2>
+        <p>3 分鐘說出你的想法，我們告訴你怎麼做</p>
         <a
           href={DIAG_URL}
           className="orion-btn-fill large magnetic-link gold-sweep"
           style={{ textDecoration: 'none' }}
         >
           <Zap size={18} />
-          <span>立即看懂你為什麼成交不了</span>
+          <span>立即開始診斷 →</span>
         </a>
       </section>
     </div>
