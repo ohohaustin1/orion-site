@@ -1,13 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react';
-import mermaid from 'mermaid';
 
-// Counter for unique IDs across renders
+/**
+ * MermaidChart — Mermaid dynamically imported to split out of main bundle.
+ * 主 bundle 不再包含 mermaid 核心（~584KB），只在實際 render 到 chart 時
+ * lazy load（flowchart-elk / mindmap / sequenceDiagram 等 sub-chunks
+ * Vite 已自動 code-split）。
+ */
+
 let mermaidIdCounter = 0;
 
-// Initialize mermaid once with ORION dark theme
-mermaid.initialize({
+// Cached mermaid module after first dynamic import
+type MermaidModule = typeof import('mermaid').default;
+let mermaidModulePromise: Promise<MermaidModule> | null = null;
+let mermaidInitialized = false;
+
+const INIT_CONFIG = {
   startOnLoad: false,
-  theme: 'base',
+  theme: 'base' as const,
   themeVariables: {
     primaryColor: '#141b28',
     primaryTextColor: '#e8e4d8',
@@ -21,9 +30,23 @@ mermaid.initialize({
     edgeLabelBackground: '#0f1520',
     fontFamily: 'Noto Sans TC, Inter, sans-serif',
   },
-  flowchart: { curve: 'basis' },
-  securityLevel: 'loose',
-});
+  flowchart: { curve: 'basis' as const },
+  securityLevel: 'loose' as const,
+};
+
+function loadMermaid(): Promise<MermaidModule> {
+  if (!mermaidModulePromise) {
+    mermaidModulePromise = import('mermaid').then((mod) => {
+      const m = mod.default;
+      if (!mermaidInitialized) {
+        m.initialize(INIT_CONFIG);
+        mermaidInitialized = true;
+      }
+      return m;
+    });
+  }
+  return mermaidModulePromise;
+}
 
 interface MermaidChartProps {
   diagram: string;
@@ -43,7 +66,6 @@ export default function MermaidChart({ diagram, fallbackText }: MermaidChartProp
       return;
     }
 
-    // Generate unique ID for this render
     mermaidIdCounter += 1;
     idRef.current = `mermaid-chart-${mermaidIdCounter}`;
 
@@ -55,12 +77,19 @@ export default function MermaidChart({ diagram, fallbackText }: MermaidChartProp
       setSvgContent('');
 
       try {
-        // Clean the diagram: remove any accidental backticks or mermaid prefix
+        const mermaid = await loadMermaid();
+        if (cancelled) return;
+
+        // Clean accidental code-fence backticks
         let cleanDiagram = diagram.trim();
         if (cleanDiagram.startsWith('```mermaid')) {
-          cleanDiagram = cleanDiagram.replace(/^```mermaid\s*/, '').replace(/```\s*$/, '');
+          cleanDiagram = cleanDiagram
+            .replace(/^```mermaid\s*/, '')
+            .replace(/```\s*$/, '');
         } else if (cleanDiagram.startsWith('```')) {
-          cleanDiagram = cleanDiagram.replace(/^```\s*/, '').replace(/```\s*$/, '');
+          cleanDiagram = cleanDiagram
+            .replace(/^```\s*/, '')
+            .replace(/```\s*$/, '');
         }
 
         const { svg } = await mermaid.render(idRef.current, cleanDiagram);
@@ -105,7 +134,6 @@ export default function MermaidChart({ diagram, fallbackText }: MermaidChartProp
   }
 
   if (error || !svgContent) {
-    // Fallback: show plain text workflow
     return (
       <div style={{
         border: '1px solid rgba(201,168,76,0.15)',

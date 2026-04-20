@@ -1,6 +1,17 @@
 // tRPC stub - implement with your backend URL
-const useQueryStub = (...args: any) => ({ data: null, isLoading: false, error: null });
-const useMutationStub = (...args: any) => ({ mutate: (data: any) => {}, isLoading: false });
+// Matches React Query v5 API shape (isPending + isLoading alias for compat)
+const useQueryStub = (..._args: any) => ({ data: null, isLoading: false, isPending: false, error: null });
+const useMutationStub = (..._args: any) => ({
+  mutate: (_data: any) => {},
+  mutateAsync: async (_data: any) => ({ success: true }),
+  isLoading: false,
+  isPending: false,
+  isError: false,
+  isSuccess: false,
+  error: null as Error | null,
+  data: null as any,
+  reset: () => {},
+});
 
 export const trpc = {
   analysis: {
@@ -30,6 +41,8 @@ export const trpc = {
     }),
   },
   contact: {
-    submit: async (...args: any) => ({ success: true }),
+    submit: Object.assign(async (..._args: any) => ({ success: true }), {
+      useMutation: (..._args: any) => useMutationStub(),
+    }),
   },
 };
