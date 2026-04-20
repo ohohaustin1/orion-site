@@ -101,12 +101,17 @@ section {
 html {
   @apply h-full;
   background-color: #0a0a0a;
+  background-image: url('/brand/starfield-bg.png');
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   min-height: 100vh;
 }
 
 body {
   @apply m-0 p-0 text-foreground;
-  background: transparent;       /* let global <Starfield/> canvas show through */
+  background: transparent;       /* let html starfield bg show through */
   min-height: 100vh;
   font-family: 'Noto Sans TC', 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -402,7 +407,7 @@ body {
 .orion-layout-with-sidebar {
   display: flex;
   min-height: 100dvh;
-  background: transparent;          /* let global <Starfield/> canvas show */
+  background: transparent;          /* let html starfield bg show through */
   color: var(--orion-text-primary);
 }
 
@@ -527,10 +532,7 @@ body {
   min-height: 100dvh;
   overflow-x: hidden;
   padding-bottom: 80px;
-  background-image:
-    linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
+  background: transparent;    /* html starfield bg shows through */
 }
 
 /* Mobile Bottom Tab */

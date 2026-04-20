@@ -8,7 +8,6 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { SplashScreen } from "./components/SplashScreen";
 import Sidebar from "./components/Sidebar";
-import Starfield from "./components/Starfield";
 // Pages
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -145,7 +144,6 @@ function App() {
   if (showSplash) {
     return (
       <>
-      <Starfield />
       <LanguageProvider>        <SplashScreen onComplete={handleSplashComplete} />
       </LanguageProvider>
       </>
@@ -154,7 +152,6 @@ function App() {
 
   return (
     <>
-    <Starfield />
     <ErrorBoundary>
       <ThemeProvider defaultTheme="dark">
         <LanguageProvider>
