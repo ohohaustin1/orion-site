@@ -1,38 +1,62 @@
 import React, { useState } from 'react';
 
 /**
- * HeroSection v13 — 深度融合版（烘焙 composite 為單張背景）
+ * HeroSection v14 — 全站統一宇宙版
  *
- * 結構：
- *   背景：/brand/hero-composite-final.png（由 scripts/bake-hero-bg.cjs
- *         在 build-time 烘出的 1920×1080 單張圖 — 星雲 + 500+ 星點 +
- *         機器人 + 金色光暈已全部融合）
- *   輸入列：絕對定位 bottom 20% 置中 膠囊
+ * 背景：交給全站 <Starfield/>（App.tsx 根節點 fixed canvas，z-index:-1）
+ * Hero section 本身完全透明，只放：
+ *   1. <img src="/brand/hero2-clean.png"> 居中主視覺（預處理過的 alpha 透明版）
+ *   2. 底部 20%-bottom 的膠囊輸入列
+ *   3. 底部淡出漸層，讓 Stats 自然接續（無分割線）
  *
- * Stats 3 卡獨立於 Hero 下方。
+ * Stats 3 卡獨立於 Hero 下方。4 步驟卡片（我們怎麼幫你）留在 HomePage。
  */
 
 const HERO_CSS = `
-.hero-v13 {
+.hero-v14 {
   position: relative;
   width: 100%;
   height: 100vh;
   min-height: 560px;
-  background-color: #0a0a0a;
-  background-image: url('/brand/hero-composite-final.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
   overflow: hidden;
   font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
   letter-spacing: 0.05em;
 }
 
-/* Chairman 規格：輸入列 bottom 20% 水平置中 */
-.hero-v13-pill {
+/* 機器人主視覺 */
+.hero-v14-robot {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 85%;
+  max-height: 85%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+  animation: robotBreath 9s ease-in-out infinite;
+  filter: drop-shadow(0 0 40px rgba(197,160,89,0.2));
+}
+@keyframes robotBreath {
+  0%,100% { transform: translate(-50%, -50%) scale(1.000); }
+  50%     { transform: translate(-50%, -50%) scale(1.018); }
+}
+
+/* 底部淡出漸層 — Hero→Stats 無縫 */
+.hero-v14-fade {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 30%;
+  background: linear-gradient(to bottom, transparent 0%, rgba(10,10,10,0.6) 60%, #0a0a0a 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* 輸入列 */
+.hero-v14-pill {
   position: absolute;
   left: 50%;
-  bottom: 20%;
+  bottom: 15%;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
@@ -45,17 +69,15 @@ const HERO_CSS = `
   padding: 6px;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow:
-    0 16px 52px rgba(0,0,0,0.55),
-    0 0 0 1px rgba(0,0,0,0.25) inset;
+  box-shadow: 0 16px 52px rgba(0,0,0,0.55);
   transition: border-color 0.25s ease, box-shadow 0.3s ease;
-  z-index: 2;
+  z-index: 3;
 }
-.hero-v13-pill:focus-within {
-  border-color: rgba(212,175,55,0.65);
+.hero-v14-pill:focus-within {
+  border-color: rgba(212,175,55,0.7);
   box-shadow: 0 18px 56px rgba(0,0,0,0.6), 0 0 0 1px rgba(212,175,55,0.25);
 }
-.hero-v13-avatar {
+.hero-v14-avatar {
   width: 40px; height: 40px;
   border-radius: 50%;
   flex-shrink: 0;
@@ -64,8 +86,8 @@ const HERO_CSS = `
   overflow: hidden;
   border: 0.5px solid rgba(212,175,55,0.4);
 }
-.hero-v13-avatar img { width: 28px; height: 28px; object-fit: contain; display: block; }
-.hero-v13-input {
+.hero-v14-avatar img { width: 28px; height: 28px; object-fit: contain; display: block; }
+.hero-v14-input {
   flex: 1;
   min-width: 0;
   border: 0; outline: 0;
@@ -77,8 +99,8 @@ const HERO_CSS = `
   font-family: inherit;
   letter-spacing: 0.02em;
 }
-.hero-v13-input::placeholder { color: rgba(255,255,255,0.5); font-weight: 300; }
-.hero-v13-submit {
+.hero-v14-input::placeholder { color: rgba(255,255,255,0.5); font-weight: 300; }
+.hero-v14-submit {
   border: 0; border-radius: 0;
   background: #ffffff; color: #0a0a0a;
   padding: 12px 24px;
@@ -91,13 +113,13 @@ const HERO_CSS = `
   transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.3s ease;
   box-shadow: 0 2px 10px rgba(255,255,255,0.12);
 }
-.hero-v13-submit:hover  { background: #f1e8d3; box-shadow: 0 4px 18px rgba(212,175,55,0.4); }
-.hero-v13-submit:active { transform: scale(0.97); }
+.hero-v14-submit:hover  { background: #f1e8d3; box-shadow: 0 4px 18px rgba(212,175,55,0.4); }
+.hero-v14-submit:active { transform: scale(0.97); }
 
 /* Stats 獨立段 */
 .hero-stats-section {
-  background: #0a0a0a;
-  padding: 40px 8vw 72px;
+  background: transparent;
+  padding: 32px 8vw 72px;
   font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
   letter-spacing: 0.05em;
 }
@@ -110,7 +132,7 @@ const HERO_CSS = `
 }
 .hero-stat {
   position: relative;
-  background: rgba(16,14,10,0.85);
+  background: rgba(16,14,10,0.7);
   border: 1px solid rgba(197,160,89,0.3);
   border-radius: 0;
   padding: 28px 24px;
@@ -129,7 +151,7 @@ const HERO_CSS = `
 .hero-stat::after  { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
 .hero-stat:hover {
   border-color: rgba(197,160,89,0.7);
-  background: rgba(22,19,13,0.95);
+  background: rgba(22,19,13,0.9);
   transform: translateY(-2px);
 }
 .hero-stat:hover::before, .hero-stat:hover::after { border-color: rgba(197,160,89,0.95); }
@@ -140,22 +162,27 @@ const HERO_CSS = `
   .hero-stat-num { font-size: 30px; }
 }
 @media (max-width: 768px) {
-  .hero-v13 { height: 90vh; min-height: 480px; background-position: 55% center; }
-  .hero-v13-pill {
-    bottom: 15%;
+  .hero-v14 { height: 92vh; min-height: 480px; }
+  .hero-v14-robot { max-width: 100%; max-height: 72%; }
+  .hero-v14-pill {
+    bottom: 13%;
     padding: 5px;
     gap: 8px;
     border-radius: 22px;
   }
-  .hero-v13-avatar { width: 36px; height: 36px; }
-  .hero-v13-avatar img { width: 24px; height: 24px; }
-  .hero-v13-input { height: 36px; font-size: 14px; padding: 0 10px; }
-  .hero-v13-submit { padding: 10px 16px; font-size: 13px; letter-spacing: 0.06em; }
+  .hero-v14-avatar { width: 36px; height: 36px; }
+  .hero-v14-avatar img { width: 24px; height: 24px; }
+  .hero-v14-input { height: 36px; font-size: 14px; padding: 0 10px; }
+  .hero-v14-submit { padding: 10px 16px; font-size: 13px; letter-spacing: 0.06em; }
 
-  .hero-stats-section { padding: 32px 16px 48px; }
+  .hero-stats-section { padding: 24px 16px 48px; }
   .hero-stats-grid { grid-template-columns: 1fr; gap: 12px; }
   .hero-stat { padding: 22px 20px; }
   .hero-stat-num { font-size: 26px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-v14-robot { animation: none !important; transform: translate(-50%, -50%); }
 }
 `;
 
@@ -179,21 +206,31 @@ export default function HeroSection() {
     <>
       <style dangerouslySetInnerHTML={{ __html: HERO_CSS }} />
 
-      <section className="hero-v13" aria-label="Orion AI 首頁主視覺">
-        <form className="hero-v13-pill" onSubmit={submit}>
-          <div className="hero-v13-avatar" aria-hidden="true">
+      <section className="hero-v14" aria-label="Orion AI 首頁主視覺">
+        <img
+          className="hero-v14-robot"
+          src="/brand/hero2-clean.png"
+          alt=""
+          aria-hidden="true"
+          draggable={false}
+        />
+
+        <form className="hero-v14-pill" onSubmit={submit}>
+          <div className="hero-v14-avatar" aria-hidden="true">
             <img src="/brand/griffin-128.png" alt="" />
           </div>
           <input
-            className="hero-v13-input"
+            className="hero-v14-input"
             type="text"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Orion AI 幫你找回失去的錢..."
             aria-label="輸入你的商業問題"
           />
-          <button type="submit" className="hero-v13-submit">立即開始</button>
+          <button type="submit" className="hero-v14-submit">立即開始</button>
         </form>
+
+        <div className="hero-v14-fade" aria-hidden="true" />
       </section>
 
       <section className="hero-stats-section" aria-label="Orion 服務統計">

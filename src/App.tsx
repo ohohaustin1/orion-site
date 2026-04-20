@@ -8,6 +8,7 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { SplashScreen } from "./components/SplashScreen";
 import Sidebar from "./components/Sidebar";
+import Starfield from "./components/Starfield";
 // Pages
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -120,40 +121,6 @@ function Router() {
 }
 
 
-// ========== Global ShootingStars (all pages) ==========
-function ShootingStars() {
-  return (
-    <div className="shooting-stars-container">
-      {Array.from({ length: 25 }).map((_, i) => (
-        <div
-          key={`dust-${i}`}
-          className="star-dust"
-          style={{
-            left: `${Math.random() * 100}%`,
-            animationDuration: `${10 + Math.random() * 15}s`,
-            animationDelay: `${Math.random() * 12}s`,
-            width: `${1 + Math.random() * 1.5}px`,
-            height: `${1 + Math.random() * 1.5}px`,
-          }}
-        />
-      ))}
-      {Array.from({ length: 5 }).map((_, i) => (
-        <div
-          key={`meteor-${i}`}
-          className="meteor"
-          style={{
-            left: `${10 + Math.random() * 80}%`,
-            top: `${Math.random() * 30}%`,
-            animationDuration: `${8 + i * 4}s`,
-            animationDelay: `${i * 3 + Math.random() * 2}s`,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-
 function App() {
   const [showSplash, setShowSplash] = useState(true);
 
@@ -178,7 +145,7 @@ function App() {
   if (showSplash) {
     return (
       <>
-      <ShootingStars />
+      <Starfield />
       <LanguageProvider>        <SplashScreen onComplete={handleSplashComplete} />
       </LanguageProvider>
       </>
@@ -187,7 +154,7 @@ function App() {
 
   return (
     <>
-    <ShootingStars />
+    <Starfield />
     <ErrorBoundary>
       <ThemeProvider defaultTheme="dark">
         <LanguageProvider>

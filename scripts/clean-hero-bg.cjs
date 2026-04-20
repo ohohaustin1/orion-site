@@ -14,9 +14,15 @@
 const path = require('path');
 const sharp = require(path.join('C:/Users/user/Desktop/ORION/orion-hub/node_modules/sharp'));
 
-const IN      = 'C:/Users/user/Desktop/ORION/orion-site/public/brand/Gemini_Generated_Image_stj9t3stj9t3stj9.png';
-const OUT_SOLID = 'C:/Users/user/Desktop/ORION/orion-site/public/brand/hero-clean.png';
-const OUT_ALPHA = 'C:/Users/user/Desktop/ORION/orion-site/public/brand/hero-transparent.png';
+// Accept first CLI arg as input path (absolute or relative to orion-site root)
+// Default: HERO2.png (Chairman's current high-res hero source).
+const rawIn = process.argv[2] || 'public/brand/HERO2.png';
+const BRAND_ROOT = 'C:/Users/user/Desktop/ORION/orion-site';
+const IN  = path.isAbsolute(rawIn) ? rawIn : path.join(BRAND_ROOT, rawIn);
+
+// Output alongside input, same basename + "-clean.png"
+const base = path.basename(IN, path.extname(IN));
+const OUT_ALPHA = path.join(path.dirname(IN), base.toLowerCase() + '-clean.png');
 
 const BG = { r: 10, g: 10, b: 10 };
 const NEUTRAL_DELTA = 8;   // max |R-G|, |G-B|, |R-B| to count as "grey"
@@ -28,10 +34,7 @@ const LUM_MAX = 160;       // and lighter than this too (covers both square shad
   const { width, height, channels } = info;
   console.log(`[clean] source: ${width}×${height} ch=${channels}`);
 
-  // Two output buffers:
-  //   solid:  checkerboard pixels RGB replaced with #0a0a0a, alpha stays 255
-  //   alpha:  checkerboard pixels alpha set to 0 (real transparency for star overlays)
-  const solid = Buffer.from(data);
+  // Output: checkerboard pixels alpha set to 0 (real transparency)
   const alpha = Buffer.from(data);
   let replaced = 0;
 
@@ -43,11 +46,7 @@ const LUM_MAX = 160;       // and lighter than this too (covers both square shad
     if (dRG <= NEUTRAL_DELTA && dGB <= NEUTRAL_DELTA && dRB <= NEUTRAL_DELTA) {
       const Y = 0.299 * r + 0.587 * g + 0.114 * b;
       if (Y >= LUM_MIN && Y <= LUM_MAX) {
-        // solid variant
-        solid[i]     = BG.r;
-        solid[i + 1] = BG.g;
-        solid[i + 2] = BG.b;
-        // alpha variant — zero out alpha AND RGB so pre-multiplication doesn't tint
+        // Zero out alpha AND RGB so pre-multiplication doesn't tint
         alpha[i]     = 0;
         alpha[i + 1] = 0;
         alpha[i + 2] = 0;
@@ -60,13 +59,8 @@ const LUM_MAX = 160;       // and lighter than this too (covers both square shad
   const total = (data.length / channels) | 0;
   console.log(`[clean] pixels=${total} replaced=${replaced} (${(replaced / total * 100).toFixed(1)}%)`);
 
-  await sharp(solid, { raw: { width, height, channels } })
-    .png({ compressionLevel: 9 })
-    .toFile(OUT_SOLID);
-  console.log(`[clean] wrote (solid): ${OUT_SOLID}`);
-
   await sharp(alpha, { raw: { width, height, channels } })
     .png({ compressionLevel: 9 })
     .toFile(OUT_ALPHA);
-  console.log(`[clean] wrote (alpha): ${OUT_ALPHA}`);
+  console.log(`[clean] wrote: ${OUT_ALPHA}`);
 })().catch((e) => { console.error(e); process.exit(1); });
