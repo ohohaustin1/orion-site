@@ -1,284 +1,298 @@
-import React, { useState, useEffect, useRef } from 'react';
-import griffinLogo from '@/assets/images/griffin-logo.png';
-import heroMain from '@/assets/images/hero-main.png';
+import React from 'react';
 
-/* ── Count-Up Animation Hook ── */
-function useCountUp(target: number, duration = 600, delay = 1000) {
-  const [value, setValue] = useState(0);
-  const [started, setStarted] = useState(false);
+/**
+ * HeroSection v7 — 官網首頁震撼感版
+ * 排版參考 Gemini_Generated_Image_mcnn2xmcnn2xmcnn.png
+ * Hero 背景用 background-image（機器人圖 stj9t3stj9t3stj9）
+ *   Layer 底色 #0a0a0a + 右側 bg image + 左側漸層 linear-gradient
+ *   左側：標題 + 副標 + 金色方角 CTA 按鈕
+ *   下方：Stats 3 卡（14 個產業 / 10 分鐘 / 0 成本）
+ *   底部：膠囊輸入列（送出 → https://orion01.com）
+ */
 
-  useEffect(() => {
-    const timer = setTimeout(() => setStarted(true), delay);
-    return () => clearTimeout(timer);
-  }, [delay]);
-
-  useEffect(() => {
-    if (!started) return;
-    const startTime = performance.now();
-    let raf: number;
-
-    const animate = (now: number) => {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setValue(Math.round(eased * target));
-      if (progress < 1) {
-        raf = requestAnimationFrame(animate);
-      }
-    };
-
-    raf = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(raf);
-  }, [started, target, duration]);
-
-  return value;
+const HERO_CSS = `
+.hero-v7 {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #0a0a0a;
+  background-image:
+    linear-gradient(to right, #0a0a0a 35%, rgba(10,10,10,0) 70%),
+    url('/brand/Gemini_Generated_Image_stj9t3stj9t3stj9.png');
+  background-size: auto 100%, auto 100%;
+  background-position: left center, right center;
+  background-repeat: no-repeat, no-repeat;
+  overflow: hidden;
+  font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
+  letter-spacing: 0.05em;
+  padding: 96px 8vw 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  animation: heroBreath 6s ease-in-out infinite;
+}
+@keyframes heroBreath {
+  0%,100% { background-size: auto 100%, auto 100%; }
+  50%     { background-size: auto 100%, auto 103%; }
 }
 
-/* ── Scroll Parallax Hook ── */
-function useParallax(factor = 0.3) {
-  const [offset, setOffset] = useState(0);
-  const rafRef = useRef<number>(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = requestAnimationFrame(() => {
-        setOffset(window.scrollY * factor);
-      });
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      cancelAnimationFrame(rafRef.current);
-    };
-  }, [factor]);
-
-  return offset;
+/* Text block */
+.hero-v7-text {
+  max-width: 560px;
+  position: relative;
+  z-index: 2;
+}
+.hero-v7-title {
+  font-size: 42px;
+  font-weight: 700;
+  color: #C5A059;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
+  margin: 0;
+  text-shadow: 0 0 32px rgba(197,160,89,0.25);
+  opacity: 0;
+  transform: translateY(12px);
+  animation: heroFadeUp 0.8s cubic-bezier(0.4,0,0.2,1) 0.2s forwards;
+}
+.hero-v7-subtitle {
+  font-size: 18px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.04em;
+  line-height: 1.65;
+  margin: 24px 0 0;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: heroFadeUp 0.8s cubic-bezier(0.4,0,0.2,1) 0.45s forwards;
+}
+.hero-v7-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 32px;
+  padding: 14px 28px;
+  background: #C5A059;
+  color: #0a0a0a;
+  border: 0;
+  border-radius: 0;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(197,160,89,0.35);
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.3s ease;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: heroFadeUp 0.8s cubic-bezier(0.4,0,0.2,1) 0.65s forwards;
+}
+.hero-v7-cta:hover  { background: #d9b770; box-shadow: 0 6px 20px rgba(197,160,89,0.55); transform: translateY(-1px); }
+.hero-v7-cta:active { transform: translateY(0); }
+@keyframes heroFadeUp {
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* ── StatCard — 主數字 + 單位 + 描述 三層 ── */
-function StatCard({
-  number,
-  unit,
-  description,
-}: {
-  number: number | string;
-  unit: string;
-  description: string;
-}) {
-  return (
-    <div className="stat-card">
-      <div className="stat-number font-tabular" style={{ color: '#C5A059' }}>
-        {number}
-      </div>
-      <div className="stat-divider"></div>
-      <div
-        className="stat-label"
-        style={{ color: 'rgba(255,255,255,0.88)', fontSize: '15px', letterSpacing: '0.05em' }}
-      >
-        {unit}
-      </div>
-      <div
-        style={{
-          color: 'rgba(255,255,255,0.55)',
-          fontSize: '13px',
-          lineHeight: 1.6,
-          marginTop: '8px',
-          letterSpacing: '0.03em',
-        }}
-      >
-        {description}
-      </div>
-    </div>
-  );
+/* Stats row */
+.hero-v7-stats {
+  margin-top: 64px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 900px;
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: heroFadeUp 0.9s cubic-bezier(0.4,0,0.2,1) 0.85s forwards;
+}
+.hero-v7-stat {
+  background: rgba(16,14,10,0.72);
+  border: 1px solid rgba(197,160,89,0.28);
+  border-radius: 0;
+  padding: 22px 20px;
+  position: relative;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+.hero-v7-stat::before,
+.hero-v7-stat::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgba(197,160,89,0.55);
+  pointer-events: none;
+}
+.hero-v7-stat::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
+.hero-v7-stat::after  { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
+.hero-v7-stat:hover { border-color: rgba(197,160,89,0.55); background: rgba(22,19,13,0.85); }
+.hero-v7-stat-num {
+  font-size: 30px;
+  font-weight: 700;
+  color: #C5A059;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+}
+.hero-v7-stat-label {
+  margin-top: 8px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 0.05em;
+  line-height: 1.55;
 }
 
-/* ── Orion Belt Divider ── */
-function OrionDivider() {
-  return (
-    <div className="orion-divider">
-      <div className="orion-divider-line"></div>
-      <div className="orion-divider-stars">★ ★ ★</div>
-      <div className="orion-divider-line"></div>
-    </div>
-  );
+/* Bottom input */
+.hero-v7-input {
+  position: absolute;
+  left: 50%;
+  bottom: 48px;
+  transform: translateX(-50%);
+  width: 680px;
+  max-width: calc(100vw - 32px);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(30,30,30,0.9);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 24px;
+  padding: 6px 6px 6px 8px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  opacity: 0;
+  animation: heroFadeUp 0.8s cubic-bezier(0.4,0,0.2,1) 1.05s forwards;
+  transition: border-color 0.25s ease, box-shadow 0.3s ease;
+}
+.hero-v7-input:focus-within {
+  border-color: rgba(197,160,89,0.35);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(197,160,89,0.2);
+}
+.hero-v7-input input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #fff;
+  padding: 0 16px;
+  height: 44px;
+  font-size: 15px;
+  font-family: inherit;
+  letter-spacing: 0.03em;
+}
+.hero-v7-input input::placeholder {
+  color: rgba(255,255,255,0.45);
+  font-weight: 300;
+}
+.hero-v7-send {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 0;
+  background: #C5A059;
+  color: #0a0a0a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 10px rgba(197,160,89,0.35);
+}
+.hero-v7-send:hover  { background: #d9b770; box-shadow: 0 4px 14px rgba(197,160,89,0.55); }
+.hero-v7-send:active { transform: scale(0.94); }
+.hero-v7-send svg { display: block; }
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .hero-v7 { padding: 80px 6vw 140px; }
+  .hero-v7-title { font-size: 36px; }
+  .hero-v7-stat-num { font-size: 26px; }
 }
 
-/* ── Stagger Stage Type ── */
-type Stage = 'bg' | 'image' | 'title' | 'subtitle' | 'cta' | 'stats';
+/* Mobile */
+@media (max-width: 768px) {
+  .hero-v7 {
+    padding: 64px 20px 120px;
+    background-image:
+      linear-gradient(to top, #0a0a0a 25%, rgba(10,10,10,0.55) 65%, rgba(10,10,10,0.2) 100%),
+      url('/brand/Gemini_Generated_Image_stj9t3stj9t3stj9.png');
+    background-size: cover, cover;
+    background-position: center, center;
+  }
+  .hero-v7-text { max-width: 100%; }
+  .hero-v7-title { font-size: 28px; line-height: 1.35; }
+  .hero-v7-subtitle { font-size: 15px; margin-top: 16px; }
+  .hero-v7-cta { margin-top: 24px; padding: 12px 22px; font-size: 14px; }
+  .hero-v7-stats {
+    margin-top: 40px;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .hero-v7-stat { padding: 18px 16px; }
+  .hero-v7-stat-num { font-size: 22px; }
+  .hero-v7-input {
+    width: calc(100% - 40px);
+    bottom: 88px;  /* account for mobile bottom nav */
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-v7,
+  .hero-v7-title,
+  .hero-v7-subtitle,
+  .hero-v7-cta,
+  .hero-v7-stats,
+  .hero-v7-input {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+  .hero-v7-input { transform: translateX(-50%); }
+}
+`;
+
+const STATS = [
+  { num: '14 個產業', label: '從餐飲到科技，全覆蓋' },
+  { num: '10 分鐘',  label: 'O 幫你釐清需求' },
+  { num: '0 成本',   label: '第一次診斷完全免費' },
+];
 
 export default function HeroSection() {
-  const [stages, setStages] = useState<Set<Stage>>(new Set());
-  const parallaxY = useParallax(0.3);
-
-  // Count-up values（0 不需動畫、保留兩個有數感的）
-  const count14 = useCountUp(14, 600, 1000);
-  const count10 = useCountUp(10, 600, 1000);
-
-  // Staggered entrance animation
-  useEffect(() => {
-    const timings: [number, Stage][] = [
-      [0, 'bg'],
-      [200, 'image'],
-      [400, 'title'],
-      [600, 'subtitle'],
-      [800, 'cta'],
-      [1000, 'stats'],
-    ];
-    const timers = timings.map(([ms, stage]) =>
-      setTimeout(() => setStages((prev) => new Set([...prev, stage])), ms)
-    );
-    return () => timers.forEach(clearTimeout);
-  }, []);
-
-  const visible = (stage: Stage) => stages.has(stage);
-  const easing = 'cubic-bezier(0.4, 0, 0.2, 1)';
+  const goChat = () => { window.location.href = 'https://orion01.com'; };
+  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); goChat(); };
 
   return (
-    <section
-      className="hero-container relative w-full overflow-hidden"
-      style={{
-        opacity: visible('bg') ? 1 : 0,
-        transition: `opacity 0.5s ${easing}`,
-      }}
-    >
-      {/* ─── A. Top Nav（語言切換器已拿掉）─── */}
-      <nav
-        className="w-full max-w-[1200px] mx-auto flex items-center justify-between px-6 md:px-8 py-4"
-        style={{ position: 'relative', zIndex: 2 }}
-      >
-        <div className="flex items-center gap-3">
-          <img src={griffinLogo} alt="Orion Griffin" className="h-10 w-auto" />
-          <span
-            className="brand-text text-white text-lg"
-            style={{ color: '#C5A059', letterSpacing: '0.15em' }}
-          >
-            ORION AI
-          </span>
-        </div>
-      </nav>
+    <section className="hero-v7" aria-label="Orion AI 首頁">
+      <style dangerouslySetInnerHTML={{ __html: HERO_CSS }} />
 
-      {/* ─── B. Hero Image（parallax + breathing + 左側黑色漸層覆蓋）─── */}
-      <div
-        className="w-full max-w-[1200px] mx-auto px-6 md:px-0 mt-4 md:mt-8"
-        style={{ position: 'relative', zIndex: 1 }}
-      >
-        <div
-          className="w-full overflow-hidden"
-          style={{
-            position: 'relative',
-            opacity: visible('image') ? 1 : 0,
-            transition: `opacity 0.5s ${easing}`,
-          }}
-        >
-          <img
-            src={heroMain}
-            alt="Orion AI Hero"
-            className="w-full h-auto object-contain hero-image"
-            style={{
-              maxWidth: '100%',
-              animation: 'breathing 3s ease-in-out infinite',
-              transform: `translateY(${parallaxY}px)`,
-            }}
-          />
-          {/* 左側黑色漸層：左濃右淡、讓右側機器人透出 */}
-          <div
-            aria-hidden="true"
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background:
-                'linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.65) 35%, rgba(0,0,0,0.2) 65%, rgba(0,0,0,0) 100%)',
-              pointerEvents: 'none',
-            }}
-          />
-        </div>
-      </div>
-
-      <OrionDivider />
-
-      {/* ─── C. 主標題 —「做一次系統　當你一輩子的 AI 顧問」─── */}
-      <div
-        className="w-full max-w-[1200px] mx-auto px-6 md:px-8 mt-2 md:mt-4"
-        style={{ position: 'relative', zIndex: 1 }}
-      >
-        <h1
-          className="hero-title-glow text-center"
-          style={{
-            color: '#C5A059',
-            fontFamily: "'Space Grotesk', 'Noto Sans TC', sans-serif",
-            fontSize: 'clamp(32px, 5vw, 52px)',
-            fontWeight: 700,
-            lineHeight: 1.3,
-            letterSpacing: '0.05em',
-            opacity: visible('title') ? 1 : 0,
-            transform: visible('title') ? 'translateY(0)' : 'translateY(20px)',
-            transition: `all 0.5s ${easing}`,
-          }}
-        >
-          做一次系統　當你一輩子的 AI 顧問
-        </h1>
-      </div>
-
-      {/* ─── D. 副標 —「說出你的問題，O 幫你找出失去的錢」─── */}
-      <div
-        className="w-full max-w-[1200px] mx-auto px-6 md:px-8 mt-6"
-        style={{ position: 'relative', zIndex: 1 }}
-      >
-        <p
-          className="text-center"
-          style={{
-            color: 'rgba(255,255,255,0.72)',
-            fontSize: 'clamp(15px, 2vw, 18px)',
-            lineHeight: 1.6,
-            letterSpacing: '0.05em',
-            opacity: visible('subtitle') ? 1 : 0,
-            transition: `opacity 0.5s ${easing}`,
-          }}
-        >
-          說出你的問題，O 幫你找出失去的錢
-        </p>
-      </div>
-
-      {/* ─── E. CTA —「立即開始對話 →」→ orion01.com ─── */}
-      <div
-        className="w-full max-w-[1200px] mx-auto px-6 md:px-8 mt-10 flex justify-center"
-        style={{
-          opacity: visible('cta') ? 1 : 0,
-          transition: `opacity 0.5s ${easing}`,
-          position: 'relative',
-          zIndex: 1,
-        }}
-      >
-        <button
-          className="cta-premium font-bold text-base md:text-lg"
-          style={{ letterSpacing: '0.08em' }}
-          onClick={() => {
-            window.location.href = 'https://orion01.com';
-          }}
-        >
+      <div className="hero-v7-text">
+        <h1 className="hero-v7-title">做一次系統<br />當你一輩子的 AI 顧問</h1>
+        <p className="hero-v7-subtitle">說出你的問題，O 幫你找出失去的錢</p>
+        <button type="button" className="hero-v7-cta" onClick={goChat}>
           立即開始對話 →
         </button>
       </div>
 
-      <OrionDivider />
-
-      {/* ─── F. Stats 3 — 14 個產業 / 10 分鐘 / 0 成本 ─── */}
-      <div
-        className="w-full max-w-[1200px] mx-auto px-6 md:px-8 mt-4 mb-16 md:mb-24"
-        style={{
-          opacity: visible('stats') ? 1 : 0,
-          transition: `opacity 0.5s ${easing}`,
-          position: 'relative',
-          zIndex: 1,
-        }}
-      >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
-          <StatCard number={count14} unit="個產業" description="從餐飲到科技，全覆蓋" />
-          <StatCard number={count10} unit="分鐘" description="O 幫你釐清需求" />
-          <StatCard number={0} unit="成本" description="第一次診斷完全免費" />
-        </div>
+      <div className="hero-v7-stats">
+        {STATS.map((s) => (
+          <div key={s.num} className="hero-v7-stat">
+            <div className="hero-v7-stat-num">{s.num}</div>
+            <div className="hero-v7-stat-label">{s.label}</div>
+          </div>
+        ))}
       </div>
+
+      <form className="hero-v7-input" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Orion AI 幫你找回失去的錢..."
+          aria-label="輸入你的商業問題"
+        />
+        <button type="submit" className="hero-v7-send" aria-label="送出">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+      </form>
     </section>
   );
 }

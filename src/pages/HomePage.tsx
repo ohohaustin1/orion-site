@@ -75,18 +75,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Quick About */}
+      {/* 我們怎麼幫你 */}
       <section className="orion-section" style={{ opacity: loaded ? 1 : 0, transition: 'opacity 1s 0.5s' }}>
         <div className="orion-section-header">
-          <h2>關於 Orion AI Group</h2>
-          <p>先顧問、後開發 — 讓 AI 真正落地</p>
+          <h2>我們怎麼幫你</h2>
         </div>
         <div className="orion-quick-about">
           {[
             { num: '01', title: '說出你的問題', desc: 'O 幫你把模糊想法變成清晰需求' },
-            { num: '02', title: '需求確認', desc: '工程師接手，評估可行性與時程' },
-            { num: '03', title: '系統建置', desc: '從 0 到上線，全程 ORION 負責' },
-            { num: '04', title: '永久陪跑', desc: '3 個月後有新需求，O 還在' },
+            { num: '02', title: '需求確認',     desc: '工程師接手，評估可行性與時程' },
+            { num: '03', title: '系統建置',     desc: '從 0 到上線，全程 ORION AI 負責' },
+            { num: '04', title: '永久陪跑',     desc: '之後有新需求，O AI 都在' },
           ].map((s, i) => (
             <div key={i} className="about-step">
               <div className="step-num">{s.num}</div>
@@ -102,7 +101,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Bottom CTA */}
+      {/* 結尾行動呼喚 */}
       <section className="orion-bottom-cta">
         <h2 style={{ color: '#C5A059', letterSpacing: '0.05em' }}>你的下一個系統，從這裡開始</h2>
         <button
