@@ -1,71 +1,67 @@
 import React, { useState } from 'react';
 
 /**
- * HeroSection v10 — 極簡定版
+ * HeroSection v11 — 定版（依 Chairman 參考稿 34e34n34e34n34e3）
  *
- * Hero（圖）：
- *   - 背景：/brand/Gemini_Generated_Image_stj9t3stj9t3stj9.png
- *     整張圖填滿區塊 cover + center
- *   - 無疊加文字 / 標題 / 副標 / CTA（全部拿掉）
+ * 圖片事實：stj9t3stj9t3stj9.png 是 2207×480 的超寬全景（4.6:1）+ 透明通道。
+ * 所以 v10 `cover` 把它放超大裁掉側邊 → 改 `100% auto` 讓整張完整顯示。
+ * 透明區域靠 `background-color: #0a0a0a` 補黑（不再露灰白格）。
  *
- * 圖下方：輸入欄位（獨立一段，不疊在圖上）
- *   - 680px 膠囊
- *   - 左圓形獅鷲頭像 + 中輸入框 + 右方角「立即開始」白底黑字
- *   - 送出 → https://orion01.com?q={input}
- *
- * 再下方：Stats 3 卡（維持現狀）
- * HomePage 其餘區塊（Featured Cases / 我們怎麼幫你 / Bottom CTA）維持現狀
+ * 結構：
+ *   Hero section（背景圖 + 黑底 + 疊在下半部的輸入列 absolute）
+ *   Stats 3 卡（獨立段，維持現狀）
+ *   下方 HomePage: Featured Cases → 我們怎麼幫你 → Bottom CTA（不動）
  */
 
 const HERO_CSS = `
-.hero-v10 {
+.hero-v11 {
   position: relative;
   width: 100%;
-  min-height: 82vh;
+  min-height: 520px;
+  height: calc(100vw * 480 / 2207 + 200px);  /* image native aspect + 下方空間給輸入列 */
+  max-height: 78vh;
   background-color: #0a0a0a;
-  background-image: url('/brand/Gemini_Generated_Image_stj9t3stj9t3stj9.png');
-  background-size: cover;
-  background-position: center center;
+  background-image: url('/brand/hero-clean.png');
+  background-size: 100% auto;
+  background-position: center 38%;
   background-repeat: no-repeat;
   font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
   letter-spacing: 0.05em;
+  overflow: hidden;
 }
 
-/* 輸入列獨立段 */
-.hero-v10-inputbar {
-  background: #0a0a0a;
-  padding: 36px 20px 44px;
-  display: flex;
-  justify-content: center;
-  font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
-  letter-spacing: 0.04em;
-}
-.hero-v10-pill {
+/* 輸入列 — 疊在 Hero 下半部 */
+.hero-v11-pill {
+  position: absolute;
+  left: 50%;
+  bottom: 56px;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 10px;
   width: 680px;
-  max-width: 100%;
-  background: rgba(20,18,14,0.95);
-  border: 1px solid rgba(197,160,89,0.28);
+  max-width: calc(100% - 32px);
+  background: rgba(10,10,10,0.85);
+  border: 0.5px solid rgba(197,160,89,0.3);
   border-radius: 24px;
-  padding: 6px 6px 6px 6px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  padding: 6px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   box-shadow:
-    0 10px 40px rgba(0,0,0,0.45),
-    0 0 0 1px rgba(0,0,0,0.3) inset;
+    0 14px 48px rgba(0,0,0,0.55),
+    0 0 0 1px rgba(0,0,0,0.25) inset;
   transition: border-color 0.25s ease, box-shadow 0.3s ease;
+  z-index: 2;
 }
-.hero-v10-pill:focus-within {
+.hero-v11-pill:focus-within {
   border-color: rgba(197,160,89,0.6);
   box-shadow:
-    0 14px 48px rgba(0,0,0,0.5),
-    0 0 0 1px rgba(197,160,89,0.22);
+    0 16px 52px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(197,160,89,0.2);
 }
-.hero-v10-avatar {
-  width: 44px;
-  height: 44px;
+.hero-v11-avatar {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   flex-shrink: 0;
   background: radial-gradient(circle at 32% 32%, #2a241a 0%, #0f0d09 75%);
@@ -73,54 +69,53 @@ const HERO_CSS = `
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border: 1px solid rgba(197,160,89,0.35);
+  border: 0.5px solid rgba(197,160,89,0.4);
 }
-.hero-v10-avatar img {
-  width: 30px;
-  height: 30px;
+.hero-v11-avatar img {
+  width: 28px;
+  height: 28px;
   object-fit: contain;
   display: block;
 }
-.hero-v10-input {
+.hero-v11-input {
   flex: 1;
   min-width: 0;
   border: 0;
   outline: 0;
   background: transparent;
   color: #fff;
-  height: 44px;
+  height: 40px;
   padding: 0 12px;
   font-size: 15px;
   font-family: inherit;
   letter-spacing: 0.02em;
 }
-.hero-v10-input::placeholder {
-  color: rgba(255,255,255,0.45);
+.hero-v11-input::placeholder {
+  color: rgba(255,255,255,0.5);
   font-weight: 300;
 }
-.hero-v10-submit {
+.hero-v11-submit {
   border: 0;
   border-radius: 0;
   background: #ffffff;
   color: #0a0a0a;
-  height: 44px;
-  padding: 0 22px;
+  padding: 12px 24px;
   font-family: inherit;
   font-size: 14px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   cursor: pointer;
   flex-shrink: 0;
   transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.3s ease;
   box-shadow: 0 2px 10px rgba(255,255,255,0.12);
 }
-.hero-v10-submit:hover  { background: #f1e8d3; box-shadow: 0 4px 18px rgba(197,160,89,0.35); }
-.hero-v10-submit:active { transform: scale(0.97); }
+.hero-v11-submit:hover  { background: #f1e8d3; box-shadow: 0 4px 18px rgba(197,160,89,0.4); }
+.hero-v11-submit:active { transform: scale(0.97); }
 
-/* Stats */
+/* Stats 獨立段 */
 .hero-stats-section {
   background: #0a0a0a;
-  padding: 32px 8vw 72px;
+  padding: 40px 8vw 72px;
   font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
   letter-spacing: 0.05em;
 }
@@ -176,24 +171,34 @@ const HERO_CSS = `
 
 /* Tablet */
 @media (max-width: 1024px) {
-  .hero-v10 { min-height: 60vh; }
+  .hero-v11 {
+    height: calc(100vw * 480 / 2207 + 180px);
+    max-height: 72vh;
+  }
   .hero-stat-num { font-size: 30px; }
 }
 
-/* Mobile */
+/* Mobile — 圖太寬會超小，改 auto 100% 高度填滿，置中裁左右 */
 @media (max-width: 768px) {
-  .hero-v10 {
-    min-height: 55vh;
-    background-position: 55% center;
+  .hero-v11 {
+    min-height: 420px;
+    height: 60vh;
+    max-height: 70vh;
+    background-size: auto 100%;
+    background-position: 50% center;
   }
-  .hero-v10-inputbar { padding: 24px 16px 32px; }
-  .hero-v10-pill { padding: 5px; }
-  .hero-v10-avatar { width: 40px; height: 40px; }
-  .hero-v10-avatar img { width: 26px; height: 26px; }
-  .hero-v10-input { height: 40px; font-size: 14px; padding: 0 10px; }
-  .hero-v10-submit { height: 40px; padding: 0 16px; font-size: 13px; letter-spacing: 0.08em; }
+  .hero-v11-pill {
+    bottom: 28px;
+    padding: 5px;
+    gap: 8px;
+    border-radius: 22px;
+  }
+  .hero-v11-avatar { width: 36px; height: 36px; }
+  .hero-v11-avatar img { width: 24px; height: 24px; }
+  .hero-v11-input { height: 36px; font-size: 14px; padding: 0 10px; }
+  .hero-v11-submit { padding: 10px 16px; font-size: 13px; letter-spacing: 0.06em; }
 
-  .hero-stats-section { padding: 24px 16px 48px; }
+  .hero-stats-section { padding: 32px 16px 48px; }
   .hero-stats-grid { grid-template-columns: 1fr; gap: 12px; }
   .hero-stat { padding: 22px 20px; }
   .hero-stat-num { font-size: 26px; }
@@ -220,22 +225,20 @@ export default function HeroSection() {
     <>
       <style dangerouslySetInnerHTML={{ __html: HERO_CSS }} />
 
-      <section className="hero-v10" aria-label="Orion AI 首頁主視覺" />
-
-      <section className="hero-v10-inputbar" aria-label="對話入口">
-        <form className="hero-v10-pill" onSubmit={submit}>
-          <div className="hero-v10-avatar" aria-hidden="true">
+      <section className="hero-v11" aria-label="Orion AI 首頁主視覺">
+        <form className="hero-v11-pill" onSubmit={submit}>
+          <div className="hero-v11-avatar" aria-hidden="true">
             <img src="/brand/griffin-128.png" alt="" />
           </div>
           <input
-            className="hero-v10-input"
+            className="hero-v11-input"
             type="text"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Orion AI 幫你找回失去的錢..."
             aria-label="輸入你的商業問題"
           />
-          <button type="submit" className="hero-v10-submit">立即開始</button>
+          <button type="submit" className="hero-v11-submit">立即開始</button>
         </form>
       </section>
 
