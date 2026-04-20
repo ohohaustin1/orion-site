@@ -46,7 +46,7 @@ export default function HomePage() {
 
   return (
     <div className="orion-home-page">
-      <LoadingRitual active={showRitual} onComplete={() => { window.location.href = 'https://orion-hub.zeabur.app'; }} />
+      <LoadingRitual active={showRitual} onComplete={() => { window.location.href = 'https://orion01.com'; }} />
       {/* Hero Section (Step 2/7) */}
       <HeroSection />
 
@@ -57,7 +57,7 @@ export default function HomePage() {
           <p>跨產業 AI 導入，量化成果說話</p>
         </div>
         <div className="orion-cases-grid featured">
-          {featuredCases.map(c => (
+          {featuredCases.slice(0, 3).map(c => (
             <div key={c.id} className="orion-case-card">
               <div className="case-tag" style={{ background: industryColors[c.industry] || '#c9a84c' }}>{c.industry}</div>
               <h3 className="case-company">{c.company}</h3>
@@ -83,10 +83,10 @@ export default function HomePage() {
         </div>
         <div className="orion-quick-about">
           {[
-            { num: '01', title: '免費 AI 診斷', desc: 'War Room 智能問診，3 分鐘找出痛點' },
-            { num: '02', title: '問題拆解與策略', desc: '專家團隊設計落地方案' },
-            { num: '03', title: '系統導入與測試', desc: '最快 2 週見效' },
-            { num: '04', title: '優化與持續成長', desc: '30 天優化保證' },
+            { num: '01', title: '說出你的問題', desc: 'O 幫你把模糊想法變成清晰需求' },
+            { num: '02', title: '需求確認', desc: '工程師接手，評估可行性與時程' },
+            { num: '03', title: '系統建置', desc: '從 0 到上線，全程 ORION 負責' },
+            { num: '04', title: '永久陪跑', desc: '3 個月後有新需求，O 還在' },
           ].map((s, i) => (
             <div key={i} className="about-step">
               <div className="step-num">{s.num}</div>
@@ -104,15 +104,14 @@ export default function HomePage() {
 
       {/* Bottom CTA */}
       <section className="orion-bottom-cta">
-        <h2>準備好讓 AI 幫你工作了嗎？</h2>
-        <p>3 分鐘說出你的想法，我們告訴你怎麼做</p>
+        <h2 style={{ color: '#C5A059', letterSpacing: '0.05em' }}>你的下一個系統，從這裡開始</h2>
         <button
           className="cta-premium font-bold text-base md:text-lg"
           onClick={() => setShowRitual(true)}
-          style={{ position: 'relative', overflow: 'hidden' }}
+          style={{ position: 'relative', overflow: 'hidden', letterSpacing: '0.08em' }}
         >
           <Zap size={20} />
-          立即開始診斷 →
+          現在對話 →
         </button>
       </section>
     </div>
