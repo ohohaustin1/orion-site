@@ -11,10 +11,10 @@ const config = {
     extend: {
       fontFamily: {
         sans: ['Noto Sans TC', 'Inter', ...defaultTheme.fontFamily.sans],
-      inter: ['Inter', ...defaultTheme.fontFamily.sans],
-        brand: ['Orbitron', 'Inter', 'system-ui', 'sans-serif'],
-        brand: ['Orbitron', 'Inter', 'system-ui', 'sans-serif'],
-        mono: ['Inter', 'Courier New', ...defaultTheme.fontFamily.mono],
+        inter: ['Inter', ...defaultTheme.fontFamily.sans],
+        display: ['Space Grotesk', 'Noto Sans TC', 'Inter', 'system-ui', 'sans-serif'],
+        brand: ['Space Grotesk', 'Noto Sans TC', 'Inter', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'Inter', 'Courier New', ...defaultTheme.fontFamily.mono],
       },
       colors: {
         /* ORION Design System */

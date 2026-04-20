@@ -13,7 +13,7 @@ export default function NotFound() {
         <p className="text-slate-400 mb-8">The page you're looking for doesn't exist.</p>
         <Button
           onClick={() => setLocation('/')}
-          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+          className="bg-[#C5A059] hover:bg-[#d9b770] text-black"
         >
           Back to Dashboard
         </Button>

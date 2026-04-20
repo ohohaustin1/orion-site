@@ -200,7 +200,7 @@ export default function AnalysisResult() {
           >
             Back to Dashboard
           </Button>
-          <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+          <Button className="bg-[#C5A059] hover:bg-[#d9b770] text-black">
             Export Report
           </Button>
         </div>

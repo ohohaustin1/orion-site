@@ -83,7 +83,7 @@ export default function ProjectDetail() {
   const statusColors: Record<string, string> = {
     new: 'bg-blue-600/20 text-blue-400',
     reviewing: 'bg-yellow-600/20 text-yellow-400',
-    analyzed: 'bg-purple-600/20 text-purple-400',
+    analyzed: 'bg-amber-500/15 text-amber-300',
     quoted: 'bg-green-600/20 text-green-400',
     in_progress: 'bg-orange-600/20 text-orange-400',
     completed: 'bg-emerald-600/20 text-emerald-400',
@@ -148,7 +148,7 @@ export default function ProjectDetail() {
                       </span>
                     )}
                     {req.needsBackend && (
-                      <span className="px-2 py-1 bg-purple-600/20 text-purple-400 rounded text-xs">
+                      <span className="px-2 py-1 bg-amber-500/15 text-amber-300 rounded text-xs">
                         Backend
                       </span>
                     )}
@@ -198,7 +198,7 @@ export default function ProjectDetail() {
               </div>
               <Button
                 onClick={() => setLocation(`/analysis/${project.latestAnalysisReportId._id}`)}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                className="bg-[#C5A059] hover:bg-[#d9b770] text-black"
               >
                 View Report
               </Button>
@@ -216,7 +216,7 @@ export default function ProjectDetail() {
           </Button>
           <Button
             onClick={() => setLocation('/analysis/new')}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            className="bg-[#C5A059] hover:bg-[#d9b770] text-black"
           >
             New Analysis
           </Button>

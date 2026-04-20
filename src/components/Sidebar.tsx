@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Trophy, BarChart3, Building2, BookOpen, Zap, Home, Menu, X, Shield , Users} from 'lucide-react';
 
-const ORION_LOGO = '/ORIONLOGO.png';
+const ORION_LOGO = '/brand/griffin-128.png';
 
 interface NavItem {
   path: string;

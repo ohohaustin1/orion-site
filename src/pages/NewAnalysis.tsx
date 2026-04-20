@@ -244,7 +244,7 @@ export default function NewAnalysis() {
                   <textarea name="notes" value={formData.notes} onChange={handleInputChange} placeholder="任何其他資訊..." className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder:text-slate-500 min-h-20" />
                 </div>
 
-                <Button type="submit" disabled={isLoading} className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                <Button type="submit" disabled={isLoading} className="w-full bg-[#C5A059] hover:bg-[#d9b770] text-black">
                   {isLoading ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -287,7 +287,7 @@ export default function NewAnalysis() {
                       <span className="inline-block px-2 py-1 bg-blue-600/20 text-blue-400 rounded text-xs mr-2">AI</span>
                     )}
                     {formData.needsBackend && (
-                      <span className="inline-block px-2 py-1 bg-purple-600/20 text-purple-400 rounded text-xs mr-2">Backend</span>
+                      <span className="inline-block px-2 py-1 bg-amber-500/15 text-amber-300 rounded text-xs mr-2">Backend</span>
                     )}
                     {formData.needsAutomation && (
                       <span className="inline-block px-2 py-1 bg-green-600/20 text-green-400 rounded text-xs mr-2">Automation</span>
