@@ -98,23 +98,33 @@ section {
   @apply border-border;
 }
 
+:root {
+  /* Cinematic Orion v1 — typography tokens */
+  --font-hero:   64px;
+  --font-h1:     48px;
+  --font-h2:     28px;
+  --font-h3:     18px;
+  --font-body:   14px;
+  --font-small:  12px;
+  --font-number: 32px;
+  --font-key:    13px;
+}
+
 html {
   @apply h-full;
-  background-color: #0a0a0a;
-  background-image: url('/brand/starfield-bg.png');
-  background-size: cover;
-  background-position: center center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
+  background-color: #0a0a0a;     /* canvas Starfield 疊在之上（fixed z-index:-1）*/
   min-height: 100vh;
 }
 
 body {
   @apply m-0 p-0 text-foreground;
-  background: transparent;       /* let html starfield bg show through */
+  background: transparent;        /* let Starfield canvas show through */
   min-height: 100vh;
   font-family: 'Noto Sans TC', 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  letter-spacing: 0.05em;         /* 中文字距 */
+  line-height: 1.7;
+  font-variant-numeric: tabular-nums;  /* 數字等寬 */
 }
 
 #root {
