@@ -924,53 +924,68 @@ body {
 
 .orion-quick-about {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
 }
+@media (max-width: 1024px) {
+  .orion-quick-about { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .orion-quick-about { grid-template-columns: 1fr; }
+}
 .about-step {
-  text-align: center;
-  padding: 28px 16px;
-  background: var(--orion-bg-raised);
-  border: 1px solid rgba(201,168,76,0.1);
+  text-align: left;
+  padding: 28px 24px 26px;
+  background: rgba(10,10,10,0.8);
+  border: 0.5px solid rgba(197,160,89,0.3);
   border-radius: 0;
   letter-spacing: 0.05em;
-  transition: all 0.2s;
   position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease, background 0.3s ease,
+              box-shadow 0.35s ease, transform 0.3s ease;
 }
-.about-step::before,
-.about-step::after {
+.about-step::before {
   content: '';
   position: absolute;
-  width: 16px;
-  height: 16px;
-  border: 1px solid rgba(197,160,89,0.4);
+  inset: 0;
+  background: radial-gradient(ellipse at top left, rgba(197,160,89,0.12) 0%, rgba(197,160,89,0) 55%);
+  opacity: 0;
   pointer-events: none;
-  transition: border-color 0.3s ease;
+  transition: opacity 0.4s ease;
 }
-.about-step::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
-.about-step::after  { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
-.about-step:hover::before,
-.about-step:hover::after { border-color: rgba(197,160,89,0.85); }
 .about-step:hover {
-  border-color: var(--orion-border-gold);
-  transform: translateY(-2px);
+  border-color: rgba(197,160,89,0.7);
+  background: rgba(16,14,10,0.9);
+  transform: translateY(-3px);
+  box-shadow:
+    0 10px 36px rgba(197,160,89,0.18),
+    0 0 0 1px rgba(197,160,89,0.2),
+    0 0 32px rgba(197,160,89,0.14);
 }
+.about-step:hover::before { opacity: 1; }
 .step-num {
-  font-size: 1.8rem;
-  font-weight: 900;
-  color: var(--orion-gold);
-  opacity: 0.4;
-  margin-bottom: 8px;
+  font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: #C5A059;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  margin-bottom: 18px;
+  text-shadow: 0 0 18px rgba(197,160,89,0.25);
 }
 .about-step h4 {
-  font-size: 0.95rem;
-  color: var(--orion-text-primary);
-  margin-bottom: 6px;
-  font-weight: 600;
+  font-size: 1rem;
+  color: #fff;
+  margin: 0 0 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
 }
 .about-step p {
-  font-size: 0.8rem;
-  color: var(--orion-text-secondary);
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.65;
+  letter-spacing: 0.04em;
   margin: 0;
 }
 

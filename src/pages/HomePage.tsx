@@ -82,10 +82,10 @@ export default function HomePage() {
         </div>
         <div className="orion-quick-about">
           {[
-            { num: '01', title: '說出你的問題', desc: 'O 幫你把模糊想法變成清晰需求' },
+            { num: '01', title: '說出你的問題', desc: 'O 幫你把模糊想法變為清晰需求' },
             { num: '02', title: '需求確認',     desc: '工程師接手，評估可行性與時程' },
-            { num: '03', title: '系統建置',     desc: '從 0 到上線，全程 ORION AI 負責' },
-            { num: '04', title: '永久陪跑',     desc: '之後有新需求，O AI 都在' },
+            { num: '03', title: '系統建置',     desc: '從 0 到上線，全程 ORION 負責' },
+            { num: '04', title: '永久陪跑',     desc: '3 個月後有新需求，O 還在' },
           ].map((s, i) => (
             <div key={i} className="about-step">
               <div className="step-num">{s.num}</div>
