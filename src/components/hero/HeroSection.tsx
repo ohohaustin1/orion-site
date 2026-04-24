@@ -149,7 +149,7 @@ const HERO_CSS = `
 .hero-v16-tagline {
   position: absolute;
   left: 50%;
-  bottom: 12%;
+  bottom: 8%;                        /* Chairman 2026-04-24: 12% → 8% 避免被輸入欄遮住 */
   transform: translateX(-50%);
   z-index: 5;
   padding: 8px 20px;
@@ -183,7 +183,7 @@ const HERO_CSS = `
   .hero-v16-input { height: 36px; font-size: 14px; padding: 0 10px; }
   .hero-v16-submit { padding: 10px 16px; font-size: 13px; letter-spacing: 0.08em; }
 
-  .hero-v16-tagline { bottom: 14%; }
+  .hero-v16-tagline { bottom: 10%; }
   .hero-v16-tagline-text {
     font-size: 14px;
     letter-spacing: 0.12em;

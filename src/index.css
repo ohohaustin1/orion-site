@@ -421,19 +421,36 @@ body {
   color: var(--orion-text-primary);
 }
 
-/* Desktop Sidebar */
+/* Desktop Sidebar — Chairman 2026-04-24 融合黑金宇宙：透明玻璃 + 金色漸層右邊框 */
 .orion-sidebar-desktop {
   position: fixed;
   top: 0;
   left: 0;
   width: 220px;
   height: 100dvh;
-  background: var(--orion-bg-void);
-  border-right: 1px solid var(--orion-border-gold);
+  background: rgba(10, 10, 10, 0.92);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  /* 右側金色漸層邊框：中段亮、上下淡出 */
+  border-right: 0;
   display: flex;
   flex-direction: column;
   z-index: 100;
   padding: 20px 0;
+}
+.orion-sidebar-desktop::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(to bottom,
+    rgba(197,160,89,0) 0%,
+    rgba(197,160,89,0.35) 20%,
+    rgba(197,160,89,0.6) 50%,
+    rgba(197,160,89,0.35) 80%,
+    rgba(197,160,89,0) 100%);
+  pointer-events: none;
 }
 
 .orion-sidebar-logo {
@@ -492,47 +509,79 @@ body {
   border-radius: 0 3px 3px 0;
 }
 
+/* Sidebar CTA 區 — Chairman 2026-04-24 產品入口統一風格
+   三個 <a> 共用 .orion-sidebar-cta-link，黑底 + 右金邊 + hover 光掃過 */
 .orion-sidebar-cta {
-  padding: 16px;
-  border-top: 1px solid rgba(201,168,76,0.15);
+  padding: 14px 12px 18px;
+  border-top: 1px solid rgba(197,160,89,0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
-.deep-space-entry {
+.orion-sidebar-cta-link {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  border-radius: 10px;
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), rgba(0, 0, 0, 0.3));
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 11px 14px;
+  background: rgba(10, 10, 10, 0.85);
+  border: 0.5px solid rgba(197, 160, 89, 0.3);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.82);
+  font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-decoration: none;
-  color: #fff;
-  margin-top: 8px;
-  width: 100%;
-  box-sizing: border-box;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease,
+              box-shadow 0.35s ease, transform 0.3s ease;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
-.deep-space-entry:hover {
-  border-color: #D4AF37;
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(0, 0, 0, 0.5));
-  box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
-  transform: translateY(-2px);
+.orion-sidebar-cta-link::before {
+  /* 左側金色光掃條 — hover 從 -80% → 120% */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(110deg,
+    rgba(255, 240, 200, 0) 0%,
+    rgba(245, 211, 105, 0.16) 50%,
+    rgba(255, 240, 200, 0) 100%);
+  transform: skewX(-20deg);
+  transition: left 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
 }
-.deep-space-entry .entry-icon {
-  font-size: 20px;
+.orion-sidebar-cta-link:hover {
+  background: rgba(197, 160, 89, 0.1);
+  border-color: rgba(197, 160, 89, 0.7);
+  color: var(--orion-gold-matte, #C5A059);
+  box-shadow: 0 0 20px rgba(197, 160, 89, 0.22), 0 0 0 1px rgba(197, 160, 89, 0.25);
+  transform: translateY(-1px);
+}
+.orion-sidebar-cta-link:hover::before {
+  left: 120%;
+}
+.orion-sidebar-cta-icon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--orion-gold-matte, #C5A059);
+  filter: drop-shadow(0 0 4px rgba(197, 160, 89, 0.35));
+  transition: color 0.3s ease, filter 0.3s ease, transform 0.3s ease;
   flex-shrink: 0;
 }
-.deep-space-entry .entry-main {
-  font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  color: #D4AF37;
-  letter-spacing: 0.05em;
+.orion-sidebar-cta-link:hover .orion-sidebar-cta-icon {
+  color: #FFD369;
+  filter: drop-shadow(0 0 10px rgba(255, 211, 105, 0.85));
+  transform: scale(1.08);
 }
-.deep-space-entry .entry-sub {
-  font-size: 11px;
-  color: #A0A0A0;
-  margin-top: 2px;
+.orion-sidebar-cta-text {
+  position: relative;
+  z-index: 1;
 }
 
 /* Main Content Area */

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
-import { Trophy, BarChart3, Building2, BookOpen, Zap, Home, Menu, X, Shield , Users} from 'lucide-react';
+import { Trophy, BarChart3, Building2, BookOpen, Zap, Home, Menu, X, Shield, Users, Activity, Radar, LayoutDashboard } from 'lucide-react';
 
 const ORION_LOGO = '/brand/griffin-128.png';
 
@@ -57,39 +57,31 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* 內部功能入口：立即診斷 / 獵戶座深空掃描 / 後台管理
-            Chairman 2026-04-24：訪客不應看見，僅 dev 模式顯示。
-            import.meta.env.DEV 在 production build 為 false，整段會被 tree-shake。*/}
-        {import.meta.env.DEV && (
-          <div className="orion-sidebar-cta">
-            <button
-              className="orion-sidebar-warroom-btn"
-              onClick={() => window.location.href = 'https://orion-hub.zeabur.app'}
-            >
-              <Zap size={16} />
-              <span>立即診斷</span>
-            </button>
-            <a
-              className="deep-space-entry"
-              href="https://orion-hub.zeabur.app"
-              style={{ textDecoration: 'none' }}
-            >
-              <span className="entry-icon">🔭</span>
-              <div className="entry-text">
-                <div className="entry-main">獵戶座深空掃描</div>
-                <div className="entry-sub">僅限高階用戶進入</div>
-              </div>
-            </a>
-            <button
-              className="orion-sidebar-warroom-btn"
-              style={{ marginTop: 8, background: 'rgba(201,168,76,0.08)', color: 'var(--orion-text-secondary)', fontSize: '0.75rem' }}
-              onClick={() => window.location.href = 'https://orion-hub.zeabur.app/admin'}
-            >
-              <Shield size={14} />
-              <span>後台管理</span>
-            </button>
-          </div>
-        )}
+        {/* 產品入口 — Chairman 2026-04-24 還原並美化
+            統一 .orion-sidebar-cta-link class + 左側光掃 hover */}
+        <div className="orion-sidebar-cta">
+          <a
+            className="orion-sidebar-cta-link"
+            href="https://orion-hub.zeabur.app"
+          >
+            <span className="orion-sidebar-cta-icon"><Activity size={16} /></span>
+            <span className="orion-sidebar-cta-text">系統監測</span>
+          </a>
+          <a
+            className="orion-sidebar-cta-link"
+            href="https://orion-hub.zeabur.app"
+          >
+            <span className="orion-sidebar-cta-icon"><Radar size={16} /></span>
+            <span className="orion-sidebar-cta-text">捕獲室</span>
+          </a>
+          <a
+            className="orion-sidebar-cta-link"
+            href="https://orion-hub.zeabur.app/admin"
+          >
+            <span className="orion-sidebar-cta-icon"><LayoutDashboard size={16} /></span>
+            <span className="orion-sidebar-cta-text">管理台</span>
+          </a>
+        </div>
       </aside>
 
       {/* Mobile Bottom Tab */}
@@ -108,16 +100,14 @@ export default function Sidebar() {
             </button>
           );
         })}
-        {/* 診斷 tab — 同上，僅 dev 顯示 */}
-        {import.meta.env.DEV && (
-          <button
-            className="orion-mobile-tab-item warroom"
-            onClick={() => window.location.href = 'https://orion-hub.zeabur.app'}
-          >
-            <Zap size={20} />
-            <span>診斷</span>
-          </button>
-        )}
+        {/* 手機底部 tab 多一個「監測」快捷 */}
+        <button
+          className="orion-mobile-tab-item warroom"
+          onClick={() => window.location.href = 'https://orion-hub.zeabur.app'}
+        >
+          <Activity size={20} />
+          <span>監測</span>
+        </button>
       </nav>
     </>
   );
