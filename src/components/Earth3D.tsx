@@ -1,34 +1,37 @@
 import React, { useMemo, useRef } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import {
-  QuadraticBezierCurve3,
+  BufferAttribute,
+  Color,
   DoubleSide,
   type Mesh,
   type Group,
   type PointLight,
   type MeshBasicMaterial,
   type InstancedMesh,
+  QuadraticBezierCurve3,
   TextureLoader,
+  TubeGeometry,
   Vector3,
   Object3D,
 } from 'three';
 
 /* ==============================================================
-   Earth3D v2 — 電流匯聚感
-   Chairman 2026-04-24 P1：曲線 + 光點流 + 三相節奏 + 中央 ripple
-   --------------------------------------------------------------
-   升級點：
-   1. 連線曲線改 QuadraticBezierCurve3，mid * 1.3 拉弧
-   2. 實體 tubeGeometry 刪除，改粒子沿線流動（instancedMesh）
-   3. 節奏：快閃(0-0.3s) → 慢滅(0.3-1.8s) → 停頓(1.8-3.0s)
-   4. 中央 LOGO：呼吸縮放 + 5-ring ripple pool（0.55s 一環）
-   5. 手機降級：10 粒子 → 5，14 線 → 8
+   Earth3D v3 — Zeabur 風雙色電流
+   Chairman 2026-04-24：
+     1. Tube 回補細線（radius 0.003），vertex color 金→藍→金
+     2. 粒子 r 0.018 → 0.008，分金/藍兩個 InstancedMesh 交錯
+     3. Ripple pool 5 環，3 金 + 2 藍
+     4. Wireframe earth segment 36x24 → 48x32 更細
    ============================================================== */
 
 const GOLD = '#C5A059';
-const BRIGHT_GOLD = '#FFD369';
+const GOLD_BRIGHT = '#FFD369';
+const BLUE = '#00D9FF';
 
-// ── 用 Fibonacci 球面均勻分布城市 ──
+const RADIAL_SEGMENTS = 6;
+const TUBULAR_SEGMENTS = 48;
+
 function cityPositions(n: number) {
   const pts: Vector3[] = [];
   const golden = Math.PI * (3 - Math.sqrt(5));
@@ -43,44 +46,65 @@ function cityPositions(n: number) {
 
 function WireframeEarth() {
   const ref = useRef<Mesh>(null);
-  useFrame(() => {
-    if (ref.current) ref.current.rotation.y += 0.003;
-  });
+  useFrame(() => { if (ref.current) ref.current.rotation.y += 0.003; });
   return (
     <mesh ref={ref}>
-      <sphereGeometry args={[1, 36, 24]} />
-      <meshBasicMaterial color={GOLD} wireframe transparent opacity={0.55} />
+      <sphereGeometry args={[1, 48, 32]} />
+      <meshBasicMaterial color={GOLD} wireframe transparent opacity={0.5} />
     </mesh>
   );
 }
 
 function CityLights({ cities }: { cities: Vector3[] }) {
   const groupRef = useRef<Group>(null);
-  useFrame(() => {
-    if (groupRef.current) groupRef.current.rotation.y += 0.003;
-  });
+  useFrame(() => { if (groupRef.current) groupRef.current.rotation.y += 0.003; });
   return (
     <group ref={groupRef}>
       {cities.map((c, i) => (
         <mesh key={i} position={[c.x * 1.002, c.y * 1.002, c.z * 1.002]}>
-          <sphereGeometry args={[0.018, 10, 10]} />
-          <meshBasicMaterial color={BRIGHT_GOLD} toneMapped={false} />
+          <sphereGeometry args={[0.016, 10, 10]} />
+          <meshBasicMaterial color={GOLD_BRIGHT} toneMapped={false} />
         </mesh>
       ))}
     </group>
   );
 }
 
-// ── 電流線池：固定 N 條 QuadraticBezier，粒子用 instancedMesh 單 draw-call 更新 ──
+// ── 電流線 + 雙色粒子池 ──
 interface LineSpec {
   curve: QuadraticBezierCurve3;
-  cycleOffset: number;  // 0..3 在 3 秒週期裡的起始 phase，14 條 evenly spaced
+  tubeGeom: TubeGeometry;
+  cycleOffset: number;
+  isBlueLine: boolean;
 }
 
 interface ParticleState {
   lineIdx: number;
-  t: number;        // 0..1 沿曲線參數
-  baseSpeed: number; // units/sec，速度由 intensity 調制
+  t: number;
+  baseSpeed: number;
+}
+
+function buildTubeWithGradient(curve: QuadraticBezierCurve3): TubeGeometry {
+  const geom = new TubeGeometry(curve, TUBULAR_SEGMENTS, 0.003, RADIAL_SEGMENTS, false);
+  const posAttr = geom.attributes.position;
+  const vCount = posAttr.count;
+  const colors = new Float32Array(vCount * 3);
+  const gold = new Color(GOLD_BRIGHT);
+  const blue = new Color(BLUE);
+  const out = new Color();
+  const radialP1 = RADIAL_SEGMENTS + 1;
+  for (let vi = 0; vi < vCount; vi++) {
+    // TubeGeometry 頂點順序：每圈 (radialSegments+1) 個 → 取 tubIdx
+    const tubIdx = Math.floor(vi / radialP1);
+    const t = tubIdx / TUBULAR_SEGMENTS;
+    const blueAmt = Math.sin(t * Math.PI); // 0(城市) → 1(中段) → 0(中央)
+    out.copy(gold).lerp(blue, blueAmt);
+    colors[vi * 3] = out.r;
+    colors[vi * 3 + 1] = out.g;
+    colors[vi * 3 + 2] = out.b;
+  }
+  geom.setAttribute('color', new BufferAttribute(colors, 3));
+  return geom;
 }
 
 function ElectricConnectionSystem({
@@ -93,50 +117,58 @@ function ElectricConnectionSystem({
   lineCount: number;
 }) {
   const groupRef = useRef<Group>(null);
-  const instRef = useRef<InstancedMesh>(null);
-  const dummy = useMemo(() => new Object3D(), []);
 
   const lines = useMemo<LineSpec[]>(() => {
     return Array.from({ length: lineCount }, (_, i) => {
       const city = cities[i % cities.length].clone();
-      const end = new Vector3(0, 0, 0);
-      // Chairman spec：mid 往外推，製造弧度
       const mid = city.clone().multiplyScalar(1.3);
+      const curve = new QuadraticBezierCurve3(city, mid, new Vector3(0, 0, 0));
       return {
-        curve: new QuadraticBezierCurve3(city, mid, end),
-        cycleOffset: (i / lineCount) * 3, // 3s 週期內均分
+        curve,
+        tubeGeom: buildTubeWithGradient(curve),
+        cycleOffset: (i / lineCount) * 3,
+        isBlueLine: i % 2 === 1, // 奇 index 藍粒子、偶 index 金粒子
       };
     });
   }, [cities, lineCount]);
 
-  const particles = useMemo<ParticleState[]>(() => {
-    const state: ParticleState[] = [];
+  // 把粒子依 line 顏色分兩組
+  const particlesGold = useMemo<ParticleState[]>(() => {
+    const out: ParticleState[] = [];
     for (let li = 0; li < lines.length; li++) {
+      if (lines[li].isBlueLine) continue;
       for (let pi = 0; pi < particlesPerLine; pi++) {
-        state.push({
-          lineIdx: li,
-          t: pi / particlesPerLine,               // 平均散佈初始位置
-          baseSpeed: 0.35 + Math.random() * 0.35, // 0.35 ~ 0.7
-        });
+        out.push({ lineIdx: li, t: pi / particlesPerLine, baseSpeed: 0.35 + Math.random() * 0.35 });
       }
     }
-    return state;
+    return out;
   }, [lines, particlesPerLine]);
 
-  const totalParticles = particles.length;
+  const particlesBlue = useMemo<ParticleState[]>(() => {
+    const out: ParticleState[] = [];
+    for (let li = 0; li < lines.length; li++) {
+      if (!lines[li].isBlueLine) continue;
+      for (let pi = 0; pi < particlesPerLine; pi++) {
+        out.push({ lineIdx: li, t: pi / particlesPerLine, baseSpeed: 0.35 + Math.random() * 0.35 });
+      }
+    }
+    return out;
+  }, [lines, particlesPerLine]);
 
-  useFrame((state, delta) => {
-    if (!instRef.current) return;
-    const t = state.clock.elapsedTime;
+  const goldRef = useRef<InstancedMesh>(null);
+  const blueRef = useRef<InstancedMesh>(null);
+  const tubeRefs = useRef<Array<Mesh | null>>([]);
+  const dummy = useMemo(() => new Object3D(), []);
 
-    for (let idx = 0; idx < totalParticles; idx++) {
+  const updatePool = (
+    inst: InstancedMesh,
+    particles: ParticleState[],
+    t: number,
+    delta: number,
+  ) => {
+    for (let idx = 0; idx < particles.length; idx++) {
       const p = particles[idx];
       const line = lines[p.lineIdx];
-
-      // 3 相節奏：
-      //   [0, 0.3s)  intensity = 1         快閃
-      //   [0.3, 1.8) intensity = linear 1→0  慢滅
-      //   [1.8, 3.0) intensity = 0        停頓
       const phase = (t + line.cycleOffset) % 3;
       const intensity =
         phase < 0.3 ? 1.0
@@ -148,35 +180,83 @@ function ElectricConnectionSystem({
 
       const pos = line.curve.getPointAt(p.t);
       dummy.position.copy(pos);
-      // 停頓期把粒子縮到幾乎隱形，模擬電流斷流
-      const sizeFactor = intensity > 0.05 ? 1 + intensity * 0.25 : 0.15;
+      const sizeFactor = intensity > 0.05 ? 1 + intensity * 0.3 : 0.12;
       dummy.scale.setScalar(sizeFactor);
       dummy.updateMatrix();
-      instRef.current.setMatrixAt(idx, dummy.matrix);
+      inst.setMatrixAt(idx, dummy.matrix);
     }
-    instRef.current.instanceMatrix.needsUpdate = true;
+    inst.instanceMatrix.needsUpdate = true;
+  };
 
-    // 粒子和城市 + 地球一起繞 Y
+  useFrame((state, delta) => {
+    const t = state.clock.elapsedTime;
+
+    if (goldRef.current)  updatePool(goldRef.current, particlesGold, t, delta);
+    if (blueRef.current)  updatePool(blueRef.current, particlesBlue, t, delta);
+
+    // Tube opacity 同步脈動 — 離 phase 越近，opacity 越亮
+    for (let li = 0; li < lines.length; li++) {
+      const m = tubeRefs.current[li];
+      if (!m) continue;
+      const phase = (t + lines[li].cycleOffset) % 3;
+      const intensity =
+        phase < 0.3 ? 1.0
+        : phase < 1.8 ? 1.0 - (phase - 0.3) / 1.5
+        : 0;
+      const mat = m.material as MeshBasicMaterial;
+      mat.opacity = 0.25 + 0.65 * intensity;
+    }
+
     if (groupRef.current) groupRef.current.rotation.y += 0.003;
   });
 
   return (
     <group ref={groupRef}>
-      <instancedMesh
-        ref={instRef}
-        // Three.js requires initial args so instance count is reserved
-        args={[undefined as unknown as never, undefined as unknown as never, totalParticles]}
-      >
-        <sphereGeometry args={[0.018, 8, 8]} />
-        <meshBasicMaterial color={BRIGHT_GOLD} transparent opacity={0.95} toneMapped={false} />
-      </instancedMesh>
+      {/* 14 條細 tube，vertex color 金→藍→金 */}
+      {lines.map((line, i) => (
+        <mesh
+          key={i}
+          ref={(el) => { tubeRefs.current[i] = el; }}
+          geometry={line.tubeGeom}
+        >
+          <meshBasicMaterial
+            vertexColors
+            transparent
+            opacity={0.5}
+            depthWrite={false}
+            toneMapped={false}
+          />
+        </mesh>
+      ))}
+
+      {/* 金色粒子 pool */}
+      {particlesGold.length > 0 && (
+        <instancedMesh
+          ref={goldRef}
+          args={[undefined as unknown as never, undefined as unknown as never, particlesGold.length]}
+        >
+          <sphereGeometry args={[0.008, 8, 8]} />
+          <meshBasicMaterial color={GOLD_BRIGHT} transparent opacity={0.95} toneMapped={false} />
+        </instancedMesh>
+      )}
+
+      {/* 藍色粒子 pool */}
+      {particlesBlue.length > 0 && (
+        <instancedMesh
+          ref={blueRef}
+          args={[undefined as unknown as never, undefined as unknown as never, particlesBlue.length]}
+        >
+          <sphereGeometry args={[0.008, 8, 8]} />
+          <meshBasicMaterial color={BLUE} transparent opacity={0.95} toneMapped={false} />
+        </instancedMesh>
+      )}
     </group>
   );
 }
 
-// ── 中央 Griffin Logo + 呼吸縮放 + ripple pool ──
+// ── 中央 Griffin Logo + 雙色 ripple pool ──
 const RIPPLE_POOL_SIZE = 5;
-const RIPPLE_PERIOD = 0.55; // 每 0.55s 新噴一環
+const RIPPLE_PERIOD = 0.55;
 
 function CentralLogo() {
   const texture = useLoader(TextureLoader, '/brand/griffin-128.png');
@@ -189,51 +269,33 @@ function CentralLogo() {
   useFrame(({ clock }, delta) => {
     const t = clock.elapsedTime;
 
-    // Logo 呼吸縮放 + 微旋轉
     if (logoRef.current) {
       logoRef.current.rotation.z = Math.sin(t * 0.5) * 0.06;
       const breathe = 1 + Math.sin(t * 1.2) * 0.035;
-      // Chairman spec：接收到粒子震動 +3%，用全局節拍近似每 3s 一次的「強接收」脈衝
       const catchPulse = 1 + Math.max(0, Math.sin(t * (Math.PI * 2 / 3))) * 0.025;
       logoRef.current.scale.setScalar(0.5 * breathe * catchPulse);
     }
 
-    // Point light 隨節奏脈動
     if (lightRef.current) {
       lightRef.current.intensity = 0.75 + Math.sin(t * 1.4) * 0.35;
     }
 
-    // Spawn ripple：找一個已熄滅（phase = 0）的 slot
     if (t >= nextSpawnAt.current) {
       const idleIdx = ripplePhases.current.findIndex((p) => p <= 0);
-      if (idleIdx >= 0) {
-        ripplePhases.current[idleIdx] = 0.001; // 開始計時
-      }
+      if (idleIdx >= 0) ripplePhases.current[idleIdx] = 0.001;
       nextSpawnAt.current = t + RIPPLE_PERIOD;
     }
 
-    // 更新所有 ripple
     for (let i = 0; i < RIPPLE_POOL_SIZE; i++) {
       const m = rippleRefs.current[i];
       if (!m) continue;
       const phase = ripplePhases.current[i];
-
-      if (phase <= 0) {
-        if (m.visible) m.visible = false;
-        continue;
-      }
-
-      // 推進 phase，約 1.7s 完整走完
+      if (phase <= 0) { if (m.visible) m.visible = false; continue; }
       const next = phase + delta * 0.6;
-      if (next >= 1) {
-        ripplePhases.current[i] = 0;
-        m.visible = false;
-        continue;
-      }
+      if (next >= 1) { ripplePhases.current[i] = 0; m.visible = false; continue; }
       ripplePhases.current[i] = next;
-
       if (!m.visible) m.visible = true;
-      const sc = 0.5 + next * 2.4;                 // 從 0.5 → 2.9
+      const sc = 0.5 + next * 2.4;
       m.scale.setScalar(sc);
       const mat = m.material as MeshBasicMaterial;
       mat.opacity = Math.max(0, (1 - next) * 0.55);
@@ -247,36 +309,36 @@ function CentralLogo() {
         <meshBasicMaterial map={texture} transparent alphaTest={0.05} toneMapped={false} />
       </mesh>
 
-      {/* Ripple pool — 預先 mount 5 個 ring，phase 驅動 visibility + scale + opacity */}
-      {Array.from({ length: RIPPLE_POOL_SIZE }).map((_, i) => (
-        <mesh
-          key={i}
-          ref={(el) => {
-            rippleRefs.current[i] = el;
-          }}
-          position={[0, 0, -0.02]}
-          visible={false}
-        >
-          <ringGeometry args={[0.18, 0.2, 48]} />
-          <meshBasicMaterial
-            color={BRIGHT_GOLD}
-            transparent
-            opacity={0}
-            side={DoubleSide}
-            toneMapped={false}
-            depthWrite={false}
-          />
-        </mesh>
-      ))}
+      {/* 5 環 ripple：3 金 + 2 藍交錯（index 1、3 藍） */}
+      {Array.from({ length: RIPPLE_POOL_SIZE }).map((_, i) => {
+        const isBlue = i === 1 || i === 3;
+        return (
+          <mesh
+            key={i}
+            ref={(el) => { rippleRefs.current[i] = el; }}
+            position={[0, 0, -0.02]}
+            visible={false}
+          >
+            <ringGeometry args={[0.18, 0.2, 48]} />
+            <meshBasicMaterial
+              color={isBlue ? BLUE : GOLD_BRIGHT}
+              transparent
+              opacity={0}
+              side={DoubleSide}
+              toneMapped={false}
+              depthWrite={false}
+            />
+          </mesh>
+        );
+      })}
 
-      <pointLight ref={lightRef} color={BRIGHT_GOLD} intensity={0.8} distance={2.4} />
+      <pointLight ref={lightRef} color={GOLD_BRIGHT} intensity={0.8} distance={2.4} />
     </group>
   );
 }
 
 // ── Root ──
 export default function Earth3D() {
-  // 手機降級：Chairman spec，寬度 < 768 減半
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   const particlesPerLine = isMobile ? 5 : 10;
   const lineCount = isMobile ? 8 : 14;
@@ -292,7 +354,7 @@ export default function Earth3D() {
     >
       <ambientLight intensity={0.35} />
       <pointLight position={[10, 10, 10]} color={GOLD} intensity={1.8} />
-      <pointLight position={[-5, -4, 3]} color={BRIGHT_GOLD} intensity={0.8} />
+      <pointLight position={[-5, -4, 3]} color={BLUE} intensity={0.7} />
       <WireframeEarth />
       <CityLights cities={cities} />
       <ElectricConnectionSystem

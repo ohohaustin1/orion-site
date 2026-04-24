@@ -27,25 +27,25 @@ const Earth3D = lazy(() => import('../components/Earth3D'));
    ============================================================== */
 
 const STEPS = [
-  { num: '01', title: '說出你的問題',  desc: 'O 幫你把模糊想法變為清晰需求' },
+  { num: '01', title: '說出你的問題',  desc: 'Orion AI 幫你把模糊想法變為清晰需求' },
   { num: '02', title: '需求確認',      desc: '工程師接手，評估可行性與時程' },
   { num: '03', title: '系統建置',      desc: '從 0 到上線，全程 ORION 負責' },
-  { num: '04', title: '永久陪跑',      desc: '3 個月後有新需求，O 還在' },
+  { num: '04', title: '永久陪跑',      desc: '3 個月後有新需求，Orion AI 還在' },
 ];
 
 const PRODUCTS = [
-  { num: '01', Icon: PRODUCT_ICONS[0],  title: '不動產決策 AI', sub: '每個月漏掉的機會成本，O 幫你抓回來',         key: '看懂市場，才不會錯過該進場的時機' },
-  { num: '02', Icon: PRODUCT_ICONS[1],  title: '股票策略 AI',   sub: '看不清的市場，O 幫你拆成可執行訊號',         key: '每一筆交易，都有根據' },
-  { num: '03', Icon: PRODUCT_ICONS[2],  title: '電商成交 AI',   sub: '流量不會轉換？O 幫你找到斷點',               key: '同樣流量，翻倍成交' },
-  { num: '04', Icon: PRODUCT_ICONS[3],  title: '餐飲排班 AI',   sub: '人力成本失控，O 幫你算出最省組合',           key: '1 秒排完，還符合勞基法' },
-  { num: '05', Icon: PRODUCT_ICONS[4],  title: '製造業排程 AI', sub: '訂單塞車、交期失控，O 幫你重新排序',         key: '產線不卡、客戶不跑' },
-  { num: '06', Icon: PRODUCT_ICONS[5],  title: '客戶留存 AI',   sub: '客人來一次就不見？O 幫你把他留下',           key: '老客戶才是真正的現金流' },
-  { num: '07', Icon: PRODUCT_ICONS[6],  title: '法律風險 AI',   sub: '合約陷阱逃不掉，O 幫你預演訴訟風險',         key: '簽字前先看到地雷' },
-  { num: '08', Icon: PRODUCT_ICONS[7],  title: '健康長壽 AI',   sub: '數據比你更懂身體，O 幫你計算最佳排程',       key: '老闆的身體，也是公司的資產' },
-  { num: '09', Icon: PRODUCT_ICONS[8],  title: '品牌語感 AI',   sub: '文案沒有靈魂？O 幫你植入 24 小時創意總監',   key: '品牌調性，一次對齊' },
-  { num: '10', Icon: PRODUCT_ICONS[9],  title: '企業現金流 AI', sub: '錢不該躺著睡覺，O 幫你預測資金缺口',         key: '現金流透明，決策才踏實' },
-  { num: '11', Icon: PRODUCT_ICONS[10], title: '教育傳承 AI',   sub: '經驗帶不走？O 幫你把大腦數位化',             key: '老員工的智慧，變成公司的資產' },
-  { num: '12', Icon: PRODUCT_ICONS[11], title: '命運機率 AI',   sub: '運勢不再是玄學，O 將天時地利拆解為可控機率', key: '把直覺，變成可驗證的決策' },
+  { num: '01', Icon: PRODUCT_ICONS[0],  title: '不動產決策 AI', sub: '每個月漏掉的機會成本，Orion AI 幫你抓回來',         key: '看懂市場，才不會錯過該進場的時機' },
+  { num: '02', Icon: PRODUCT_ICONS[1],  title: '股票策略 AI',   sub: '看不清的市場，Orion AI 幫你拆成可執行訊號',         key: '每一筆交易，都有根據' },
+  { num: '03', Icon: PRODUCT_ICONS[2],  title: '電商成交 AI',   sub: '流量不會轉換？Orion AI 幫你找到斷點',               key: '同樣流量，翻倍成交' },
+  { num: '04', Icon: PRODUCT_ICONS[3],  title: '餐飲排班 AI',   sub: '人力成本失控，Orion AI 幫你算出最省組合',           key: '1 秒排完，還符合勞基法' },
+  { num: '05', Icon: PRODUCT_ICONS[4],  title: '製造業排程 AI', sub: '訂單塞車、交期失控，Orion AI 幫你重新排序',         key: '產線不卡、客戶不跑' },
+  { num: '06', Icon: PRODUCT_ICONS[5],  title: '客戶留存 AI',   sub: '客人來一次就不見？Orion AI 幫你把他留下',           key: '老客戶才是真正的現金流' },
+  { num: '07', Icon: PRODUCT_ICONS[6],  title: '法律風險 AI',   sub: '合約陷阱逃不掉，Orion AI 幫你預演訴訟風險',         key: '簽字前先看到地雷' },
+  { num: '08', Icon: PRODUCT_ICONS[7],  title: '健康長壽 AI',   sub: '數據比你更懂身體，Orion AI 幫你計算最佳排程',       key: '老闆的身體，也是公司的資產' },
+  { num: '09', Icon: PRODUCT_ICONS[8],  title: '品牌語感 AI',   sub: '文案沒有靈魂？Orion AI 幫你植入 24 小時創意總監',   key: '品牌調性，一次對齊' },
+  { num: '10', Icon: PRODUCT_ICONS[9],  title: '企業現金流 AI', sub: '錢不該躺著睡覺，Orion AI 幫你預測資金缺口',         key: '現金流透明，決策才踏實' },
+  { num: '11', Icon: PRODUCT_ICONS[10], title: '教育傳承 AI',   sub: '經驗帶不走？Orion AI 幫你把大腦數位化',             key: '老員工的智慧，變成公司的資產' },
+  { num: '12', Icon: PRODUCT_ICONS[11], title: '命運機率 AI',   sub: '運勢不再是玄學，Orion AI 將天時地利拆解為可控機率', key: '把直覺，變成可驗證的決策' },
 ];
 
 const COMPARE = [
@@ -65,7 +65,7 @@ export default function HomePage() {
     const t = setTimeout(() => setLoaded(true), 100);
     setSEO({
       title: 'Orion 獵戶座智鑑 | 做一次系統，當你一輩子的 AI 顧問',
-      description: '說出你的問題，O 幫你找出失去的錢。企業級 AI 成交引擎，3 個月打造 10 個賺錢系統。',
+      description: '說出你的問題，Orion AI 幫你找出失去的錢。企業級 AI 成交引擎，3 個月打造 10 個賺錢系統。',
       url: 'https://orion01.com',
     });
 
@@ -221,8 +221,8 @@ export default function HomePage() {
         <div className="co-section-header">
           <ScrollReveal>
             <>
-              <h2>全球想法，都匯聚於此</h2>
-              <p>世界各地的老闆，都在用 ORION 找回失去的錢</p>
+              <h2>全球想法，都在這裡實現</h2>
+              <p>世界各地的老闆，用 Orion AI 把直覺變成系統</p>
             </>
           </ScrollReveal>
         </div>

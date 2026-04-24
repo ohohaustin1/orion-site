@@ -1,6 +1,29 @@
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
-import { Trophy, BarChart3, Building2, BookOpen, Zap, Home, Menu, X, Shield, Users, Activity, Radar, LayoutDashboard } from 'lucide-react';
+import { Trophy, BarChart3, Building2, BookOpen, Zap, Home, Menu, X, Shield, Users, Activity, LayoutDashboard } from 'lucide-react';
+
+/** ShieldScan — 自設計盾牌 + 中央掃描線 icon（Chairman 2026-04-24 企業 QA 深層掃描專用）*/
+const ShieldScanIcon = ({ size = 16 }: { size?: number }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 32 32"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.5}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    {/* 盾牌外框 */}
+    <path d="M16 3 L27 7 L27 15 C 27 22, 22 26, 16 29 C 10 26, 5 22, 5 15 L 5 7 Z" />
+    {/* 中央掃描線 */}
+    <line x1={9} y1={16} x2={23} y2={16} strokeWidth={2} />
+    {/* 上下兩條輔助掃描線 */}
+    <line x1={12} y1={11} x2={20} y2={11} strokeWidth={1} opacity={0.55} />
+    <line x1={12} y1={21} x2={20} y2={21} strokeWidth={1} opacity={0.55} />
+  </svg>
+);
 
 const ORION_LOGO = '/brand/griffin-128.png';
 
@@ -57,8 +80,7 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* 產品入口 — Chairman 2026-04-24 還原並美化
-            統一 .orion-sidebar-cta-link class + 左側光掃 hover */}
+        {/* 產品入口 — Chairman 2026-04-24 */}
         <div className="orion-sidebar-cta">
           <a
             className="orion-sidebar-cta-link"
@@ -68,11 +90,14 @@ export default function Sidebar() {
             <span className="orion-sidebar-cta-text">系統監測</span>
           </a>
           <a
-            className="orion-sidebar-cta-link"
-            href="https://orion-hub.zeabur.app"
+            className="orion-sidebar-cta-link is-warrior"
+            href="https://orion01.com/?mode=warrior"
           >
-            <span className="orion-sidebar-cta-icon"><Radar size={16} /></span>
-            <span className="orion-sidebar-cta-text">捕獲室</span>
+            <span className="orion-sidebar-cta-icon"><ShieldScanIcon size={16} /></span>
+            <div className="orion-sidebar-cta-body">
+              <div className="orion-sidebar-cta-text">企業 QA 深層掃描</div>
+              <div className="orion-sidebar-cta-sub">僅限高階客戶</div>
+            </div>
           </a>
           <a
             className="orion-sidebar-cta-link"
