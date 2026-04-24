@@ -327,47 +327,42 @@
   .co-compare-arrow { padding: 4px 0; }
 }
 
-/* ========== 14-A: Earth 3D 城市地理標籤（v7.1 — Chairman 反饋層級修正） ========== */
-/* 一般城市：小、淡、冷色，作為次要資訊源 */
+/* ========== 14-A: Earth 3D 國旗標籤（v7.3 — Chairman 改國旗 emoji） ========== */
 .earth-city-label {
-  font-family: 'JetBrains Mono', 'Courier New', ui-monospace, monospace;
-  font-size: 9px;
-  color: rgba(0, 217, 255, 0.78);
-  background: rgba(0, 0, 0, 0.5);
-  border: 0.5px solid rgba(0, 217, 255, 0.3);
-  padding: 2px 6px;
-  border-radius: 2px;
-  letter-spacing: 0.14em;
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.62);
+  border: 0.5px solid rgba(0, 217, 255, 0.5);
+  padding: 3px 8px;
+  border-radius: 3px;
   pointer-events: none;
   white-space: nowrap;
   transform: translateY(-14px);
-  box-shadow: 0 0 6px rgba(0, 217, 255, 0.15);
-  text-shadow: 0 0 4px rgba(0, 217, 255, 0.25);
+  box-shadow: 0 0 8px rgba(0, 217, 255, 0.22);
   user-select: none;
+  line-height: 1;
 }
-/* TAIPEI 中心基地：大、亮、金色，層級明確高於其他 */
+.earth-city-flag {
+  font-family:
+    'Twemoji Country Flags',        /* web font 若有 */
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Noto Color Emoji',
+    sans-serif;
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: 0;
+  filter: drop-shadow(0 0 3px rgba(0, 217, 255, 0.35));
+}
+/* TPE destination 維持金色背景（未 render but keep rule for future） */
 .earth-city-label.is-taipei {
-  font-size: 13px;
-  color: #FFD369;
   border: 1px solid rgba(255, 211, 105, 0.85);
-  background: rgba(255, 211, 105, 0.18);
-  padding: 4px 12px;
-  letter-spacing: 0.22em;
-  font-weight: 800;
-  transform: translateY(-24px);
-  box-shadow:
-    0 0 16px rgba(255, 211, 105, 0.55),
-    0 0 32px rgba(255, 211, 105, 0.22),
-    inset 0 0 8px rgba(255, 211, 105, 0.15);
-  text-shadow:
-    0 0 10px #FFD369,
-    0 0 18px rgba(255, 211, 105, 0.6);
+  background: rgba(255, 211, 105, 0.14);
+  box-shadow: 0 0 14px rgba(255, 211, 105, 0.5);
 }
-.earth-city-label.is-taipei::before {
-  content: '◆';
-  margin-right: 6px;
-  opacity: 0.9;
+.earth-city-label.is-taipei .earth-city-flag {
+  filter: drop-shadow(0 0 6px rgba(255, 211, 105, 0.85));
 }
 
 /* ========== 14-A-old: Earth 3D HUD (v4 棄用，保留做未來回滾) ========== */

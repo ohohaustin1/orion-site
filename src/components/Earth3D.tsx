@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { useTexture, Html } from '@react-three/drei';
+import { useTexture, Html, Billboard } from '@react-three/drei';
 import {
   AdditiveBlending,
   BackSide,
@@ -52,6 +52,7 @@ function latLonToVec3(lat: number, lon: number, radius = 1): Vector3 {
 interface City {
   name: string;
   code: string;           // 3-letter
+  flag: string;           // v7.3 Chairman 指示：國旗 emoji 代替 code
   lat: number;
   lon: number;
   isDestination?: boolean;
@@ -59,36 +60,33 @@ interface City {
 }
 
 const CITIES: City[] = [
-  { name: 'New York',     code: 'NYC', lat:  40.7128, lon:  -74.0060, labelOnly: true },
-  { name: 'London',       code: 'LON', lat:  51.5074, lon:   -0.1278, labelOnly: true },
-  { name: 'Frankfurt',    code: 'FRA', lat:  50.1109, lon:    8.6821 },
-  { name: 'Tokyo',        code: 'TYO', lat:  35.6762, lon:  139.6503, labelOnly: true },
-  { name: 'Sydney',       code: 'SYD', lat: -33.8688, lon:  151.2093, labelOnly: true },
-  { name: 'Singapore',    code: 'SIN', lat:   1.3521, lon:  103.8198, labelOnly: true },
-  { name: 'Dubai',        code: 'DXB', lat:  25.2048, lon:   55.2708, labelOnly: true },
-  { name: 'Mumbai',       code: 'BOM', lat:  19.0760, lon:   72.8777 },
-  { name: 'São Paulo',    code: 'GRU', lat: -23.5505, lon:  -46.6333, labelOnly: true },
-  { name: 'Lagos',        code: 'LOS', lat:   6.5244, lon:    3.3792 },
-  { name: 'Moscow',       code: 'MOW', lat:  55.7558, lon:   37.6173 },
-  { name: 'Seoul',        code: 'ICN', lat:  37.5665, lon:  126.9780 },
-  { name: 'Hong Kong',    code: 'HKG', lat:  22.3193, lon:  114.1694 },
-  { name: 'Paris',        code: 'PAR', lat:  48.8566, lon:    2.3522 },
-  { name: 'Toronto',      code: 'YTO', lat:  43.6532, lon:  -79.3832 },
-  { name: 'Berlin',       code: 'BER', lat:  52.5200, lon:   13.4050 },
-  { name: 'Amsterdam',    code: 'AMS', lat:  52.3676, lon:    4.9041 },
-  { name: 'Chicago',      code: 'CHI', lat:  41.8781, lon:  -87.6298 },
-  { name: 'Los Angeles',  code: 'LAX', lat:  34.0522, lon: -118.2437, labelOnly: true },
-  { name: 'Shanghai',     code: 'SHA', lat:  31.2304, lon:  121.4737, labelOnly: true },
-  { name: 'Bangkok',      code: 'BKK', lat:  13.7563, lon:  100.5018 },
-  { name: 'Istanbul',     code: 'IST', lat:  41.0082, lon:   28.9784 },
-  { name: 'Mexico City',  code: 'MEX', lat:  19.4326, lon:  -99.1332 },
-  { name: 'Johannesburg', code: 'JNB', lat: -26.2041, lon:   28.0473 },
-  { name: 'Vancouver',    code: 'YVR', lat:  49.2827, lon: -123.1207 },
-  { name: 'Auckland',     code: 'AKL', lat: -36.8485, lon:  174.7633 },
-  // v7.2 Chairman 2026-04-24：TPE 標籤拿掉（主權爭議規避）；isDestination 保留
-  // 讓 CorePylon 仍以 Taipei 座標為匯聚中心，但 CityLabels 的 filter
-  // `c.labelOnly` 不會渲染這個點 → 畫面不會出現「TPE」字樣。
-  { name: 'Taipei',       code: 'TPE', lat:  25.0330, lon:  121.5654, isDestination: true },
+  { name: 'New York',     code: 'NYC', flag: '🇺🇸', lat:  40.7128, lon:  -74.0060, labelOnly: true },
+  { name: 'London',       code: 'LON', flag: '🇬🇧', lat:  51.5074, lon:   -0.1278, labelOnly: true },
+  { name: 'Frankfurt',    code: 'FRA', flag: '🇩🇪', lat:  50.1109, lon:    8.6821 },
+  { name: 'Tokyo',        code: 'TYO', flag: '🇯🇵', lat:  35.6762, lon:  139.6503, labelOnly: true },
+  { name: 'Sydney',       code: 'SYD', flag: '🇦🇺', lat: -33.8688, lon:  151.2093, labelOnly: true },
+  { name: 'Singapore',    code: 'SIN', flag: '🇸🇬', lat:   1.3521, lon:  103.8198, labelOnly: true },
+  { name: 'Dubai',        code: 'DXB', flag: '🇦🇪', lat:  25.2048, lon:   55.2708, labelOnly: true },
+  { name: 'Mumbai',       code: 'BOM', flag: '🇮🇳', lat:  19.0760, lon:   72.8777 },
+  { name: 'São Paulo',    code: 'GRU', flag: '🇧🇷', lat: -23.5505, lon:  -46.6333, labelOnly: true },
+  { name: 'Lagos',        code: 'LOS', flag: '🇳🇬', lat:   6.5244, lon:    3.3792 },
+  { name: 'Moscow',       code: 'MOW', flag: '🇷🇺', lat:  55.7558, lon:   37.6173 },
+  { name: 'Seoul',        code: 'ICN', flag: '🇰🇷', lat:  37.5665, lon:  126.9780 },
+  { name: 'Hong Kong',    code: 'HKG', flag: '🇭🇰', lat:  22.3193, lon:  114.1694 },
+  { name: 'Paris',        code: 'PAR', flag: '🇫🇷', lat:  48.8566, lon:    2.3522 },
+  { name: 'Toronto',      code: 'YTO', flag: '🇨🇦', lat:  43.6532, lon:  -79.3832 },
+  { name: 'Berlin',       code: 'BER', flag: '🇩🇪', lat:  52.5200, lon:   13.4050 },
+  { name: 'Amsterdam',    code: 'AMS', flag: '🇳🇱', lat:  52.3676, lon:    4.9041 },
+  { name: 'Chicago',      code: 'CHI', flag: '🇺🇸', lat:  41.8781, lon:  -87.6298 },
+  { name: 'Los Angeles',  code: 'LAX', flag: '🇺🇸', lat:  34.0522, lon: -118.2437, labelOnly: true },
+  { name: 'Shanghai',     code: 'SHA', flag: '🇨🇳', lat:  31.2304, lon:  121.4737, labelOnly: true },
+  { name: 'Bangkok',      code: 'BKK', flag: '🇹🇭', lat:  13.7563, lon:  100.5018 },
+  { name: 'Istanbul',     code: 'IST', flag: '🇹🇷', lat:  41.0082, lon:   28.9784 },
+  { name: 'Mexico City',  code: 'MEX', flag: '🇲🇽', lat:  19.4326, lon:  -99.1332 },
+  { name: 'Johannesburg', code: 'JNB', flag: '🇿🇦', lat: -26.2041, lon:   28.0473 },
+  { name: 'Vancouver',    code: 'YVR', flag: '🇨🇦', lat:  49.2827, lon: -123.1207 },
+  { name: 'Auckland',     code: 'AKL', flag: '🇳🇿', lat: -36.8485, lon:  174.7633 },
+  { name: 'Taipei',       code: 'TPE', flag: '🏴', lat:  25.0330, lon:  121.5654, isDestination: true },
 ];
 
 const TAIPEI = CITIES.find((c) => c.isDestination)!;
@@ -175,8 +173,9 @@ function RealisticEarth() {
         map={day}
         normalMap={normal}
         specularMap={specular}
-        specular={new Color('#5a6a7e')}
-        shininess={16}
+        /* v7.3 Chairman：海藍一點、亮一點 — specular 色調更藍、光澤更高 */
+        specular={new Color('#4a90e2')}
+        shininess={32}
         emissive={new Color('#ffffff')}
         emissiveMap={night}
         emissiveIntensity={0.85}
@@ -279,7 +278,7 @@ function CityLabels({ earthRef }: { earthRef: React.RefObject<Group> }) {
             style={{ pointerEvents: 'none' }}
           >
             <div className={`earth-city-label ${c.isDestination ? 'is-taipei' : ''}`}>
-              {c.code}
+              <span className="earth-city-flag">{c.flag}</span>
             </div>
           </Html>
         );
@@ -301,16 +300,16 @@ function CorePylon() {
   const rippleRefs = useRef<Array<Mesh | null>>([]);
   const ripplePhases = useRef<number[]>([0, 0, 0, 0, 0, 0]);
   const nextSpawn = useRef(0.3);
+  const cylinderWrapRef = useRef<Group>(null);
 
-  // 旋轉：讓 pylon 沿 TAIPEI 法線方向指外
-  const outward = TAIPEI_POS_UNIT.clone().normalize();
-  // 預設 cylinder 沿 Y 軸，要 rotate 到沿 outward
-  const dummy = useMemo(() => {
-    const o = new Object3D();
-    o.position.copy(TAIPEI_POS_SURFACE);
-    o.lookAt(TAIPEI_POS_UNIT.clone().multiplyScalar(3));
-    o.rotateX(Math.PI / 2); // plane (camera face) → cylinder (Y axis)
-    return o;
+  // Cylinder 專用 orientation：只 rotate 這個子 group 讓 cylinder 站直朝外
+  // 不再 rotate 整個 CorePylon group（v7.3 fix：先前 rotateX 把 ring 也躺平
+  // 地球表面 + ripple scale 擴散後形成繞地球的大藍環，Chairman 誤以為是 Fresnel）
+  useEffect(() => {
+    if (cylinderWrapRef.current) {
+      cylinderWrapRef.current.lookAt(TAIPEI_POS_UNIT.clone().multiplyScalar(3));
+      cylinderWrapRef.current.rotateX(Math.PI / 2);
+    }
   }, []);
 
   useFrame(({ clock }, delta) => {
@@ -348,69 +347,76 @@ function CorePylon() {
       if (next >= 1) { ripplePhases.current[i] = 0; m.visible = false; continue; }
       ripplePhases.current[i] = next;
       if (!m.visible) m.visible = true;
-      m.scale.setScalar(0.6 + next * 3.0);
+      // v7.3 max scale 3.6 → 2.0 避免 ring 太大與地球外圍重疊
+      m.scale.setScalar(0.5 + next * 1.5);
       (m.material as MeshBasicMaterial).opacity = Math.max(0, (1 - next) * 0.7);
     }
   });
 
   return (
-    <group position={dummy.position} quaternion={dummy.quaternion}>
-      {/* 垂直光柱（cylinder 沿 Y / 指向地表外） */}
-      <mesh ref={pylonRef} position={[0, 0.08, 0]}>
-        <cylinderGeometry args={[0.005, 0.001, 0.18, 16, 1, true]} />
-        <meshBasicMaterial
-          color={GOLD_BRIGHT}
-          transparent
-          opacity={0.75}
-          blending={AdditiveBlending}
-          depthWrite={false}
-          side={DoubleSide}
-          toneMapped={false}
-        />
-      </mesh>
+    <group position={TAIPEI_POS_SURFACE}>
+      {/* 垂直光柱 — 獨立 sub-group 處理 orientation，讓 cylinder 站直朝外
+          (這個旋轉只影響 cylinder，不會連累 ring/griffin) */}
+      <group ref={cylinderWrapRef}>
+        <mesh ref={pylonRef} position={[0, 0.08, 0]}>
+          <cylinderGeometry args={[0.005, 0.001, 0.18, 16, 1, true]} />
+          <meshBasicMaterial
+            color={GOLD_BRIGHT}
+            transparent
+            opacity={0.75}
+            blending={AdditiveBlending}
+            depthWrite={false}
+            side={DoubleSide}
+            toneMapped={false}
+          />
+        </mesh>
+      </group>
 
-      {/* 核心光球 */}
-      <mesh ref={coreRef}>
-        <sphereGeometry args={[0.025, 24, 24]} />
-        <meshBasicMaterial
-          color={GOLD_BRIGHT}
-          transparent
-          opacity={0.9}
-          blending={AdditiveBlending}
-          depthWrite={false}
-          toneMapped={false}
-        />
-      </mesh>
+      {/* Billboard 組 — Griffin / 核心光球 / Ripple 永遠面 camera，避免躺平地球表面 */}
+      <Billboard>
+        {/* 核心光球 */}
+        <mesh ref={coreRef}>
+          <sphereGeometry args={[0.025, 24, 24]} />
+          <meshBasicMaterial
+            color={GOLD_BRIGHT}
+            transparent
+            opacity={0.9}
+            blending={AdditiveBlending}
+            depthWrite={false}
+            toneMapped={false}
+          />
+        </mesh>
 
-      {/* Griffin logo — 朝外 billboard-like（已在 lookAt outward 的 group 內，face camera 方向） */}
-      <mesh ref={logoRef} position={[0, 0, 0.04]}>
-        <planeGeometry args={[0.18, 0.18]} />
-        <meshBasicMaterial map={griffin} transparent alphaTest={0.05} toneMapped={false} />
-      </mesh>
+        {/* Griffin logo */}
+        <mesh ref={logoRef} position={[0, 0, 0.04]}>
+          <planeGeometry args={[0.18, 0.18]} />
+          <meshBasicMaterial map={griffin} transparent alphaTest={0.05} toneMapped={false} />
+        </mesh>
 
-      {/* Success Ripple pool — 6 個環交錯擴散 */}
-      {Array.from({ length: 6 }).map((_, i) => {
-        const isBlue = i % 2 === 1;
-        return (
-          <mesh
-            key={i}
-            ref={(el) => { rippleRefs.current[i] = el; }}
-            position={[0, 0, 0.02]}
-            visible={false}
-          >
-            <ringGeometry args={[0.04, 0.048, 48]} />
-            <meshBasicMaterial
-              color={isBlue ? BLUE_BRIGHT : GOLD_BRIGHT}
-              transparent
-              opacity={0}
-              side={DoubleSide}
-              blending={AdditiveBlending}
-              depthWrite={false}
-              toneMapped={false}
-            />
-          </mesh>
-        );
-      })}
+        {/* Success Ripple pool — 6 個環交錯擴散（face camera 的平板環，不會繞地球） */}
+        {Array.from({ length: 6 }).map((_, i) => {
+          const isBlue = i % 2 === 1;
+          return (
+            <mesh
+              key={i}
+              ref={(el) => { rippleRefs.current[i] = el; }}
+              position={[0, 0, 0.02]}
+              visible={false}
+            >
+              <ringGeometry args={[0.04, 0.048, 48]} />
+              <meshBasicMaterial
+                color={isBlue ? BLUE_BRIGHT : GOLD_BRIGHT}
+                transparent
+                opacity={0}
+                side={DoubleSide}
+                blending={AdditiveBlending}
+                depthWrite={false}
+                toneMapped={false}
+              />
+            </mesh>
+          );
+        })}
+      </Billboard>
 
       {/* 強光源 — 中心金光 */}
       <pointLight ref={lightRef} color={GOLD_BRIGHT} intensity={2.5} distance={3.5} />
@@ -677,9 +683,11 @@ function EarthScene({ isMobile }: { isMobile: boolean }) {
 
   return (
     <>
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[5, 3, 5]} color="#fff5dc" intensity={1.8} />
-      <pointLight position={[-4, -2, 3]} color={BLUE_BRIGHT} intensity={0.55} />
+      <ambientLight intensity={0.55} />
+      {/* v7.3 Chairman：海要藍要亮 — 主光改冷白、強度↑；補一個藍色 rim light 讓海反光更藍 */}
+      <directionalLight position={[5, 3, 5]} color="#e8f0ff" intensity={2.2} />
+      <pointLight position={[-4, -2, 3]} color={BLUE_BRIGHT} intensity={0.8} />
+      <hemisphereLight color="#b0d4ff" groundColor="#0a1428" intensity={0.4} />
 
       <ParallaxStarField density={starDensity} />
 
