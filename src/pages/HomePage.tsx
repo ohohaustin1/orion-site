@@ -14,6 +14,7 @@ import {
   TypewriterTitle,
   AustinSignature,
 } from '../components/shared';
+import { PRODUCT_ICONS, INDUSTRY_ICONS } from '../components/icons';
 
 import './HomePage.css';
 
@@ -33,21 +34,19 @@ const STEPS = [
 ];
 
 const PRODUCTS = [
-  { num: '01', icon: '🏠', title: '不動產決策 AI', sub: '每個月漏掉的機會成本，O 幫你抓回來',         key: '看懂市場，才不會錯過該進場的時機' },
-  { num: '02', icon: '📈', title: '股票策略 AI',   sub: '看不清的市場，O 幫你拆成可執行訊號',         key: '每一筆交易，都有根據' },
-  { num: '03', icon: '🛒', title: '電商成交 AI',   sub: '流量不會轉換？O 幫你找到斷點',               key: '同樣流量，翻倍成交' },
-  { num: '04', icon: '🍽️', title: '餐飲排班 AI',   sub: '人力成本失控，O 幫你算出最省組合',           key: '1 秒排完，還符合勞基法' },
-  { num: '05', icon: '⚙️', title: '製造業排程 AI', sub: '訂單塞車、交期失控，O 幫你重新排序',         key: '產線不卡、客戶不跑' },
-  { num: '06', icon: '🔄', title: '客戶留存 AI',   sub: '客人來一次就不見？O 幫你把他留下',           key: '老客戶才是真正的現金流' },
-  { num: '07', icon: '⚖️', title: '法律風險 AI',   sub: '合約陷阱逃不掉，O 幫你預演訴訟風險',         key: '簽字前先看到地雷' },
-  { num: '08', icon: '🧬', title: '健康長壽 AI',   sub: '數據比你更懂身體，O 幫你計算最佳排程',       key: '老闆的身體，也是公司的資產' },
-  { num: '09', icon: '🎨', title: '品牌語感 AI',   sub: '文案沒有靈魂？O 幫你植入 24 小時創意總監',   key: '品牌調性，一次對齊' },
-  { num: '10', icon: '🏦', title: '企業現金流 AI', sub: '錢不該躺著睡覺，O 幫你預測資金缺口',         key: '現金流透明，決策才踏實' },
-  { num: '11', icon: '🏫', title: '教育傳承 AI',   sub: '經驗帶不走？O 幫你把大腦數位化',             key: '老員工的智慧，變成公司的資產' },
-  { num: '12', icon: '🪐', title: '命運機率 AI',   sub: '運勢不再是玄學，O 將天時地利拆解為可控機率', key: '把直覺，變成可驗證的決策' },
+  { num: '01', Icon: PRODUCT_ICONS[0],  title: '不動產決策 AI', sub: '每個月漏掉的機會成本，O 幫你抓回來',         key: '看懂市場，才不會錯過該進場的時機' },
+  { num: '02', Icon: PRODUCT_ICONS[1],  title: '股票策略 AI',   sub: '看不清的市場，O 幫你拆成可執行訊號',         key: '每一筆交易，都有根據' },
+  { num: '03', Icon: PRODUCT_ICONS[2],  title: '電商成交 AI',   sub: '流量不會轉換？O 幫你找到斷點',               key: '同樣流量，翻倍成交' },
+  { num: '04', Icon: PRODUCT_ICONS[3],  title: '餐飲排班 AI',   sub: '人力成本失控，O 幫你算出最省組合',           key: '1 秒排完，還符合勞基法' },
+  { num: '05', Icon: PRODUCT_ICONS[4],  title: '製造業排程 AI', sub: '訂單塞車、交期失控，O 幫你重新排序',         key: '產線不卡、客戶不跑' },
+  { num: '06', Icon: PRODUCT_ICONS[5],  title: '客戶留存 AI',   sub: '客人來一次就不見？O 幫你把他留下',           key: '老客戶才是真正的現金流' },
+  { num: '07', Icon: PRODUCT_ICONS[6],  title: '法律風險 AI',   sub: '合約陷阱逃不掉，O 幫你預演訴訟風險',         key: '簽字前先看到地雷' },
+  { num: '08', Icon: PRODUCT_ICONS[7],  title: '健康長壽 AI',   sub: '數據比你更懂身體，O 幫你計算最佳排程',       key: '老闆的身體，也是公司的資產' },
+  { num: '09', Icon: PRODUCT_ICONS[8],  title: '品牌語感 AI',   sub: '文案沒有靈魂？O 幫你植入 24 小時創意總監',   key: '品牌調性，一次對齊' },
+  { num: '10', Icon: PRODUCT_ICONS[9],  title: '企業現金流 AI', sub: '錢不該躺著睡覺，O 幫你預測資金缺口',         key: '現金流透明，決策才踏實' },
+  { num: '11', Icon: PRODUCT_ICONS[10], title: '教育傳承 AI',   sub: '經驗帶不走？O 幫你把大腦數位化',             key: '老員工的智慧，變成公司的資產' },
+  { num: '12', Icon: PRODUCT_ICONS[11], title: '命運機率 AI',   sub: '運勢不再是玄學，O 將天時地利拆解為可控機率', key: '把直覺，變成可驗證的決策' },
 ];
-
-const INDUSTRIES = ['🏠', '📈', '🛒', '🍽️', '⚙️', '🔄', '⚖️', '🧬', '🎨', '🏦', '🏫', '🪐', '🏥', '🎓'];
 
 const COMPARE = [
   { domain: '不動產', old: '靠業務員打電話、憑感覺出價',          neo: '24 小時自動監控，鎖定必賺缺口' },
@@ -109,8 +108,6 @@ export default function HomePage() {
         <ScrollReveal y={32}>
           <p className="co-tagline-text">
             成為你一輩子的 <strong>商業 AI 顧問</strong>
-            <br />
-            從直覺到系統，從系統到現金流
           </p>
         </ScrollReveal>
       </section>
@@ -164,7 +161,9 @@ export default function HomePage() {
               <GlassCard key={p.num} className="co-product">
                 <div className="co-product-head">
                   <span className="co-product-num">{p.num}</span>
-                  <span className="co-product-icon">{p.icon}</span>
+                  <span className="co-product-icon" aria-hidden="true">
+                    <p.Icon />
+                  </span>
                 </div>
                 <h3 className="co-product-title">{p.title}</h3>
                 <p className="co-product-sub">{p.sub}</p>
@@ -182,8 +181,10 @@ export default function HomePage() {
         </ScrollReveal>
         <div className="co-marquee">
           <div className="co-marquee-track">
-            {[...INDUSTRIES, ...INDUSTRIES].map((icon, i) => (
-              <div key={i} className="co-marquee-item">{icon}</div>
+            {[...INDUSTRY_ICONS, ...INDUSTRY_ICONS].map((ind, i) => (
+              <div key={i} className="co-marquee-item" title={ind.label} aria-label={ind.label}>
+                <ind.Icon />
+              </div>
             ))}
           </div>
         </div>

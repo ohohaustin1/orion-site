@@ -145,47 +145,24 @@ const HERO_CSS = `
 .hero-v16-submit:hover  { background: #d9b770; box-shadow: 0 6px 22px rgba(197,160,89,0.6), 0 0 36px rgba(197,160,89,0.35); }
 .hero-v16-submit:active { transform: scale(0.97); }
 
-/* 底部產業印記 */
-.hero-v16-industries {
+/* 底部 tagline — Chairman 2026-04-24：「做一次系統，當你一輩子的顧問」 */
+.hero-v16-tagline {
   position: absolute;
   left: 50%;
-  bottom: 6%;
+  bottom: 12%;
   transform: translateX(-50%);
-  display: inline-flex;
-  align-items: center;
-  gap: 16px;
-  padding: 10px 22px;
-  background: rgba(10,10,10,0.55);
-  border: 0.5px solid rgba(197,160,89,0.25);
-  border-radius: 999px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  z-index: 4;
-  color: rgba(255,255,255,0.72);
-  font-size: 12px;
-  letter-spacing: 0.14em;
+  z-index: 5;
+  padding: 8px 20px;
+  pointer-events: none;
   white-space: nowrap;
 }
-.hero-v16-industries-count {
-  color: #C5A059;
-  font-weight: 700;
-  text-shadow: 0 0 8px rgba(197,160,89,0.5);
-}
-.hero-v16-industries-icons {
-  display: inline-flex;
-  gap: 8px;
-  font-size: 16px;
-  filter: drop-shadow(0 0 6px rgba(197,160,89,0.35));
-}
-.hero-v16-industries-icons span {
-  opacity: 0.72;
-  animation: heroIndustryFade 6s ease-in-out infinite;
-}
-.hero-v16-industries-icons span:nth-child(2) { animation-delay: 2s; }
-.hero-v16-industries-icons span:nth-child(3) { animation-delay: 4s; }
-@keyframes heroIndustryFade {
-  0%,100% { opacity: 0.35; }
-  50%     { opacity: 1; transform: translateY(-1px); }
+.hero-v16-tagline-text {
+  font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
+  font-size: 18px;
+  font-weight: 300;
+  color: rgba(197,160,89,0.9);
+  letter-spacing: 0.15em;
+  text-shadow: 0 0 20px rgba(197,160,89,0.4), 0 0 40px rgba(197,160,89,0.2);
 }
 
 /* Mobile */
@@ -206,18 +183,15 @@ const HERO_CSS = `
   .hero-v16-input { height: 36px; font-size: 14px; padding: 0 10px; }
   .hero-v16-submit { padding: 10px 16px; font-size: 13px; letter-spacing: 0.08em; }
 
-  .hero-v16-industries {
-    bottom: 7%;
-    font-size: 10px;
-    gap: 10px;
-    padding: 8px 14px;
-    letter-spacing: 0.1em;
+  .hero-v16-tagline { bottom: 14%; }
+  .hero-v16-tagline-text {
+    font-size: 14px;
+    letter-spacing: 0.12em;
   }
-  .hero-v16-industries-icons { font-size: 13px; gap: 6px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-v16-bg, .hero-v16-eye, .hero-v16-industries-icons span {
+  .hero-v16-bg, .hero-v16-eye {
     animation: none !important;
   }
 }
@@ -259,15 +233,9 @@ export default function HeroSection() {
           <button type="submit" className="hero-v16-submit">立即開始</button>
         </form>
 
-        {/* 底部產業印記 */}
-        <div className="hero-v16-industries" aria-label="已運行產業數">
-          <span className="hero-v16-industries-count">+14</span>
-          <span>個產業已在運行</span>
-          <span className="hero-v16-industries-icons" aria-hidden="true">
-            <span>🏠</span>
-            <span>📈</span>
-            <span>🍽️</span>
-          </span>
+        {/* 底部 tagline */}
+        <div className="hero-v16-tagline">
+          <span className="hero-v16-tagline-text">做一次系統，當你一輩子的顧問</span>
         </div>
 
         <div className="hero-v16-fade" aria-hidden="true" />

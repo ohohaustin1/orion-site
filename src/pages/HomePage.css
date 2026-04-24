@@ -65,7 +65,8 @@
   z-index: 2;
   max-width: 920px;
   margin: 0 auto;
-  font-size: clamp(22px, 3.2vw, 38px);
+  text-align: center;
+  font-size: clamp(22px, 2.2vw, 28px);
   font-weight: 300;
   color: var(--text-secondary, rgba(255,255,255,0.75));
   letter-spacing: 0.08em;
@@ -161,9 +162,24 @@
   text-shadow: 0 0 18px rgba(197,160,89,0.3);
 }
 .co-product-icon {
-  font-size: 32px;
-  line-height: 1;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-primary, #C5A059);
   filter: drop-shadow(0 0 8px rgba(197,160,89,0.3));
+  transition: color 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+}
+.co-product-icon svg {
+  width: 32px;
+  height: 32px;
+  display: block;
+}
+.co-product:hover .co-product-icon {
+  color: var(--gold-bright, #FFD369);
+  filter: drop-shadow(0 0 12px rgba(255,211,105,0.8));
+  transform: scale(1.1);
 }
 .co-product-title {
   font-size: var(--font-h3, 20px);
@@ -220,7 +236,6 @@
 }
 .co-marquee-item {
   flex: 0 0 auto;
-  font-size: 42px;
   width: 88px; height: 88px;
   display: inline-flex;
   align-items: center;
@@ -228,11 +243,23 @@
   background: rgba(16,14,10,0.6);
   border: 0.5px solid rgba(197,160,89,0.25);
   border-radius: 0;
-  transition: border-color 0.3s ease, transform 0.3s ease;
+  color: var(--gold-primary, #C5A059);
+  transition: border-color 0.3s ease, transform 0.3s ease, color 0.3s ease, filter 0.3s ease;
+}
+.co-marquee-item svg {
+  width: 48px;
+  height: 48px;
+  display: block;
+  filter: drop-shadow(0 0 6px rgba(197,160,89,0.2));
+  transition: filter 0.3s ease;
 }
 .co-marquee-item:hover {
   border-color: rgba(197,160,89,0.7);
   transform: translateY(-3px);
+  color: var(--gold-bright, #FFD369);
+}
+.co-marquee-item:hover svg {
+  filter: drop-shadow(0 0 10px rgba(255,211,105,0.6));
 }
 @keyframes marqueeScroll {
   from { transform: translateX(0); }
