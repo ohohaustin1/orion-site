@@ -97,49 +97,6 @@ const capabilities = [
   },
 ];
 
-const team = [
-  {
-    name: 'Austin Hsu',
-    title: '創辦人 / AI 架構師',
-    specialties: 'AI 系統設計、商業模型、策略顧問',
-    core: '把商業需求轉化為可執行的 AI 系統',
-    initial: 'A',
-    color: '#c9a84c',
-  },
-  {
-    name: '魏宇霆 David',
-    title: '首席技術長 / CTO',
-    specialties: '電商系統、ERP/CRM、雲端架構（AWS/GCP）、區塊鏈應用、iOS/Android App',
-    core: '處理邏輯複雜的系統與大型平台架構',
-    initial: 'D',
-    color: '#3498db',
-  },
-  {
-    name: 'Kevin Lin',
-    title: '資深後端工程師',
-    specialties: '系統架構、API 設計、自動化流程',
-    core: '8 年後端開發經驗，高併發系統專家',
-    initial: 'K',
-    color: '#2ecc71',
-  },
-  {
-    name: 'Jason Wang',
-    title: 'AI 工程師',
-    specialties: 'LLM 應用、模型整合、智能客服',
-    core: '6 年 AI/ML 經驗，專攻企業級 AI 落地',
-    initial: 'J',
-    color: '#e67e22',
-  },
-  {
-    name: 'Eric Chen',
-    title: '自動化專家',
-    specialties: 'n8n、RPA、CRM 串接',
-    core: '7 年流程優化經驗，企業自動化佈局師',
-    initial: 'E',
-    color: '#9b59b6',
-  },
-];
-
 const steps = [
   {
     num: '01',
@@ -314,25 +271,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 核心團隊 */}
-      <section className="orion-about-section" style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.6s 0.3s' }}>
-        <h2 className="about-section-title"><Users size={20} /> 核心團隊</h2>
-        <div className="orion-team-grid">
-          {team.map((m, i) => (
-            <div key={i} className="orion-team-card">
-              <div className="team-avatar" style={{
-                background: `linear-gradient(135deg, ${m.color}, ${m.color}88)`,
-                fontSize: '1.4rem',
-                fontWeight: 900,
-              }}>{m.initial}</div>
-              <h3>{m.name}</h3>
-              <div className="team-title">{m.title}</div>
-              <div className="team-detail"><strong>專長：</strong>{m.specialties}</div>
-              <div className="team-detail"><strong>核心：</strong>{m.core}</div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Chairman 2026-04-24：核心團隊區塊拿掉（舊資料），保留 /team 獨立頁面 */}
 
       {/* 服務流程 4 步驟（強化視覺） */}
       <section className="orion-about-section" style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.6s 0.5s' }}>
