@@ -345,11 +345,11 @@
 }
 .earth-city-flag-img {
   width: 22px;
-  height: auto;
+  height: 16px;
   display: block;
-  image-rendering: crisp-edges;
-  filter: drop-shadow(0 0 3px rgba(0, 217, 255, 0.35));
-  border-radius: 1px;
+  object-fit: cover;    /* SVG 4x3 比例 fit 到 22x16 固定矩形 */
+  border-radius: 2px;
+  filter: drop-shadow(0 0 4px rgba(0, 217, 255, 0.55));
 }
 /* TPE destination 維持金色邊框（預留未來解禁用） */
 .earth-city-label.is-taipei {

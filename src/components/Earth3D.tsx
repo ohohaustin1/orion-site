@@ -46,10 +46,11 @@ function latLonToVec3(lat: number, lon: number, radius = 1): Vector3 {
   );
 }
 
-// ── v7.4 Chairman 反饋：Windows Chrome 不渲染 flag emoji，改用 flagcdn.com PNG ──
+// ── v7.5 Chairman：改本地 SVG（flagcdn.com 在 production 載不上來 — 可能 CSP / network）──
 // 把 regional indicator emoji（🇺🇸 = U+1F1FA U+1F1F8）轉成 ISO alpha-2（us）
-// 然後用 flagcdn.com CDN 組出 PNG URL，確保跨平台一致顯示真的國旗圖案
-function flagCdnUrl(flagEmoji: string): string | null {
+// 指向 public/flags/{iso}.svg（lipis/flag-icons MIT 授權，4x3 SVG）
+// 目前資產清單：us gb jp au sg ae br cn kr tw（10 國）
+function flagLocalUrl(flagEmoji: string): string | null {
   const arr = Array.from(flagEmoji);
   if (arr.length < 2) return null;
   const a = arr[0].codePointAt(0);
@@ -59,7 +60,7 @@ function flagCdnUrl(flagEmoji: string): string | null {
   const code =
     String.fromCharCode(a - BASE + 97) +
     String.fromCharCode(b - BASE + 97);
-  return `https://flagcdn.com/w40/${code}.png`;
+  return `/flags/${code}.svg`;
 }
 
 // ══════════════════════════════════════════════════
@@ -284,7 +285,7 @@ function CityLabels({ earthRef }: { earthRef: React.RefObject<Group> }) {
     <>
       {majorCities.map((c) => {
         const pos = latLonToVec3(c.lat, c.lon, 1.06);
-        const url = flagCdnUrl(c.flag);
+        const url = flagLocalUrl(c.flag);
         if (!url) return null;
         return (
           <Html
@@ -298,9 +299,14 @@ function CityLabels({ earthRef }: { earthRef: React.RefObject<Group> }) {
             <div className={`earth-city-label ${c.isDestination ? 'is-taipei' : ''}`}>
               <img
                 src={url}
-                alt={c.name}
+                alt={`${c.name} flag`}
                 className="earth-city-flag-img"
                 draggable={false}
+                onError={(e) => {
+                  // SVG 檔案不存在時（例如未下載的國家）藏起整個 label
+                  const el = e.currentTarget.parentElement;
+                  if (el) el.style.display = 'none';
+                }}
               />
             </div>
           </Html>
