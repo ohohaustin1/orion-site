@@ -62,9 +62,8 @@ export default function ScrollReveal({
     );
   }
 
-  const MotionTag = (as ? motion[as as keyof typeof motion] : motion.div) as React.ElementType;
   return (
-    <MotionTag
+    <motion.div
       className={className}
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -72,6 +71,6 @@ export default function ScrollReveal({
       transition={{ duration, delay, ease: [0.2, 0.8, 0.2, 1] }}
     >
       {children}
-    </MotionTag>
+    </motion.div>
   );
 }

@@ -2,6 +2,8 @@ import React, { ReactNode, ErrorInfo } from 'react';
 
 interface Props {
   children: ReactNode;
+  /** 可選的自訂 fallback UI — 局部嵌套邊界可用來避免整頁被置換 */
+  fallback?: ReactNode;
 }
 
 interface State {
@@ -25,6 +27,7 @@ export default class ErrorBoundary extends React.Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
+      if (this.props.fallback !== undefined) return this.props.fallback;
       return (
         <div style={{ padding: '20px', textAlign: 'center', color: '#e8e8f0' }}>
           <h1>Something went wrong</h1>
