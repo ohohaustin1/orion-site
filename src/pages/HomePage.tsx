@@ -116,7 +116,7 @@ export default function HomePage() {
 
       {/* 3. 4 步驟（GlassCard 4 欄） */}
       <section className="co-steps-section" aria-label="Orion 服務流程">
-        <ScrollReveal className="co-steps-grid" stagger={0.1} y={24}>
+        <ScrollReveal className="co-steps-grid" stagger={0.1} y={24} amount={0.05}>
           {STEPS.map((s) => (
             <GlassCard key={s.num} className="co-step">
               <div className="co-step-num">{s.num}</div>
@@ -156,7 +156,7 @@ export default function HomePage() {
               </>
             </ScrollReveal>
           </div>
-          <ScrollReveal className="co-bento" stagger={0.07} y={40}>
+          <ScrollReveal className="co-bento" stagger={0.07} y={40} amount={0.05}>
             {PRODUCTS.map((p) => (
               <GlassCard key={p.num} className="co-product">
                 <div className="co-product-head">
@@ -203,7 +203,7 @@ export default function HomePage() {
           </ScrollReveal>
         </div>
 
-        <ScrollReveal className="co-compare" stagger={0.12} y={20}>
+        <ScrollReveal className="co-compare" stagger={0.12} y={20} amount={0.05}>
           {COMPARE.map((c, i) => (
             <div key={i} className="co-compare-row">
               <div className="co-compare-cell co-compare-old">❌ {c.domain}：{c.old}</div>
