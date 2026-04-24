@@ -222,7 +222,7 @@ export default function HomePage() {
           <ScrollReveal>
             <>
               <h2>全球想法，都在這裡實現</h2>
-              <p>世界各地的老闆，用 Orion AI 把直覺變成系統</p>
+              <p>從紐約到東京，世界各地的決策者都在用 Orion AI</p>
             </>
           </ScrollReveal>
         </div>
