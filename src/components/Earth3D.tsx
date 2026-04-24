@@ -85,7 +85,10 @@ const CITIES: City[] = [
   { name: 'Johannesburg', code: 'JNB', lat: -26.2041, lon:   28.0473 },
   { name: 'Vancouver',    code: 'YVR', lat:  49.2827, lon: -123.1207 },
   { name: 'Auckland',     code: 'AKL', lat: -36.8485, lon:  174.7633 },
-  { name: 'Taipei',       code: 'TPE', lat:  25.0330, lon:  121.5654, isDestination: true, labelOnly: true },
+  // v7.2 Chairman 2026-04-24：TPE 標籤拿掉（主權爭議規避）；isDestination 保留
+  // 讓 CorePylon 仍以 Taipei 座標為匯聚中心，但 CityLabels 的 filter
+  // `c.labelOnly` 不會渲染這個點 → 畫面不會出現「TPE」字樣。
+  { name: 'Taipei',       code: 'TPE', lat:  25.0330, lon:  121.5654, isDestination: true },
 ];
 
 const TAIPEI = CITIES.find((c) => c.isDestination)!;
@@ -680,8 +683,8 @@ function EarthScene({ isMobile }: { isMobile: boolean }) {
 
       <ParallaxStarField density={starDensity} />
 
-      {/* P1-1 Fresnel atmosphere（scene-level，不隨地球旋轉） */}
-      <FresnelAtmosphere />
+      {/* v7.2 Chairman 2026-04-24：拿掉 FresnelAtmosphere 外環（視覺太厚重壓迫）
+          組件定義保留為 dead code 便於未來恢復，這裡不 render */}
 
       <group ref={mainRef} rotation={[0, INITIAL_EARTH_ROT_Y, 0]}>
         <RealisticEarth />
