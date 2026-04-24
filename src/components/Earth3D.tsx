@@ -92,8 +92,14 @@ const TAIPEI = CITIES.find((c) => c.isDestination)!;
 const TAIPEI_POS_UNIT = latLonToVec3(TAIPEI.lat, TAIPEI.lon, 1);
 const TAIPEI_POS_SURFACE = TAIPEI_POS_UNIT.clone().multiplyScalar(1.015);
 const SOURCE_CITIES = CITIES.filter((c) => !c.isDestination);
+// Three.js rotation.y = θ 把 xz 平面座標逆向旋轉：
+//   new_angle = old_angle - θ
+// 要讓 TAIPEI 在 +Z 中央（new_angle = π/2），必須：
+//   θ = atan2(z, x) - π/2
+// 先前 v5/v7 用的是 +π/2 - atan2(z,x)（sign 反）導致 TAIPEI 被旋到 +X 右邊，
+// label 與光束匯聚點偏移。Chairman 2026-04-24 v7 反饋後修正。
 const INITIAL_EARTH_ROT_Y =
-  Math.PI / 2 - Math.atan2(TAIPEI_POS_UNIT.z, TAIPEI_POS_UNIT.x);
+  Math.atan2(TAIPEI_POS_UNIT.z, TAIPEI_POS_UNIT.x) - Math.PI / 2;
 
 // ══════════════════════════════════════════════════
 // P1-1 Fresnel shader atmosphere（取代 BackSide sphere）
@@ -128,11 +134,11 @@ function FresnelAtmosphere() {
   const matRef = useRef<ShaderMaterial>(null);
   const uniforms = useMemo(() => ({
     uColor: { value: new Color(BLUE_BRIGHT) },
-    uPower: { value: 2.2 },
-    uIntensity: { value: 0.95 },
+    uPower: { value: 3.5 },       // Chairman v7 反饋：外圈太厚 → 提高 power 讓 fresnel 更 edge-only
+    uIntensity: { value: 0.4 },   // intensity 0.95 → 0.4 薄光暈
   }), []);
   return (
-    <mesh scale={1.08}>
+    <mesh scale={1.06}>
       <sphereGeometry args={[1, 64, 64]} />
       <shaderMaterial
         ref={matRef}
@@ -687,10 +693,7 @@ function EarthScene({ isMobile }: { isMobile: boolean }) {
           lineCount={lineCount}
         />
         <CorePylon />
-      </group>
-
-      {/* P1-2 城市標籤 — 獨立 group 放最上（遮擋邏輯在 Html occlude） */}
-      <group>
+        {/* P1-2 城市標籤搬進 mainRef 一起旋轉 — fix Chairman v7 反饋「TPE 跑到印度」座標偏移 */}
         <CityLabels earthRef={mainRef} />
       </group>
     </>
