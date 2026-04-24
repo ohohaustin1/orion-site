@@ -458,10 +458,31 @@
   justify-content: center;
   margin: 0 auto 24px;
 }
-/* v7.7 手機保險：簽名 SVG 寬度收到 viewport 內 */
-.co-trust-signature-wrap svg {
-  max-width: min(240px, 70vw);
+
+/* v2 AustinSignature wrapper 手機友善（Chairman 2026-04-24 實機修復） */
+.austin-signature-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 20px;
+  min-height: 160px;       /* 確保容器有空間，IO observer 有 target */
+  position: relative;
+}
+.austin-signature-wrapper svg {
+  width: 100%;
   height: auto;
+  max-width: 260px;
+  display: block;
+}
+@media (max-width: 767px) {
+  .austin-signature-wrapper {
+    padding: 20px 16px;
+    min-height: 140px;
+  }
+  .austin-signature-wrapper svg {
+    max-width: min(240px, 80%);
+  }
 }
 .co-trust-author {
   display: inline-flex;
