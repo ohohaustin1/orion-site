@@ -92,7 +92,7 @@ export default function HomePage() {
         transition: 'opacity 0.6s',
       }}
     >
-      <LoadingRitual active={showRitual} onComplete={() => { window.location.href = 'https://orion01.com'; }} />
+      <LoadingRitual active={showRitual} onComplete={() => { window.location.href = 'https://orion-hub.zeabur.app/'; }} />
 
       {/* 頂部滾動進度條 */}
       <div className="orion-scroll-progress" style={{ transform: `scaleX(${scrollPct})` }} />
@@ -282,7 +282,7 @@ export default function HomePage() {
           <h2>你的下一個系統，從這裡開始</h2>
         </ScrollReveal>
         <ScrollReveal delay={0.2} className="co-final-cta-btn-wrap">
-          <BreathingButton onClick={() => setShowRitual(true)}>
+          <BreathingButton onClick={() => { window.location.href = 'https://orion-hub.zeabur.app/'; }}>
             現在對話 →
           </BreathingButton>
         </ScrollReveal>

@@ -203,8 +203,9 @@ export default function HeroSection() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = q.trim();
-    const base = 'https://orion01.com';
-    window.location.href = trimmed ? `${base}?q=${encodeURIComponent(trimmed)}` : base;
+    // Chairman 2026-04-24：Hero CTA 直達捕獲室（Zeabur），不再停在 orion01.com 自家首頁
+    const base = 'https://orion-hub.zeabur.app';
+    window.location.href = trimmed ? `${base}/?q=${encodeURIComponent(trimmed)}` : `${base}/`;
   };
 
   return (
