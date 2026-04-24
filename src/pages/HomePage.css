@@ -327,7 +327,34 @@
   .co-compare-arrow { padding: 4px 0; }
 }
 
-/* ========== 14-A: Earth 3D HUD overlay (Chairman 2026-04-24 v4) ========== */
+/* ========== 14-A: Earth 3D 城市地理標籤（Chairman 2026-04-24 v7 P1-2） ========== */
+.earth-city-label {
+  font-family: 'JetBrains Mono', 'Courier New', ui-monospace, monospace;
+  font-size: 10px;
+  color: #00D9FF;
+  background: rgba(0, 0, 0, 0.62);
+  border: 0.5px solid rgba(0, 217, 255, 0.45);
+  padding: 2px 7px;
+  border-radius: 2px;
+  letter-spacing: 0.14em;
+  font-weight: 600;
+  pointer-events: none;
+  white-space: nowrap;
+  transform: translateY(-18px);
+  box-shadow: 0 0 8px rgba(0, 217, 255, 0.25);
+  text-shadow: 0 0 6px rgba(0, 217, 255, 0.4);
+  user-select: none;
+}
+.earth-city-label.is-taipei {
+  color: #FFD369;
+  border-color: rgba(255, 211, 105, 0.75);
+  background: rgba(255, 211, 105, 0.1);
+  box-shadow: 0 0 12px rgba(255, 211, 105, 0.5);
+  text-shadow: 0 0 8px #FFD369;
+  font-weight: 700;
+}
+
+/* ========== 14-A-old: Earth 3D HUD (v4 棄用，保留做未來回滾) ========== */
 .earth-hud {
   font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
   background: rgba(0, 0, 0, 0.78);
