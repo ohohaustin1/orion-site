@@ -46,6 +46,22 @@ function latLonToVec3(lat: number, lon: number, radius = 1): Vector3 {
   );
 }
 
+// ── v7.4 Chairman 反饋：Windows Chrome 不渲染 flag emoji，改用 flagcdn.com PNG ──
+// 把 regional indicator emoji（🇺🇸 = U+1F1FA U+1F1F8）轉成 ISO alpha-2（us）
+// 然後用 flagcdn.com CDN 組出 PNG URL，確保跨平台一致顯示真的國旗圖案
+function flagCdnUrl(flagEmoji: string): string | null {
+  const arr = Array.from(flagEmoji);
+  if (arr.length < 2) return null;
+  const a = arr[0].codePointAt(0);
+  const b = arr[1].codePointAt(0);
+  const BASE = 0x1F1E6; // 🇦
+  if (!a || !b || a < BASE || b < BASE) return null;
+  const code =
+    String.fromCharCode(a - BASE + 97) +
+    String.fromCharCode(b - BASE + 97);
+  return `https://flagcdn.com/w40/${code}.png`;
+}
+
 // ══════════════════════════════════════════════════
 // 27 全球城市（label 為 3-letter code 用於地理標籤）
 // ══════════════════════════════════════════════════
@@ -268,6 +284,8 @@ function CityLabels({ earthRef }: { earthRef: React.RefObject<Group> }) {
     <>
       {majorCities.map((c) => {
         const pos = latLonToVec3(c.lat, c.lon, 1.06);
+        const url = flagCdnUrl(c.flag);
+        if (!url) return null;
         return (
           <Html
             key={c.code}
@@ -278,7 +296,12 @@ function CityLabels({ earthRef }: { earthRef: React.RefObject<Group> }) {
             style={{ pointerEvents: 'none' }}
           >
             <div className={`earth-city-label ${c.isDestination ? 'is-taipei' : ''}`}>
-              <span className="earth-city-flag">{c.flag}</span>
+              <img
+                src={url}
+                alt={c.name}
+                className="earth-city-flag-img"
+                draggable={false}
+              />
             </div>
           </Html>
         );

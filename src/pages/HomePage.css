@@ -327,41 +327,37 @@
   .co-compare-arrow { padding: 4px 0; }
 }
 
-/* ========== 14-A: Earth 3D 國旗標籤（v7.3 — Chairman 改國旗 emoji） ========== */
+/* ========== 14-A: Earth 3D 國旗標籤（v7.4 — flagcdn.com PNG，跨瀏覽器一致） ========== */
 .earth-city-label {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.62);
+  background: rgba(0, 0, 0, 0.6);
   border: 0.5px solid rgba(0, 217, 255, 0.5);
-  padding: 3px 8px;
-  border-radius: 3px;
+  padding: 2px 4px;
+  border-radius: 2px;
   pointer-events: none;
   white-space: nowrap;
   transform: translateY(-14px);
   box-shadow: 0 0 8px rgba(0, 217, 255, 0.22);
   user-select: none;
-  line-height: 1;
+  line-height: 0;    /* 避免 img baseline 造成間隙 */
 }
-.earth-city-flag {
-  font-family:
-    'Twemoji Country Flags',        /* web font 若有 */
-    'Apple Color Emoji',
-    'Segoe UI Emoji',
-    'Noto Color Emoji',
-    sans-serif;
-  font-size: 16px;
-  line-height: 1;
-  letter-spacing: 0;
+.earth-city-flag-img {
+  width: 22px;
+  height: auto;
+  display: block;
+  image-rendering: crisp-edges;
   filter: drop-shadow(0 0 3px rgba(0, 217, 255, 0.35));
+  border-radius: 1px;
 }
-/* TPE destination 維持金色背景（未 render but keep rule for future） */
+/* TPE destination 維持金色邊框（預留未來解禁用） */
 .earth-city-label.is-taipei {
   border: 1px solid rgba(255, 211, 105, 0.85);
   background: rgba(255, 211, 105, 0.14);
   box-shadow: 0 0 14px rgba(255, 211, 105, 0.5);
 }
-.earth-city-label.is-taipei .earth-city-flag {
+.earth-city-label.is-taipei .earth-city-flag-img {
   filter: drop-shadow(0 0 6px rgba(255, 211, 105, 0.85));
 }
 
