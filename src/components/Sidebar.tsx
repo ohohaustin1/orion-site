@@ -91,7 +91,7 @@ export default function Sidebar() {
           </a>
           <a
             className="orion-sidebar-cta-link is-warrior"
-            href="https://orion01.com/?mode=warrior"
+            href="https://orion-hub.zeabur.app/?mode=warrior"
           >
             <span className="orion-sidebar-cta-icon"><ShieldScanIcon size={16} /></span>
             <div className="orion-sidebar-cta-body">
