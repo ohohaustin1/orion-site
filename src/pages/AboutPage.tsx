@@ -8,7 +8,7 @@ const capabilities = [
   {
     icon: Cpu,
     label: 'AI 需求診斷系統',
-    price: 'NT$30,000 起',
+    price: '內洽：先理清你想解決什麼、再算錢',
     audience: '想導入 AI 但不知從何開始的企業主',
     timeline: '1–2 週',
     outcome: '精準定位 3 大核心痛點，產出可執行的 AI 導入路線圖',
@@ -17,7 +17,7 @@ const capabilities = [
   {
     icon: MessageSquare,
     label: '智能客服自動化',
-    price: 'NT$50,000 起',
+    price: '內洽：依交付範圍給你最公道的數字',
     audience: '客服量大、重複問題多、回覆速度慢的企業',
     timeline: '2–3 週',
     outcome: '客服成本降低 40%+，回覆時間從小時級縮短至秒級',
@@ -26,7 +26,7 @@ const capabilities = [
   {
     icon: Video,
     label: '影片內容自動生成',
-    price: 'NT$40,000 起',
+    price: '內洽：依你的資料量和複雜度報價',
     audience: '需要大量短影音行銷但人力有限的品牌',
     timeline: '2–3 週',
     outcome: '內容產能提升 10 倍，單支影片成本降低 70%',
@@ -35,7 +35,7 @@ const capabilities = [
   {
     icon: FileText,
     label: '帳務報表自動化',
-    price: 'NT$35,000 起',
+    price: '內洽：先做需求拆解、再算實際成本',
     audience: '每月花大量時間在對帳、報表的財務團隊',
     timeline: '1–2 週',
     outcome: '報表產出時間降低 80%，人工錯誤率趨近 0',
@@ -44,7 +44,7 @@ const capabilities = [
   {
     icon: ShoppingCart,
     label: '電商系統開發',
-    price: 'NT$150,000 起',
+    price: '內洽：規模不同、價格不同、聊一下知道',
     audience: '想建立自有電商平台、脫離平台抽成的品牌',
     timeline: '6–10 週',
     outcome: '轉換率提升 25%+，會員終生價值成長 2 倍',
@@ -53,7 +53,7 @@ const capabilities = [
   {
     icon: UserCheck,
     label: 'CRM 客戶管理系統',
-    price: 'NT$80,000 起',
+    price: '內洽：每家公司流程不同、要看了才知道',
     audience: '客戶數據散落各處、跟進靠記憶的業務團隊',
     timeline: '3–5 週',
     outcome: '成交率提升 30%+，客戶流失率降低 40%',
@@ -62,7 +62,7 @@ const capabilities = [
   {
     icon: Server,
     label: 'ERP 企業資源管理',
-    price: 'NT$200,000 起',
+    price: '內洽：方向對了、價格我們會替你想',
     audience: '進銷存管理混亂、部門資訊斷層的中大型企業',
     timeline: '8–14 週',
     outcome: '庫存周轉率提升 35%，營運效率提升 50%+',
@@ -71,7 +71,7 @@ const capabilities = [
   {
     icon: Cloud,
     label: '雲端架構規劃（AWS/GCP）',
-    price: 'NT$100,000 起',
+    price: '內洽：跨產業有差異、我們聊完報你',
     audience: '系統效能瓶頸、伺服器成本過高的技術團隊',
     timeline: '3–6 週',
     outcome: '基礎設施成本降低 40%，系統可用率達 99.9%',
@@ -80,7 +80,7 @@ const capabilities = [
   {
     icon: BarChart3,
     label: '數據分析儀表板',
-    price: 'NT$60,000 起',
+    price: '內洽：你說明白、我們報得明白',
     audience: '決策靠直覺、數據散落在 Excel 的管理層',
     timeline: '2–4 週',
     outcome: '決策速度提升 5 倍，數據驅動取代經驗猜測',
@@ -89,7 +89,7 @@ const capabilities = [
   {
     icon: Lightbulb,
     label: 'AI 導入全程顧問',
-    price: 'NT$120,000 起',
+    price: '內洽：我們不喊高、不喊低、看實際工作量',
     audience: '規模較大、需要全面 AI 轉型規劃的企業',
     timeline: '4–12 週',
     outcome: '從零到一完成 AI 轉型，ROI 平均 3–8 倍',
