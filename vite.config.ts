@@ -21,9 +21,8 @@ export default defineConfig({
     prerender({
       routes: PRERENDER_ROUTES,
       renderer: new PuppeteerRenderer({
-        renderAfterDocumentEvent: 'render-event',
-        renderAfterTime: 4000, // 兜底：4 秒一定快照（Three.js / 字型不穩時用）
-        maxConcurrentRoutes: 2,
+        renderAfterTime: 4500, // 給 React + Helmet + 字型 4.5 秒 settle
+        maxConcurrentRoutes: 1, // 序列跑、避免 Helmet 全域 state race
         headless: true,
       }),
       postProcess(renderedRoute: any) {
