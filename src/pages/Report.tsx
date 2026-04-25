@@ -28,13 +28,21 @@ interface ReportData {
 type PageState = 'loading' | 'ready' | 'error';
 type UnlockMode = 'email' | 'account' | null;
 
+// T1：拉到 12 個 hint、平均 15s 一句、撐 180 秒、覆蓋 Sonnet 完整生成週期
+// 移除禁用詞：賦能 → 行動 / 方案
 const LOADING_HINTS = [
-  { text: '正在抓取您的行業的黑資料庫...', pct: 15 },
-  { text: '比對 200+ 產業 AI 成功案例...', pct: 30 },
-  { text: '運算每月隱藏費用與損失...', pct: 50 },
-  { text: '生成客製化 AI 賦能方案...', pct: 65 },
-  { text: '計算投資報酬的預估...', pct: 80 },
-  { text: '整合策略建議與行動方案...', pct: 90 },
+  { text: '顧問正在閱讀你的回答...', pct: 8 },
+  { text: '對標你的行業案例庫...', pct: 16 },
+  { text: '抓取你提到的關鍵字...', pct: 24 },
+  { text: '比對 200+ 產業實戰報告...', pct: 32 },
+  { text: '運算每月隱藏費用與損失...', pct: 42 },
+  { text: '量化你的時間成本...', pct: 50 },
+  { text: '生成客製化行動方案...', pct: 58 },
+  { text: '計算投資報酬區間...', pct: 66 },
+  { text: '整理 3 個關鍵建議...', pct: 74 },
+  { text: '撰寫風險與機會分析...', pct: 82 },
+  { text: '整合策略路徑...', pct: 90 },
+  { text: '即將完成最後校對...', pct: 96 },
 ];
 
 export default function Report({ previewTemplate }: ReportProps = {}) {
@@ -131,7 +139,8 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
     }
   }, [sessionId, consultationState]);
 
-  // ── 6-stage progress bar ──
+  // ── 12-stage progress bar （每 15s 換一句、撐 ~180s） ──
+  // T1：原 5s 換太快、12 個 hint 一輪 60s、Sonnet 90s+ 後就停在最後一句。改 15s。
   useEffect(() => {
     if (state !== 'loading') return;
     const interval = setInterval(() => {
@@ -141,7 +150,7 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
         setProgress(LOADING_HINTS[next].pct);
         return next;
       });
-    }, 5000);
+    }, 15000);
     setProgress(LOADING_HINTS[0].pct);
     return () => clearInterval(interval);
   }, [state]);
@@ -166,7 +175,10 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
     if (!sessionId) return;
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 45000);
+    // T1：timeout 45s → 200s
+    // 真實 Sonnet 4.6 / 4000 tokens 完整生成 ~ 90-180s
+    // 原 45s 過短會 abort + retry 累積到 5+ 分鐘、客戶以為當機
+    const timeout = setTimeout(() => controller.abort(), 200000);
 
     fetch(`https://orion-hub.zeabur.app/api/report/${sessionId}`, { signal: controller.signal })
       .then(res => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.json(); })
@@ -180,7 +192,7 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
       })
       .catch(err => {
         clearTimeout(timeout);
-        setError(err.name === 'AbortError' ? '回應逾時，請重試' : '報告生成失敗');
+        setError(err.name === 'AbortError' ? '報告生成需要更多時間、請重新載入頁面再試' : '報告生成失敗');
         setState('error');
       });
   }, [sessionId, isPreview]);
@@ -282,7 +294,7 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
     setRefineError('');
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 45000);
+      const timeout = setTimeout(() => controller.abort(), 120000); // T1: 45s → 120s
       const res = await fetch('https://orion-hub.zeabur.app/api/report/refine', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
