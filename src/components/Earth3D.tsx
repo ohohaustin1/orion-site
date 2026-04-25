@@ -684,7 +684,8 @@ function EarthScene({ isMobile }: { isMobile: boolean }) {
 
   useFrame(({ clock }) => {
     clockRef.current = clock.elapsedTime;
-    if (mainRef.current) mainRef.current.rotation.y += 0.0008;
+    // P1-Hero：0.0008 → 0.0004（Aman 風格、Earth 旋轉更慢、整圈 ~260s）
+    if (mainRef.current) mainRef.current.rotation.y += 0.0004;
   });
 
   return (

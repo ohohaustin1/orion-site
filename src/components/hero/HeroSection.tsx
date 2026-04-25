@@ -17,7 +17,9 @@ const HERO_CSS = `
   width: 100%;
   height: 100vh;
   min-height: 560px;
-  background-color: #0a0a0a;
+  /* P1-Hero：純黑 → 微漸層、視覺更柔（Aman 風） */
+  background:
+    radial-gradient(ellipse at center, #0f0c08 0%, #0a0a0a 50%, #050505 100%);
   overflow: hidden;
   font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
   letter-spacing: 0.05em;
@@ -31,13 +33,16 @@ const HERO_CSS = `
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  animation: heroBreathe 8s ease-in-out infinite;
+  /* P1-Hero：8s → 12s（更慢的呼吸、Aman 寧靜感） */
+  animation: heroBreathe 12s ease-in-out infinite;
+  /* 整體透明度微降、減少視覺壓迫 */
+  opacity: 0.94;
   will-change: transform;
   z-index: 1;
 }
 @keyframes heroBreathe {
   0%,100% { transform: scale(1.00); }
-  50%     { transform: scale(1.02); }
+  50%     { transform: scale(1.025); }
 }
 
 /* 機器人眼睛發光（2 點絕對位置，視覺錨定 HERO3 臉部約略位置） */
@@ -51,7 +56,8 @@ const HERO_CSS = `
     0 0 8px rgba(255,220,130,0.8),
     0 0 20px rgba(245,211,105,0.55),
     0 0 40px rgba(197,160,89,0.35);
-  animation: heroEyePulse 2.4s ease-in-out infinite;
+  /* P1-Hero：2.4s → 3.6s（眼睛 pulse 也放慢、寧靜感） */
+  animation: heroEyePulse 3.6s ease-in-out infinite;
   pointer-events: none;
   z-index: 2;
   mix-blend-mode: screen;
