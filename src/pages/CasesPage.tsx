@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Filter, Crosshair, ChevronRight, AlertTriangle, Brain, Target, DollarSign } from 'lucide-react';
 import { allCases, industryColors, type CaseStudy } from '../data/cases';
-import { setSEO } from '../lib/seo';
+import PageSEO from '../components/PageSEO';
 
 const DIAG_URL = 'https://orion-hub.zeabur.app';
 const API_URL = 'https://orion-hub.zeabur.app/api/public/cases';
@@ -41,13 +41,6 @@ export default function CasesPage() {
   const [cases, setCases] = useState<CaseStudy[] | null>(null);
   const [filter, setFilter] = useState('全部');
 
-  useEffect(() => {
-    setSEO({
-      title: '實戰戰報資料庫 | Orion 獵戶座智鑑',
-      description: '20個真實企業 AI 導入案例，成交率提升、成本降低的量化成果。',
-    });
-  }, []);
-
   // Task 2: fetch /api/public/cases, 失敗靜默 fallback 硬碼
   useEffect(() => {
     let aborted = false;
@@ -80,6 +73,11 @@ export default function CasesPage() {
 
   return (
     <div className="orion-page">
+      <PageSEO
+        title="實戰戰報資料庫 | Orion 獵戶座智鑑"
+        description="20 個真實企業 AI 導入案例，成交率提升、成本降低的量化成果。"
+        url="/cases"
+      />
       <div className="orion-page-header">
         <h1>實戰戰報資料庫</h1>
         <p>

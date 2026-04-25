@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# 動態頁不需索引
+Disallow: /report
+Disallow: /war-room
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /dashboard
+Disallow: /projects
+Disallow: /clients
+Disallow: /admin
+
+Sitemap: https://orion01.com/sitemap.xml

@@ -1,5 +1,12 @@
 {
-    "rewrites": [
-          { "source": "/(.*)", "destination": "/index.html" }
-    ]
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/home", "destination": "/home/index.html" },
+    { "source": "/cases", "destination": "/cases/index.html" },
+    { "source": "/insights", "destination": "/insights/index.html" },
+    { "source": "/about", "destination": "/about/index.html" },
+    { "source": "/team", "destination": "/team/index.html" },
+    { "source": "/resources", "destination": "/resources/index.html" },
+    { "source": "/((?!.*\\.).+)", "destination": "/index.html" }
+  ]
 }

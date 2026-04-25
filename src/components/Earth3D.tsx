@@ -46,22 +46,8 @@ function latLonToVec3(lat: number, lon: number, radius = 1): Vector3 {
   );
 }
 
-// ── v7.5 Chairman：改本地 SVG（flagcdn.com 在 production 載不上來 — 可能 CSP / network）──
-// 把 regional indicator emoji（🇺🇸 = U+1F1FA U+1F1F8）轉成 ISO alpha-2（us）
-// 指向 public/flags/{iso}.svg（lipis/flag-icons MIT 授權，4x3 SVG）
-// 目前資產清單：us gb jp au sg ae br cn kr tw（10 國）
-function flagLocalUrl(flagEmoji: string): string | null {
-  const arr = Array.from(flagEmoji);
-  if (arr.length < 2) return null;
-  const a = arr[0].codePointAt(0);
-  const b = arr[1].codePointAt(0);
-  const BASE = 0x1F1E6; // 🇦
-  if (!a || !b || a < BASE || b < BASE) return null;
-  const code =
-    String.fromCharCode(a - BASE + 97) +
-    String.fromCharCode(b - BASE + 97);
-  return `/flags/${code}.svg`;
-}
+// v7.6 Chairman 2026-04-24：flag 路線放棄（v7.4 flagcdn.com 載不上、v7.5 local
+// SVG 仍有問題），改回純文字 3-letter code + pulse 藍點即可。flagLocalUrl 移除。
 
 // ══════════════════════════════════════════════════
 // 27 全球城市（label 為 3-letter code 用於地理標籤）
@@ -284,9 +270,9 @@ function CityLabels({ earthRef }: { earthRef: React.RefObject<Group> }) {
   return (
     <>
       {majorCities.map((c) => {
+        // v7.6: Taipei / destination 不 render label（Chairman 主權規避）
+        if (c.isDestination) return null;
         const pos = latLonToVec3(c.lat, c.lon, 1.06);
-        const url = flagLocalUrl(c.flag);
-        if (!url) return null;
         return (
           <Html
             key={c.code}
@@ -296,18 +282,9 @@ function CityLabels({ earthRef }: { earthRef: React.RefObject<Group> }) {
             occlude={earthRef.current ? [earthRef as unknown as React.RefObject<Group>] : undefined}
             style={{ pointerEvents: 'none' }}
           >
-            <div className={`earth-city-label ${c.isDestination ? 'is-taipei' : ''}`}>
-              <img
-                src={url}
-                alt={`${c.name} flag`}
-                className="earth-city-flag-img"
-                draggable={false}
-                onError={(e) => {
-                  // SVG 檔案不存在時（例如未下載的國家）藏起整個 label
-                  const el = e.currentTarget.parentElement;
-                  if (el) el.style.display = 'none';
-                }}
-              />
+            <div className="earth-city-label">
+              <span className="earth-city-dot" aria-hidden="true" />
+              <span className="earth-city-code">{c.code}</span>
             </div>
           </Html>
         );

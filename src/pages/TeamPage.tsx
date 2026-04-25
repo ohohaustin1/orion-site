@@ -1,4 +1,5 @@
 import React from 'react';
+import PageSEO from '../components/PageSEO';
 
 interface Member {
   name: string;
@@ -227,6 +228,11 @@ const TEAM_CSS = `
 export default function TeamPage() {
   return (
     <div className="team-page">
+      <PageSEO
+        title="核心團隊 | Orion 獵戶座智鑑"
+        description="認識 Orion 的人 — 我們不是顧問公司，是你事業的長期戰友。AI 系統設計、技術架構、商業策略多領域戰士。"
+        url="/team"
+      />
       <style dangerouslySetInnerHTML={{ __html: TEAM_CSS }} />
 
       <header className="team-header">

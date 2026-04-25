@@ -1,5 +1,5 @@
 import { useState, useEffect, Suspense, lazy } from 'react';
-import { setSEO } from '../lib/seo';
+import PageSEO from '../components/PageSEO';
 import { LoadingRitual } from '../components/LoadingRitual';
 import HeroSection from '../components/hero/HeroSection';
 import ErrorBoundary from '../components/ErrorBoundary';
@@ -63,11 +63,6 @@ export default function HomePage() {
 
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 100);
-    setSEO({
-      title: 'Orion 獵戶座智鑑 | 做一次系統，當你一輩子的 AI 顧問',
-      description: '說出你的問題，Orion AI 幫你找出失去的錢。企業級 AI 成交引擎，3 個月打造 10 個賺錢系統。',
-      url: 'https://orion01.com',
-    });
 
     const onScroll = () => {
       const h = document.documentElement;
@@ -92,6 +87,11 @@ export default function HomePage() {
         transition: 'opacity 0.6s',
       }}
     >
+      <PageSEO
+        title="Orion 獵戶座智鑑 | 做一次系統，當你一輩子的 AI 顧問"
+        description="說出你的問題，Orion AI 幫你找出失去的錢。企業級 AI 成交引擎，3 個月打造 10 個賺錢系統。"
+        url="/home"
+      />
       <LoadingRitual active={showRitual} onComplete={() => { window.location.href = 'https://orion-hub.zeabur.app/'; }} />
 
       {/* 頂部滾動進度條 */}

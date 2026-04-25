@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Cpu, Workflow, Cloud, Zap, ArrowRight, Users, MessageSquare, Video, FileText, ShoppingCart, UserCheck, Server, BarChart3, Lightbulb, Clock, Target, CheckCircle2, Shield } from 'lucide-react';
-import { setSEO } from '../lib/seo';
+import PageSEO from '../components/PageSEO';
 
 const DIAG_URL = 'https://orion-hub.zeabur.app';
 
@@ -134,14 +134,15 @@ export default function AboutPage() {
 
   useEffect(() => {
     setTimeout(() => setVisible(true), 100);
-    setSEO({
-      title: '服務介紹 | Orion 獵戶座智鑑',
-      description: 'AI 導入顧問、系統開發、自動化流程，先顧問後開發的高端服務。',
-    });
   }, []);
 
   return (
     <div className="orion-page">
+      <PageSEO
+        title="服務介紹 | Orion 獵戶座智鑑"
+        description="AI 導入顧問、系統開發、自動化流程，先顧問後開發的高端服務。"
+        url="/about"
+      />
       {/* 反向篩選文案 */}
       <div style={{
         textAlign: 'center',

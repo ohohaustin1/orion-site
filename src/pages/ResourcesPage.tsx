@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BookOpen, Zap, ChevronDown, ChevronUp, ExternalLink, AlertTriangle, ArrowRight } from 'lucide-react';
-import { setSEO } from '../lib/seo';
+import PageSEO from '../components/PageSEO';
 
 const DIAG_URL = 'https://orion-hub.zeabur.app';
 
@@ -53,15 +53,13 @@ const faqs = [
 export default function ResourcesPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  useEffect(() => {
-    setSEO({
-      title: '為什麼你的成交漏斗正在失血 | Orion 資源中心',
-      description: '揭露 AI 導入失敗的真實病灶，找回流失的成交機會。',
-    });
-  }, []);
-
   return (
     <div className="orion-page">
+      <PageSEO
+        title="為什麼你的成交漏斗正在失血 | Orion 資源中心"
+        description="揭露 AI 導入失敗的真實病灶，找回流失的成交機會。"
+        url="/resources"
+      />
       <div className="orion-page-header">
         <h1>資源中心</h1>
         <p>你不知道的真相，正在讓你的企業慢性失血</p>

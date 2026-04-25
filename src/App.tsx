@@ -126,15 +126,22 @@ function App() {
 
   useEffect(() => {
     const path = window.location.pathname;
-    const skipSplash = ['/report', '/war-room', '/home', '/cases', '/insights', '/about', '/resources'];
+    const skipSplash = ['/report', '/war-room', '/home', '/cases', '/insights', '/about', '/team', '/resources'];
     if (skipSplash.some(r => path.startsWith(r))) {
       setShowSplash(false);
-      return;
+    } else {
+      const hasSeenSplash = sessionStorage.getItem('hasSeenSplash');
+      if (hasSeenSplash) setShowSplash(false);
     }
-    const hasSeenSplash = sessionStorage.getItem('hasSeenSplash');
-    if (hasSeenSplash) {
-      setShowSplash(false);
-    }
+
+    // TD-007 SSR：通知 @prerenderer/rollup-plugin 快照可以開始
+    // 等下一輪 idle / 動畫起始 frame，給 React commit + 字型有時間 settle
+    const t = setTimeout(() => {
+      try {
+        document.dispatchEvent(new Event('render-event'));
+      } catch { /* SSR-safe noop */ }
+    }, 250);
+    return () => clearTimeout(t);
   }, []);
 
   const handleSplashComplete = () => {

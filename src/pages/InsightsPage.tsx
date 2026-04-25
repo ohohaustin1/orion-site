@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { TrendingUp, Zap, AlertTriangle } from 'lucide-react';
+import PageSEO from '../components/PageSEO';
 
 const industryData = [
   { industry: '房仲業', before: '成交率 8-12%', after: '成交率 18-28%', improvement: '+120%', color: '#e74c3c' },
@@ -20,6 +21,11 @@ export default function InsightsPage() {
 
   return (
     <div className="orion-page">
+      <PageSEO
+        title="數據洞察 | Orion 獵戶座智鑑"
+        description="數據不說謊 — AI 導入前後的真實差距：成交率、客服回覆、報價週期、毛利可視化跨產業量化對比。"
+        url="/insights"
+      />
       <div className="orion-page-header">
         <h1>數據洞察</h1>
         <p>數據不說謊，AI 導入前後的真實差距</p>
