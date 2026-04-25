@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Filter, Crosshair, ChevronRight, AlertTriangle, Brain, Target, DollarSign } from 'lucide-react';
-import { allCases, industryColors, type CaseStudy } from '../data/cases';
+import { allCases, type CaseStudy } from '../data/cases';
+import { fetchIndustries, getIndustryColor, FALLBACK_INDUSTRIES, type Industry } from '../lib/industries';
 import PageSEO from '../components/PageSEO';
 
 const DIAG_URL = 'https://orion-hub.zeabur.app';
@@ -40,6 +41,8 @@ export default function CasesPage() {
   // null = loading（尚未 fetch 回）；實陣列 = 已載入（API 或 fallback）
   const [cases, setCases] = useState<CaseStudy[] | null>(null);
   const [filter, setFilter] = useState('全部');
+  // TD-INDUSTRIES-sync：從 /api/public/industries 取單一來源、失敗 fallback
+  const [industriesSrc, setIndustriesSrc] = useState<Industry[]>(FALLBACK_INDUSTRIES);
 
   // Task 2: fetch /api/public/cases, 失敗靜默 fallback 硬碼
   useEffect(() => {
@@ -60,6 +63,9 @@ export default function CasesPage() {
       })
       .finally(() => clearTimeout(timeoutId));
 
+    // TD-INDUSTRIES-sync：fetch 產業清單（cache 命中即返、失敗 fallback）
+    fetchIndustries().then((list) => { if (!aborted) setIndustriesSrc(list); });
+
     return () => {
       aborted = true;
       ctrl.abort();
@@ -68,7 +74,13 @@ export default function CasesPage() {
 
   const loading = cases === null;
   const effectiveCases = cases ?? allCases;
-  const industries = ['全部', ...Array.from(new Set(effectiveCases.map(c => c.industry)))];
+  // 從 case data 抽取已用到的產業 + 補上 industriesSrc（單一來源）
+  const usedFromCases = new Set(effectiveCases.map(c => c.industry).filter(Boolean));
+  const allIndustryNames = new Set([
+    ...industriesSrc.map(i => i.name),
+    ...usedFromCases, // 容錯：case 用了 industriesSrc 沒列的產業也照樣顯示
+  ]);
+  const industries = ['全部', ...Array.from(allIndustryNames)];
   const filtered = filter === '全部' ? effectiveCases : effectiveCases.filter(c => c.industry === filter);
 
   return (
@@ -117,7 +129,7 @@ export default function CasesPage() {
                 className="orion-case-card"
                 style={{ animationDelay: `${i * 0.05}s` }}
               >
-                <div className="case-tag" style={{ background: industryColors[c.industry] || '#c9a84c' }}>
+                <div className="case-tag" style={{ background: getIndustryColor(c.industry) }}>
                   {c.industry}
                 </div>
                 <h3 className="case-company">{c.company}</h3>

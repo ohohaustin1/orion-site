@@ -244,19 +244,5 @@ export const caseStudies: CaseStudy[] = [
 export const featuredCases = caseStudies.filter(c => c.featured);
 export const allCases = caseStudies;
 
-export const industryColors: Record<string, string> = {
-  '房地產仲介': '#e74c3c',
-  '電商零售': '#3498db',
-  '製造業': '#e67e22',
-  '餐飲連鎖': '#2ecc71',
-  '顧問服務': '#9b59b6',
-  '醫療診所': '#1abc9c',
-  '法律事務所': '#34495e',
-  '教育補習班': '#f39c12',
-  '物流倉儲': '#16a085',
-  '建築設計': '#8e44ad',
-  '美容美髮': '#e91e63',
-  '汽車保養': '#607d8b',
-  '保險業務': '#ff5722',
-  '健身房': '#4caf50',
-};
+// industryColors 已移到 src/lib/industries.ts（TD-INDUSTRIES-sync）
+// 用 getIndustryColor(name) 取代 industryColors[name]
