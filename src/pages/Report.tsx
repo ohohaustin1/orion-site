@@ -89,8 +89,8 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
   const [reportVersion, setReportVersion] = useState(1);
   const [showLengthWarning, setShowLengthWarning] = useState(false);
 
-  // ── 解鎖狀態 ──
-  const [isUnlocked, setIsUnlocked] = useState(false);
+  // ── 解鎖狀態 ──（T7：preview 模式自動解鎖、Chairman 看完整版）
+  const [isUnlocked, setIsUnlocked] = useState(isPreview);
   const [unlockMode, setUnlockMode] = useState<UnlockMode>(null);
   const [unlockEmail, setUnlockEmail] = useState('');
   const [unlockPassword, setUnlockPassword] = useState('');
