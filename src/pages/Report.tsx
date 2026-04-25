@@ -100,9 +100,11 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get('session');
 
-  // P0-01：Chairman 深聊請求按鈕狀態
+  // P0-01 / T3：聯絡按鈕狀態
   const [consultationState, setConsultationState] =
     useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  // T3：ContactModal 開合
+  const [contactModalOpen, setContactModalOpen] = useState(false);
 
   // ── 檢查 session_id ──（preview 模式跳過）
   useEffect(() => {
@@ -140,23 +142,52 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
     }).catch(() => { /* 靜默 */ });
   }, [sessionId, isPreview]);
 
-  // ── P0-01：請求 Chairman 深聊 ──
-  const handleRequestConsultation = useCallback(async () => {
-    if (!sessionId || consultationState === 'submitting' || consultationState === 'success') return;
+  // ── T3：CTA 按鈕 → 開 ContactModal（不再直接送出） ──
+  const handleRequestConsultation = useCallback(() => {
+    if (consultationState === 'success') return;
+    if (isPreview) {
+      // preview 模式：開 modal 但送出走 mock
+      setContactModalOpen(true);
+      return;
+    }
+    if (!sessionId) return;
+    setContactModalOpen(true);
+  }, [sessionId, consultationState, isPreview]);
+
+  // T3：客戶在 modal 選擇聯絡方式 → 送出
+  const handleSubmitContact = useCallback(async (method: string, clientInfo: string = '') => {
+    if (consultationState === 'submitting') return;
     setConsultationState('submitting');
     try {
+      if (isPreview) {
+        // preview 模式：mock 成功、不打 API
+        await new Promise(r => setTimeout(r, 600));
+        setConsultationState('success');
+        setContactModalOpen(false);
+        return;
+      }
+      if (!sessionId) {
+        setConsultationState('error');
+        return;
+      }
       const res = await fetch(
         `https://orion-hub.zeabur.app/api/leads/${sessionId}/request-consultation`,
-        { method: 'POST', headers: { 'Content-Type': 'application/json' } }
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ method, clientInfo }),
+        }
       );
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      if (data.ok) setConsultationState('success');
-      else setConsultationState('error');
+      if (data.ok) {
+        setConsultationState('success');
+        setContactModalOpen(false);
+      } else setConsultationState('error');
     } catch {
       setConsultationState('error');
     }
-  }, [sessionId, consultationState]);
+  }, [sessionId, consultationState, isPreview]);
 
   // ── 12-stage progress bar （每 15s 換一句、撐 ~180s） ──
   // T1：原 5s 換太快、12 個 hint 一輪 60s、Sonnet 90s+ 後就停在最後一句。改 15s。
@@ -774,6 +805,80 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
           {renderRefineSection()}
         </>
       )}
+
+      {/* T3：ContactModal — CTA 按鈕觸發、4 種聯絡方式 */}
+      {contactModalOpen && (
+        <ContactModal
+          onClose={() => setContactModalOpen(false)}
+          onSubmit={handleSubmitContact}
+          submitting={consultationState === 'submitting'}
+        />
+      )}
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════
+ * T3：ContactModal — 4 種聯絡方式（暫時硬編碼、T4 改 fetch CMS）
+ * ════════════════════════════════════════════════════════════ */
+interface ContactModalProps {
+  onClose: () => void;
+  onSubmit: (method: string, info?: string) => void;
+  submitting: boolean;
+}
+function ContactModal({ onClose, onSubmit, submitting }: ContactModalProps) {
+  const [methods, setMethods] = useState<Array<{
+    key: string; label: string; value: string; url?: string; badge?: string;
+  }>>([
+    { key: 'line',     label: 'LINE 官方帳號',          value: '@orion-ai',                          url: 'https://line.me/R/ti/p/@orion-ai',           badge: '最快' },
+    { key: 'phone',    label: '電話',                    value: '+886 2 0000 0000',                   url: 'tel:+886200000000',                          badge: '9:00–21:00' },
+    { key: 'mail',     label: 'Email',                   value: 'austin@orion01.com',                 url: 'mailto:austin@orion01.com' },
+    { key: 'calendly', label: '預約 30 分鐘深聊',       value: '選你方便的時段',                      url: 'https://calendly.com/austin-orion/30min',    badge: '建議' },
+  ]);
+
+  // T4：嘗試從 CMS 拉真實聯絡方式（失敗保留硬碼）
+  useEffect(() => {
+    fetch('https://orion-hub.zeabur.app/api/public/contact-methods')
+      .then(r => r.ok ? r.json() : null)
+      .then(j => {
+        if (j && Array.isArray(j.methods) && j.methods.length > 0) {
+          setMethods(j.methods);
+        }
+      })
+      .catch(() => { /* fallback 已硬編碼 */ });
+  }, []);
+
+  const handleClick = (m: typeof methods[number]) => {
+    onSubmit(m.key);
+    if (m.url) {
+      // 短延遲讓送出完成、再開連結
+      setTimeout(() => { window.open(m.url, '_blank', 'noopener'); }, 300);
+    }
+  };
+
+  return (
+    <div className="r-modal-backdrop" onClick={onClose}>
+      <div className="r-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="r-modal-close" onClick={onClose} aria-label="關閉">×</button>
+        <div className="r-modal-title">選擇你方便的聯絡方式</div>
+        <div className="r-modal-options">
+          {methods.map((m) => (
+            <button
+              key={m.key}
+              className="r-modal-option"
+              onClick={() => handleClick(m)}
+              disabled={submitting}
+            >
+              <div className="r-modal-option-main">
+                <div className="r-modal-option-label">{m.label}</div>
+                <div className="r-modal-option-value">{m.value}</div>
+              </div>
+              {m.badge && <div className="r-modal-option-badge">{m.badge}</div>}
+            </button>
+          ))}
+        </div>
+        <div className="r-modal-footer">送出選擇後、顧問會主動聯絡你</div>
+      </div>
     </div>
   );
 }
@@ -2013,6 +2118,126 @@ const CSS_STYLES = `
     font-size: 11.5px;
     letter-spacing: 0.04em;
     line-height: 1.7;
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     T3：ContactModal — 聯絡方式選擇
+     ════════════════════════════════════════════════════════════ */
+  .r-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+    animation: rmFade 0.2s ease;
+  }
+  @keyframes rmFade { from { opacity: 0 } to { opacity: 1 } }
+  .r-modal {
+    position: relative;
+    background:
+      radial-gradient(ellipse at top, rgba(245,166,35,0.08), rgba(0,0,0,0) 60%),
+      #0a0a0a;
+    border: 1px solid rgba(245,166,35,0.3);
+    border-radius: 6px;
+    padding: 36px 32px 28px;
+    max-width: 460px;
+    width: 100%;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+    animation: rmSlide 0.25s cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes rmSlide {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .r-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: transparent;
+    border: 0;
+    color: rgba(255,255,255,0.5);
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 10px;
+    font-family: inherit;
+  }
+  .r-modal-close:hover { color: #FFD369; }
+  .r-modal-title {
+    font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+    font-size: 22px;
+    color: #F5F5F5;
+    margin-bottom: 22px;
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+  .r-modal-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .r-modal-option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(245,166,35,0.2);
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    font-family: 'Noto Sans TC', sans-serif;
+    color: #F5F5F5;
+  }
+  .r-modal-option:hover:not(:disabled) {
+    border-color: #F5A623;
+    background: rgba(245,166,35,0.06);
+    transform: translateY(-1px);
+  }
+  .r-modal-option:disabled { opacity: 0.5; cursor: not-allowed; }
+  .r-modal-option-main { flex: 1; min-width: 0; }
+  .r-modal-option-label {
+    font-size: 14.5px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #F5F5F5;
+  }
+  .r-modal-option-value {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.55);
+    font-family: 'JetBrains Mono', monospace;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .r-modal-option-badge {
+    flex-shrink: 0;
+    padding: 3px 10px;
+    background: rgba(245,166,35,0.15);
+    color: #FFD369;
+    border: 1px solid rgba(245,166,35,0.4);
+    border-radius: 12px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+  .r-modal-footer {
+    text-align: center;
+    color: rgba(255,255,255,0.4);
+    font-size: 12px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(245,166,35,0.1);
+    margin-top: 6px;
+    padding-top: 14px;
+  }
+  @media (max-width: 480px) {
+    .r-modal { padding: 28px 22px 20px; }
+    .r-modal-option { padding: 14px 14px; }
   }
 
 `;
