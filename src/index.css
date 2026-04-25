@@ -2282,3 +2282,45 @@ body {
   }
   .splash-v2 .progress-fill { width: 100%; }
 }
+
+/* ===== Cases skeleton (Task 2 — 2026-04-25) ===== */
+@keyframes skeleton-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.orion-case-card-skeleton {
+  background: rgba(10, 10, 10, 0.6);
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  border-radius: 12px;
+  padding: 28px 24px;
+  min-height: 320px;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  animation: cardFadeIn 0.4s ease-out forwards;
+}
+.orion-case-card-skeleton::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(110deg,
+    transparent 0%, transparent 40%,
+    rgba(201, 168, 76, 0.10) 50%,
+    transparent 60%, transparent 100%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.8s infinite linear;
+  pointer-events: none;
+}
+.orion-case-card-skeleton .sk-bar {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+}
+.orion-case-card-skeleton .sk-bar.short { width: 40%; height: 12px; }
+.orion-case-card-skeleton .sk-bar.med   { width: 72%; height: 14px; }
+.orion-case-card-skeleton .sk-bar.long  { width: 92%; height: 14px; }
+@media (prefers-reduced-motion: reduce) {
+  .orion-case-card-skeleton::before { animation: none; }
+  .orion-case-card-skeleton { animation: none; opacity: 1; }
+}
