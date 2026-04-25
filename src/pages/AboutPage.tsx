@@ -320,10 +320,10 @@ export default function AboutPage() {
                 <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--orion-text-primary)', marginBottom: 8 }}>
                   {s.title}
                 </h4>
-                <p style={{ fontSize: '0.8rem', color: 'var(--orion-text-secondary)', lineHeight: 1.6, marginBottom: 8 }}>
+                <p style={{ fontSize: '0.875rem', color: 'var(--orion-text-secondary)', lineHeight: 1.6, marginBottom: 8 }}>
                   {s.desc}
                 </p>
-                <p style={{ fontSize: '0.72rem', color: 'var(--orion-gold-dim, #8a6f2e)', fontWeight: 500 }}>
+                <p style={{ fontSize: '0.8125rem', color: 'var(--orion-gold-dim, #8a6f2e)', fontWeight: 500 }}>
                   {s.detail}
                 </p>
 
