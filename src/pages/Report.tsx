@@ -23,6 +23,20 @@ interface ReportData {
   aiSolution: { title: string; capabilities: string[]; description: string };
   firstAction: { title: string; action: string; description: string };
   overallScore: number;
+  // T2 新增（fixture 已含、API 報告無此欄位則 fallback 到 legacy）
+  coreInsight?: string;
+  currentAnalysis?: string;
+  currentKeyPoints?: Array<{ type: string; label: string; text: string }>;
+  opportunities?: Array<{ title: string; description: string; impact: string; timeline?: string }>;
+  risks?: string[];
+  path?: Array<{ phase: string; title: string; description: string }>;
+  chairmanNote?: string;
+}
+
+interface PreviewLeadInfo {
+  name: string;
+  industry: string;
+  stage: string;
 }
 
 type PageState = 'loading' | 'ready' | 'error';
@@ -52,6 +66,11 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
     if (!isPreview || !previewTemplate) return null;
     const fx = getFixture(previewTemplate);
     return fx ? (fx.report as ReportData) : null;
+  });
+  const [previewLead] = useState<PreviewLeadInfo | null>(() => {
+    if (!isPreview || !previewTemplate) return null;
+    const fx = getFixture(previewTemplate);
+    return fx ? { name: fx.lead.name, industry: fx.lead.industry, stage: fx.lead.stage } : null;
   });
   const [error, setError] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -451,120 +470,239 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
   );
 
   // ── 40% 免費內容 ──
-  const renderFreeContent = () => (
-    <div className="free-content">
-      <div className="score-ring-container">
-        <svg className="score-ring" viewBox="0 0 200 200">
-          <defs>
-            <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style={{ stopColor: '#e8c96a', stopOpacity: 1 }} />
-              <stop offset="100%" style={{ stopColor: '#d4a853', stopOpacity: 1 }} />
-            </linearGradient>
-          </defs>
-          {/* 背景圓環 */}
-          <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(212, 168, 83, 0.1)" strokeWidth="8" />
-          {/* 進度圓環 */}
-          <circle
-            cx="100" cy="100" r="85" fill="none" stroke="url(#gold-grad)" strokeWidth="8"
-            strokeDasharray={`${(scoreAnimated / 100) * 2 * Math.PI * 85} ${2 * Math.PI * 85}`}
-            strokeLinecap="round"
-            className="score-progress"
-          />
-          {/* 分數文字 */}
-          <text x="100" y="85" textAnchor="middle" className="score-number">{scoreAnimated}</text>
-          <text x="100" y="110" textAnchor="middle" className="score-label">AI 就緒度</text>
-        </svg>
-      </div>
+  // T2：黑金重設計 — 上半（公開部分）
+  // Hero + 客戶卡 + 核心洞察 + 現況分析（含 3 個 KeyPoint）+ 痛點量化 + 模糊遮罩
+  const renderFreeContent = () => {
+    const coreInsight = report?.coreInsight || report?.coreProblem?.title || '你的核心問題待診斷';
+    const currentAnalysis = report?.currentAnalysis || report?.coreProblem?.description || '';
+    const keyPoints = report?.currentKeyPoints || [];
+    return (
+      <div className="free-content">
+        {/* Hero */}
+        <header className="r-hero">
+          <img className="r-hero-mark" src="/brand/griffin-256.png" alt="ORION" />
+          <h1 className="r-hero-title">ORION AI 診斷報告</h1>
+          {previewLead?.name && (
+            <p className="r-hero-sub">為 {previewLead.name} 量身分析</p>
+          )}
+          <div className="r-hero-meta">
+            <span>診斷日期：{new Date().toLocaleDateString('zh-TW')}</span>
+            <span className="r-hero-divider">·</span>
+            <span>顧問：Orion AI</span>
+            <span className="r-hero-divider">·</span>
+            <span className="r-hero-score-inline">就緒度 {scoreAnimated}/100</span>
+          </div>
+        </header>
 
-      {/* 核心問題 */}
-      {report?.coreProblem && (
-        <div className="card card-1">
-          <div className="card-number">01</div>
-          <div className="card-title">{report.coreProblem.title}</div>
-          <div className="card-text">{report.coreProblem.description}</div>
-        </div>
-      )}
-
-      {/* 痛點量化 */}
-      {report?.painQuantification && (
-        <div className="card card-2">
-          <div className="card-number">02</div>
-          <div className="card-title">{report.painQuantification.title}</div>
-          <div className="metrics-row">
-            <div className="metric">
-              <div className="metric-value">{report.painQuantification.monthlyTimeLoss}</div>
-              <div className="metric-label">月時間損失</div>
+        {/* 客戶資料卡（preview 才顯示） */}
+        {previewLead && (
+          <div className="r-client-card">
+            <div className="r-client-section">
+              <div className="r-client-label">客戶</div>
+              <div className="r-client-value">{previewLead.name}</div>
+              <div className="r-client-detail">{previewLead.industry}</div>
             </div>
-            <div className="metric">
-              <div className="metric-value">{report.painQuantification.monthlyMoneyCost}</div>
-              <div className="metric-label">月費用損失</div>
+            <div className="r-client-divider" />
+            <div className="r-client-section">
+              <div className="r-client-label">現況</div>
+              <div className="r-client-value-sm">{previewLead.stage || '—'}</div>
             </div>
           </div>
-          <div className="card-text">{report.painQuantification.description}</div>
-        </div>
-      )}
-
-      {/* 模糊遮罩 */}
-      <div className="blur-overlay"></div>
-    </div>
-  );
-
-  // ── 60% 鎖定內容 ──
-  const renderLockedContent = () => (
-    <div className="locked-content">
-      {/* AI 解決方案 */}
-      {report?.aiSolution && (
-        <div className="card card-3">
-          <div className="card-number">03</div>
-          <div className="card-title">{report.aiSolution.title}</div>
-          <div className="capabilities-list">
-            {report.aiSolution.capabilities.map((cap, i) => (
-              <div key={i} className="capability-item">✓ {cap}</div>
-            ))}
-          </div>
-          <div className="card-text">{report.aiSolution.description}</div>
-        </div>
-      )}
-
-      {/* 第一步行動 */}
-      {report?.firstAction && (
-        <div className="card card-4">
-          <div className="card-number">04</div>
-          <div className="card-title">{report.firstAction.title}</div>
-          <div className="action-box">{report.firstAction.action}</div>
-          <div className="card-text">{report.firstAction.description}</div>
-        </div>
-      )}
-
-      {/* P0-01：Chairman 親筆 CTA */}
-      <div className="chairman-cta">
-        <div className="chairman-cta-label">Chairman 親筆</div>
-        <div className="chairman-cta-quote">
-          根據你今天說的情況，我建議你優先處理「<span className="chairman-cta-highlight">{report?.coreProblem?.title || '你提到的核心問題'}</span>」。<br />
-          這種問題我們看過很多次、通常 6-12 週可以見效。<br />
-          我想跟你聊 30 分鐘、把方向確認清楚。
-        </div>
-        <div className="chairman-cta-sign">— Austin（Chairman）</div>
-
-        {consultationState === 'success' ? (
-          <div className="chairman-cta-success">
-            ✅ 已收到！Chairman 通常 1 小時內聯絡。
-          </div>
-        ) : (
-          <button
-            className="chairman-cta-btn"
-            onClick={handleRequestConsultation}
-            disabled={consultationState === 'submitting'}
-          >
-            {consultationState === 'submitting' ? '送出中…' : '我想跟 Chairman 深聊 30 分鐘'}
-          </button>
         )}
-        {consultationState === 'error' && (
-          <div className="chairman-cta-error">送出失敗、請稍後重試</div>
+
+        {/* 核心洞察 — 大引號 */}
+        <section className="r-section">
+          <div className="r-section-label">核心洞察</div>
+          <blockquote className="r-quote">
+            <span className="r-quote-mark">「</span>
+            {coreInsight}
+            <span className="r-quote-mark">」</span>
+          </blockquote>
+          <div className="r-quote-attr">—— Orion AI 核心判斷</div>
+        </section>
+
+        {/* 現況分析 */}
+        {currentAnalysis && (
+          <section className="r-section">
+            <h2 className="r-section-title">現況分析</h2>
+            <p className="r-paragraph">{currentAnalysis}</p>
+            {keyPoints.length > 0 && (
+              <div className="r-keypoints">
+                {keyPoints.map((kp, i) => (
+                  <div key={i} className={`r-keypoint r-kp-${kp.type || 'info'}`}>
+                    <div className="r-kp-label">{kp.label}</div>
+                    <div className="r-kp-text">{kp.text}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
         )}
+
+        {/* 痛點量化（保留、改新樣式） */}
+        {report?.painQuantification && (
+          <section className="r-section">
+            <h2 className="r-section-title">{report.painQuantification.title}</h2>
+            <div className="r-metrics">
+              <div className="r-metric">
+                <div className="r-metric-value">{report.painQuantification.monthlyTimeLoss}</div>
+                <div className="r-metric-label">月時間損失</div>
+              </div>
+              <div className="r-metric-divider" />
+              <div className="r-metric">
+                <div className="r-metric-value">{report.painQuantification.monthlyMoneyCost}</div>
+                <div className="r-metric-label">月費用損失</div>
+              </div>
+            </div>
+            <p className="r-paragraph">{report.painQuantification.description}</p>
+          </section>
+        )}
+
+        {/* 模糊遮罩（preview 模式不遮、Chairman 看完整） */}
+        {!isPreview && <div className="blur-overlay"></div>}
       </div>
-    </div>
-  );
+    );
+  };
+
+  // T2：黑金重設計 — 下半（解鎖部分）
+  // 機會點 cards + 風險清單 + 路徑時間軸 + Chairman 簽名 CTA + Footer
+  const renderLockedContent = () => {
+    const opportunities = report?.opportunities || [];
+    const risks = report?.risks || [];
+    const path = report?.path || [];
+    const chairmanNote = report?.chairmanNote || (
+      report?.coreProblem?.title
+        ? `根據你今天說的情況，我建議你優先處理「${report.coreProblem.title}」。這種問題我們看過很多次、通常 6-12 週可以見效。我想跟你聊 30 分鐘、把方向確認清楚。`
+        : '我看到你的狀況、有幾個地方想跟你深入聊。我們約 30 分鐘、不打包賣方案、先確認方向。'
+    );
+    const topIssue = report?.coreProblem?.title || '你提到的核心問題';
+
+    return (
+      <div className="locked-content">
+        {/* 機會點 — 卡片 grid */}
+        {opportunities.length > 0 && (
+          <section className="r-section">
+            <h2 className="r-section-title">{opportunities.length} 個機會點</h2>
+            <div className="r-opp-grid">
+              {opportunities.map((op, i) => (
+                <div key={i} className="r-opp-card">
+                  <div className="r-opp-num">{String(i + 1).padStart(2, '0')}</div>
+                  <h3 className="r-opp-title">{op.title}</h3>
+                  <p className="r-opp-desc">{op.description}</p>
+                  <div className="r-opp-meta">
+                    <div className="r-opp-impact"><span>預估影響：</span><strong>{op.impact}</strong></div>
+                    {op.timeline && <div className="r-opp-timeline">{op.timeline}</div>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* fallback：若沒 opportunities、用舊的 aiSolution */}
+        {opportunities.length === 0 && report?.aiSolution && (
+          <section className="r-section">
+            <h2 className="r-section-title">{report.aiSolution.title}</h2>
+            <ul className="r-bullet-list">
+              {report.aiSolution.capabilities.map((cap, i) => (
+                <li key={i}>{cap}</li>
+              ))}
+            </ul>
+            <p className="r-paragraph">{report.aiSolution.description}</p>
+          </section>
+        )}
+
+        {/* 風險清單 */}
+        {risks.length > 0 && (
+          <section className="r-section">
+            <h2 className="r-section-title">風險與注意</h2>
+            <ul className="r-bullet-list r-risks">
+              {risks.map((r, i) => <li key={i}>{r}</li>)}
+            </ul>
+          </section>
+        )}
+
+        {/* 建議路徑 — 時間軸 */}
+        {path.length > 0 && (
+          <section className="r-section">
+            <h2 className="r-section-title">建議路徑</h2>
+            <div className="r-timeline">
+              {path.map((p, i) => (
+                <div key={i} className="r-timeline-row">
+                  <div className="r-timeline-phase">{p.phase}</div>
+                  <div className="r-timeline-body">
+                    <div className="r-timeline-title">{p.title}</div>
+                    <div className="r-timeline-desc">{p.description}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* fallback：若沒 path、用舊的 firstAction */}
+        {path.length === 0 && report?.firstAction && (
+          <section className="r-section">
+            <h2 className="r-section-title">{report.firstAction.title}</h2>
+            <div className="r-action-box">{report.firstAction.action}</div>
+            <p className="r-paragraph">{report.firstAction.description}</p>
+          </section>
+        )}
+
+        {/* Chairman 簽名 + 大 CTA */}
+        <section className="r-chairman">
+          <div className="r-chairman-label">Chairman 親筆</div>
+          <blockquote className="r-chairman-quote">
+            <span className="r-chairman-mark">「</span>
+            {chairmanNote.split(/「[^」]*」/).reduce<React.ReactNode[]>((acc, part, i, arr) => {
+              acc.push(part);
+              const m = chairmanNote.match(/「([^」]*)」/g);
+              if (m && m[i]) acc.push(<span key={i} className="r-chairman-highlight">{m[i].slice(1, -1)}</span>);
+              return acc;
+            }, [])}
+            <span className="r-chairman-mark">」</span>
+          </blockquote>
+          <div className="r-chairman-sign">
+            <div className="r-chairman-name">Austin</div>
+            <div className="r-chairman-title">Chairman, Orion AI Group</div>
+          </div>
+
+          {consultationState === 'success' ? (
+            <div className="r-chairman-success">已收到、顧問通常 1 小時內回覆</div>
+          ) : (
+            <button
+              className="r-chairman-cta"
+              onClick={handleRequestConsultation}
+              disabled={consultationState === 'submitting'}
+              data-issue={topIssue}
+            >
+              {consultationState === 'submitting' ? '送出中…' : '與 Orion AI 顧問聯繫'}
+            </button>
+          )}
+          <div className="r-chairman-subtext">通常 1 小時內回覆</div>
+          {consultationState === 'error' && (
+            <div className="r-chairman-error">送出失敗、請稍後重試</div>
+          )}
+        </section>
+
+        {/* Footer */}
+        <footer className="r-footer">
+          <div className="r-footer-actions">
+            <button className="r-footer-btn" onClick={() => window.print()}>下載 PDF</button>
+            <button className="r-footer-btn" onClick={() => alert('email 寄送功能即將上線')}>寄至信箱</button>
+            <button className="r-footer-btn" onClick={() => {
+              if (navigator.share) navigator.share({ title: 'ORION 診斷報告', url: window.location.href }).catch(() => {});
+              else navigator.clipboard?.writeText(window.location.href).then(() => alert('連結已複製'));
+            }}>分享報告</button>
+          </div>
+          <div className="r-footer-disclaimer">
+            本報告由 Orion AI 根據你提供的資訊生成、僅供參考。
+            {previewLead && <> · 預覽編號 #{(report?.overallScore || 0)} · {new Date().toLocaleString('zh-TW')}</>}
+          </div>
+        </footer>
+      </div>
+    );
+  };
 
   // ── 主渲染 ──
   if (state === 'error') {
@@ -641,18 +779,35 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
 }
 
 const CSS_STYLES = `
+  /* T2：黑金重設計
+     色彩規範（嚴格）：
+       --orion-black:       #0a0a0a
+       --orion-deep:        #050505
+       --orion-gold:        #F5A623
+       --orion-gold-bright: #FFD369
+       --orion-gold-dim:    #8B6914
+       --orion-text:        #F5F5F5
+       --orion-text-muted:  rgba(255,255,255,0.6)
+       --orion-text-faint:  rgba(255,255,255,0.4)
+       --orion-border:      rgba(245,166,35,0.15)
+     字體：襯線 Cormorant Garamond + Noto Sans TC
+  */
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Noto+Serif+TC:wght@300;500;700&display=swap');
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: #0a0d14;
-    color: #e8eaf0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans TC', sans-serif;
+    background: #050505;
+    color: #F5F5F5;
+    font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
 
   .report-container {
     min-height: 100vh;
-    padding: 20px;
-    background: linear-gradient(135deg, #0a0d14 0%, #0c1024 100%);
+    padding: 0;
+    background:
+      radial-gradient(ellipse at top, #0f0c08 0%, rgba(0,0,0,0) 60%),
+      linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
     position: relative;
     overflow-y: auto;
   }
@@ -1331,4 +1486,533 @@ const CSS_STYLES = `
     color: #f43f5e;
     font-size: 13px;
   }
+
+  /* ════════════════════════════════════════════════════════════
+     T2：黑金重設計 — Hero / 客戶卡 / Section / Quote / KeyPoint /
+                       Metrics / Opportunities / Timeline / Risks /
+                       Chairman / Footer
+     ════════════════════════════════════════════════════════════ */
+
+  /* === Hero === */
+  .r-hero {
+    text-align: center;
+    padding: 80px 24px 56px;
+    border-bottom: 1px solid rgba(245, 166, 35, 0.15);
+    background: radial-gradient(ellipse at center top, rgba(245,166,35,0.06) 0%, rgba(0,0,0,0) 70%);
+  }
+  .r-hero-mark {
+    width: 80px;
+    height: 80px;
+    opacity: 0.92;
+    filter: drop-shadow(0 0 20px rgba(245,166,35,0.4));
+  }
+  .r-hero-title {
+    font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+    font-size: 56px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    color: #F5A623;
+    margin: 32px 0 12px;
+    line-height: 1.1;
+  }
+  .r-hero-sub {
+    font-size: 17px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.62);
+    letter-spacing: 0.04em;
+    margin-bottom: 28px;
+  }
+  .r-hero-meta {
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.08em;
+    font-family: 'JetBrains Mono', monospace;
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .r-hero-divider { opacity: 0.4; }
+  .r-hero-score-inline { color: #F5A623; }
+  @media (max-width: 768px) {
+    .r-hero { padding: 56px 18px 40px; }
+    .r-hero-title { font-size: 36px; }
+  }
+
+  /* === 客戶資料卡 === */
+  .r-client-card {
+    max-width: 880px;
+    margin: 32px auto 0;
+    padding: 24px 32px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(245,166,35,0.12);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  .r-client-section { flex: 1; }
+  .r-client-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .r-client-value {
+    font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+    font-size: 24px;
+    color: #F5F5F5;
+    font-weight: 400;
+    line-height: 1.2;
+  }
+  .r-client-value-sm {
+    font-size: 15px;
+    color: rgba(255,255,255,0.78);
+    font-weight: 400;
+  }
+  .r-client-detail {
+    color: rgba(255,255,255,0.5);
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  .r-client-divider {
+    width: 1px;
+    height: 48px;
+    background: rgba(245,166,35,0.2);
+  }
+  @media (max-width: 768px) {
+    .r-client-card { flex-direction: column; align-items: flex-start; gap: 16px; padding: 20px; margin: 24px 14px 0; }
+    .r-client-divider { display: none; }
+  }
+
+  /* === Section 通用 === */
+  .r-section {
+    max-width: 880px;
+    margin: 56px auto 0;
+    padding: 0 32px;
+  }
+  .r-section-label {
+    font-size: 11px;
+    color: rgba(245,166,35,0.7);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .r-section-title {
+    font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+    font-size: 32px;
+    font-weight: 400;
+    color: #F5F5F5;
+    margin-bottom: 24px;
+    letter-spacing: -0.005em;
+  }
+  .r-paragraph {
+    font-size: 17px;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.82);
+    margin-bottom: 18px;
+  }
+  @media (max-width: 768px) {
+    .r-section { margin: 40px auto 0; padding: 0 18px; }
+    .r-section-title { font-size: 24px; }
+    .r-paragraph { font-size: 15.5px; line-height: 1.7; }
+  }
+
+  /* === Core Insight 大引號 === */
+  .r-quote {
+    font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+    font-size: 30px;
+    line-height: 1.5;
+    color: #F5F5F5;
+    font-style: italic;
+    text-align: center;
+    padding: 36px 24px;
+    border-top: 1px solid rgba(245,166,35,0.15);
+    border-bottom: 1px solid rgba(245,166,35,0.15);
+    position: relative;
+  }
+  .r-quote-mark {
+    color: #F5A623;
+    font-size: 56px;
+    line-height: 0;
+    vertical-align: -0.2em;
+    opacity: 0.7;
+    font-style: normal;
+  }
+  .r-quote-attr {
+    text-align: right;
+    color: rgba(255,255,255,0.5);
+    font-size: 13px;
+    margin-top: 14px;
+    letter-spacing: 0.08em;
+  }
+  @media (max-width: 768px) {
+    .r-quote { font-size: 22px; padding: 28px 16px; }
+    .r-quote-mark { font-size: 40px; }
+  }
+
+  /* === KeyPoints === */
+  .r-keypoints {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-top: 24px;
+  }
+  .r-keypoint {
+    padding: 16px 18px;
+    background: rgba(255,255,255,0.02);
+    border-left: 2px solid rgba(245,166,35,0.4);
+    border-radius: 2px;
+  }
+  .r-kp-strength { border-left-color: #F5A623; }
+  .r-kp-gap { border-left-color: rgba(245,166,35,0.4); }
+  .r-kp-urgency { border-left-color: #FFD369; }
+  .r-kp-label {
+    font-size: 11px;
+    color: rgba(245,166,35,0.85);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .r-kp-text {
+    font-size: 14.5px;
+    color: rgba(255,255,255,0.82);
+    line-height: 1.65;
+  }
+
+  /* === Metrics（痛點量化） === */
+  .r-metrics {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    margin: 24px 0;
+    padding: 28px 32px;
+    background: rgba(245,166,35,0.04);
+    border: 1px solid rgba(245,166,35,0.18);
+    border-radius: 4px;
+  }
+  .r-metric { flex: 1; text-align: center; }
+  .r-metric-value {
+    font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+    font-size: 36px;
+    color: #FFD369;
+    font-weight: 400;
+    line-height: 1.1;
+  }
+  .r-metric-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.12em;
+    margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .r-metric-divider { width: 1px; height: 40px; background: rgba(245,166,35,0.2); }
+  @media (max-width: 768px) {
+    .r-metrics { flex-direction: column; gap: 16px; padding: 20px; }
+    .r-metric-divider { width: 100%; height: 1px; }
+    .r-metric-value { font-size: 28px; }
+  }
+
+  /* === Opportunities Cards === */
+  .r-opp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+  }
+  .r-opp-card {
+    padding: 28px 26px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(245,166,35,0.18);
+    border-radius: 4px;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .r-opp-card:hover {
+    border-color: rgba(245,166,35,0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(245,166,35,0.08);
+  }
+  .r-opp-num {
+    font-family: 'JetBrains Mono', monospace;
+    color: rgba(245,166,35,0.5);
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    margin-bottom: 10px;
+  }
+  .r-opp-title {
+    font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: #F5F5F5;
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+  .r-opp-desc {
+    color: rgba(255,255,255,0.7);
+    font-size: 14.5px;
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+  .r-opp-meta {
+    padding-top: 14px;
+    border-top: 1px solid rgba(245,166,35,0.12);
+  }
+  .r-opp-impact {
+    color: rgba(255,255,255,0.55);
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+  .r-opp-impact strong { color: #FFD369; font-weight: 500; }
+  .r-opp-timeline {
+    color: rgba(245,166,35,0.7);
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.06em;
+  }
+
+  /* === Bullet List + Risks === */
+  .r-bullet-list {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0;
+  }
+  .r-bullet-list li {
+    position: relative;
+    padding-left: 22px;
+    margin-bottom: 12px;
+    color: rgba(255,255,255,0.78);
+    font-size: 15.5px;
+    line-height: 1.75;
+  }
+  .r-bullet-list li::before {
+    content: '·';
+    color: #F5A623;
+    font-weight: 700;
+    font-size: 22px;
+    position: absolute;
+    left: 6px;
+    top: -4px;
+  }
+  .r-risks li::before { color: #FFD369; }
+
+  /* === Path Timeline === */
+  .r-timeline {
+    border-left: 1px solid rgba(245,166,35,0.25);
+    padding-left: 0;
+  }
+  .r-timeline-row {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 24px;
+    padding: 14px 0 14px 24px;
+    margin-left: 14px;
+    position: relative;
+  }
+  .r-timeline-row::before {
+    content: '';
+    position: absolute;
+    left: -7px;
+    top: 22px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #050505;
+    border: 2px solid #F5A623;
+  }
+  .r-timeline-phase {
+    font-family: 'JetBrains Mono', monospace;
+    color: rgba(245,166,35,0.85);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    padding-top: 4px;
+  }
+  .r-timeline-title {
+    font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+    font-size: 19px;
+    color: #F5F5F5;
+    margin-bottom: 6px;
+  }
+  .r-timeline-desc {
+    color: rgba(255,255,255,0.65);
+    font-size: 14.5px;
+    line-height: 1.65;
+  }
+  @media (max-width: 768px) {
+    .r-timeline-row { grid-template-columns: 1fr; gap: 6px; }
+  }
+
+  /* === Action box (fallback) === */
+  .r-action-box {
+    background: rgba(245,166,35,0.06);
+    border: 1px solid rgba(245,166,35,0.25);
+    color: #FFD369;
+    padding: 18px 22px;
+    border-radius: 3px;
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  /* === Chairman 簽名 + CTA === */
+  .r-chairman {
+    max-width: 880px;
+    margin: 80px auto 0;
+    padding: 56px 32px;
+    background:
+      radial-gradient(ellipse at top, rgba(245,166,35,0.08) 0%, rgba(0,0,0,0) 70%),
+      rgba(245,166,35,0.025);
+    border: 1px solid rgba(245,166,35,0.2);
+    border-radius: 4px;
+    text-align: center;
+    position: relative;
+  }
+  .r-chairman-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #F5A623;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .r-chairman-quote {
+    font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+    font-size: 24px;
+    line-height: 1.7;
+    color: #F5F5F5;
+    font-style: italic;
+    margin-bottom: 28px;
+    text-align: left;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .r-chairman-mark {
+    color: #F5A623;
+    font-size: 44px;
+    vertical-align: -0.18em;
+    line-height: 0;
+    font-style: normal;
+    opacity: 0.7;
+  }
+  .r-chairman-highlight {
+    color: #FFD369;
+    font-style: normal;
+    font-weight: 500;
+    background: rgba(255,211,105,0.08);
+    padding: 1px 8px;
+    border-radius: 2px;
+  }
+  .r-chairman-sign {
+    margin-bottom: 36px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(245,166,35,0.18);
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .r-chairman-name {
+    font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+    font-size: 28px;
+    color: #F5A623;
+    font-weight: 400;
+    margin-bottom: 4px;
+  }
+  .r-chairman-title {
+    color: rgba(255,255,255,0.5);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .r-chairman-cta {
+    display: block;
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+    padding: 18px 32px;
+    background: linear-gradient(135deg, #FFD369 0%, #F5A623 100%);
+    color: #0a0a0a;
+    border: 0;
+    border-radius: 3px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: 'Noto Sans TC', sans-serif;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: transform 0.18s, box-shadow 0.18s;
+  }
+  .r-chairman-cta:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 36px rgba(245,166,35,0.4);
+  }
+  .r-chairman-cta:disabled { opacity: 0.5; cursor: not-allowed; }
+  .r-chairman-subtext {
+    color: rgba(255,255,255,0.45);
+    font-size: 13px;
+    margin-top: 12px;
+    letter-spacing: 0.04em;
+  }
+  .r-chairman-success {
+    margin-top: 16px;
+    padding: 16px 20px;
+    background: rgba(245,166,35,0.08);
+    border: 1px solid rgba(245,166,35,0.3);
+    border-radius: 3px;
+    color: #FFD369;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .r-chairman-error {
+    margin-top: 12px;
+    color: #f43f5e;
+    font-size: 13px;
+  }
+  @media (max-width: 768px) {
+    .r-chairman { padding: 40px 22px; margin-top: 56px; }
+    .r-chairman-quote { font-size: 19px; }
+    .r-chairman-name { font-size: 22px; }
+  }
+
+  /* === Footer === */
+  .r-footer {
+    max-width: 880px;
+    margin: 80px auto 60px;
+    padding: 40px 32px 0;
+    border-top: 1px solid rgba(245,166,35,0.15);
+  }
+  .r-footer-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .r-footer-btn {
+    background: transparent;
+    color: rgba(245,166,35,0.85);
+    border: 1px solid rgba(245,166,35,0.3);
+    padding: 12px 22px;
+    border-radius: 3px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: 'Noto Sans TC', sans-serif;
+    letter-spacing: 0.06em;
+    transition: all 0.15s;
+  }
+  .r-footer-btn:hover {
+    color: #FFD369;
+    border-color: #F5A623;
+    background: rgba(245,166,35,0.04);
+  }
+  .r-footer-disclaimer {
+    text-align: center;
+    color: rgba(255,255,255,0.35);
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    line-height: 1.7;
+  }
+
 `;
