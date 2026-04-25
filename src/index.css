@@ -2324,3 +2324,185 @@ body {
   .orion-case-card-skeleton::before { animation: none; }
   .orion-case-card-skeleton { animation: none; opacity: 1; }
 }
+
+/* ===== Mobile Header + Hamburger Drawer (Task 3 / 2026-04-25) ===== */
+.orion-mobile-header { display: none; }
+
+@media (max-width: 768px) {
+  .orion-mobile-header {
+    display: flex;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 56px;
+    background: rgba(8, 11, 18, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--orion-border-gold);
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    z-index: 95; /* 低於 drawer (200)、高於一般內容 */
+  }
+  .orion-mobile-header-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: var(--orion-gold);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    font-size: 0.85rem;
+  }
+  .orion-mobile-header-logo img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 6px rgba(201, 168, 76, 0.6));
+  }
+  .orion-mobile-hamburger {
+    background: transparent;
+    border: 1px solid var(--orion-border-gold);
+    color: var(--orion-gold);
+    border-radius: 6px;
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .orion-mobile-hamburger:hover,
+  .orion-mobile-hamburger:focus-visible {
+    background: rgba(201, 168, 76, 0.12);
+    border-color: var(--orion-gold);
+    outline: none;
+  }
+  /* 把 main content 推下、避開 header（既有 padding-bottom: 72px 已加） */
+  .orion-main-content { padding-top: 56px; }
+}
+
+/* Drawer + backdrop（任何螢幕都需要、JS 控制顯示，但僅在 mobile 觸發） */
+.orion-mobile-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 199;
+  animation: orionDrawerFadeIn 0.2s ease-out;
+}
+.orion-mobile-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 80%;
+  max-width: 320px;
+  background: var(--orion-bg-base, #0c0f1a);
+  border-left: 1px solid var(--orion-border-gold);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  animation: orionDrawerSlideIn 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.4);
+}
+@keyframes orionDrawerSlideIn {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes orionDrawerFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.orion-mobile-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--orion-border-gold);
+  color: var(--orion-gold);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+}
+.orion-mobile-drawer-header button {
+  background: transparent;
+  border: none;
+  color: var(--orion-text-secondary, #8a93a8);
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+}
+.orion-mobile-drawer-header button:hover,
+.orion-mobile-drawer-header button:focus-visible {
+  color: var(--orion-gold);
+  background: rgba(201, 168, 76, 0.08);
+  outline: none;
+}
+.orion-mobile-drawer-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 0;
+  flex: 1;
+  overflow-y: auto;
+}
+.orion-mobile-drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 24px;
+  background: transparent;
+  border: none;
+  color: var(--orion-text-secondary, #8a93a8);
+  font-size: 15px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: all 0.15s;
+  position: relative;
+}
+.orion-mobile-drawer-item:hover,
+.orion-mobile-drawer-item:focus-visible {
+  background: rgba(201, 168, 76, 0.08);
+  color: var(--orion-text-primary, #e8eaf0);
+  outline: none;
+}
+.orion-mobile-drawer-item.active {
+  color: var(--orion-gold);
+  background: rgba(201, 168, 76, 0.12);
+  padding-left: 22px;
+  border-left: 2px solid var(--orion-gold);
+}
+.orion-mobile-drawer-cta {
+  border-top: 1px solid var(--orion-border-gold);
+  padding: 8px 0 12px;
+  display: flex;
+  flex-direction: column;
+}
+.orion-mobile-drawer-cta a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  color: var(--orion-text-secondary, #8a93a8);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  transition: all 0.15s;
+}
+.orion-mobile-drawer-cta a:hover,
+.orion-mobile-drawer-cta a:focus-visible {
+  background: rgba(201, 168, 76, 0.08);
+  color: var(--orion-gold);
+  outline: none;
+}
+.orion-mobile-drawer-cta a.is-warrior {
+  color: var(--orion-gold-bright, #e8c96a);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orion-mobile-drawer { animation: none; }
+  .orion-mobile-drawer-backdrop { animation: none; }
+}

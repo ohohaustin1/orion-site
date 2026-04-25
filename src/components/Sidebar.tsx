@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Trophy, BarChart3, Building2, BookOpen, Zap, Home, Menu, X, Shield, Users, Activity, LayoutDashboard } from 'lucide-react';
 
@@ -48,6 +48,24 @@ export default function Sidebar() {
   const isActive = (path: string) => {
     if (path === '/home') return location === '/home';
     return location.startsWith(path);
+  };
+
+  // Task 3 / 2026-04-25: drawer 開啟時鎖 body scroll + ESC 鍵關閉
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMobileOpen(false); };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [mobileOpen]);
+
+  const goTo = (path: string) => {
+    setLocation(path);
+    setMobileOpen(false);
   };
 
   return (
@@ -108,6 +126,88 @@ export default function Sidebar() {
           </a>
         </div>
       </aside>
+
+      {/* Mobile Header + Hamburger (Task 3 / 2026-04-25) */}
+      <header className="orion-mobile-header">
+        <div className="orion-mobile-header-logo" onClick={() => goTo('/home')}>
+          <img src={ORION_LOGO} alt="ORION" />
+          <span>ORION AI</span>
+        </div>
+        <button
+          className="orion-mobile-hamburger"
+          onClick={() => setMobileOpen(true)}
+          aria-label="開啟選單"
+          aria-expanded={mobileOpen}
+        >
+          <Menu size={22} />
+        </button>
+      </header>
+
+      {/* Mobile Drawer */}
+      {mobileOpen && (
+        <>
+          <div
+            className="orion-mobile-drawer-backdrop"
+            onClick={() => setMobileOpen(false)}
+            aria-hidden="true"
+          />
+          <aside
+            className="orion-mobile-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-label="主選單"
+          >
+            <div className="orion-mobile-drawer-header">
+              <span>選單</span>
+              <button
+                onClick={() => setMobileOpen(false)}
+                aria-label="關閉選單"
+              >
+                <X size={22} />
+              </button>
+            </div>
+            <nav className="orion-mobile-drawer-nav">
+              {navItems.map(item => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.path}
+                    className={`orion-mobile-drawer-item ${isActive(item.path) ? 'active' : ''}`}
+                    onClick={() => goTo(item.path)}
+                  >
+                    <Icon size={20} />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+            <div className="orion-mobile-drawer-cta">
+              <a
+                href="https://orion-hub.zeabur.app"
+                onClick={() => setMobileOpen(false)}
+              >
+                <Activity size={16} />
+                <span>系統監測</span>
+              </a>
+              <a
+                href="https://orion-hub.zeabur.app/?mode=warrior"
+                onClick={() => setMobileOpen(false)}
+                className="is-warrior"
+              >
+                <ShieldScanIcon size={16} />
+                <span>企業 QA 深層掃描</span>
+              </a>
+              <a
+                href="https://orion-hub.zeabur.app/admin"
+                onClick={() => setMobileOpen(false)}
+              >
+                <LayoutDashboard size={16} />
+                <span>管理台</span>
+              </a>
+            </div>
+          </aside>
+        </>
+      )}
 
       {/* Mobile Bottom Tab */}
       <nav className="orion-mobile-tab">
