@@ -38,17 +38,17 @@ const navItems: NavItem[] = [
   { path: '/cases', label: '歷史案件', icon: Trophy },
   { path: '/about', label: '服務介紹', icon: Building2 },
   { path: '/team', label: '核心團隊', icon: Users },
-  { path: '/resources', label: '聯絡我們', icon: BookOpen },
+  // D 修：原 label「聯絡我們」誤導、頁面內容是資源中心 → 改「資源中心」
+  { path: '/resources', label: '資源中心', icon: BookOpen },
 ];
 
 export default function Sidebar() {
   const [location, setLocation] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const isActive = (path: string) => {
-    if (path === '/home') return location === '/home';
-    return location.startsWith(path);
-  };
+  // D 修：原 startsWith 會誤判（/about 會 highlight /aboutXyz）；
+  // 全部用 exact match 加 / 開頭路徑、簡單可靠
+  const isActive = (path: string) => location === path;
 
   // Task 3 / 2026-04-25: drawer 開啟時鎖 body scroll + ESC 鍵關閉
   useEffect(() => {
