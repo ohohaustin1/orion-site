@@ -1,0 +1,61 @@
+{
+  "templateName": "edge-case-empty",
+  "lead": {
+    "id": 9099,
+    "sessionId": "preview_edge_empty",
+    "name": "（未提供）",
+    "contact": "",
+    "industry": "",
+    "stage": "",
+    "scale": "",
+    "budget": "",
+    "timeline": "",
+    "painPoints": [],
+    "goals": "",
+    "score": 25,
+    "createdAt": "2026-04-25T13:00:00.000Z"
+  },
+  "report": {
+    "coreProblem": {
+      "title": "回答太短、目前資訊不足以做完整診斷",
+      "description": "你只回答了 1-2 輪、沒有產業 / 規模 / 痛點具體資訊。我們需要更多細節才能給有意義的建議。"
+    },
+    "painQuantification": {
+      "title": "暫無數據",
+      "monthlyTimeLoss": "—",
+      "monthlyMoneyCost": "—",
+      "description": "資料不足、無法量化。建議重新進行診斷、把問題講具體。"
+    },
+    "aiSolution": {
+      "title": "建議下一步",
+      "capabilities": [
+        "回到對話、把產業 / 規模 / 主要痛點講清楚",
+        "至少回答 5-6 個問題、給足 AI 上下文",
+        "或直接 email support@orion01.com 描述你的狀況"
+      ],
+      "description": "ORION 的診斷需要至少 5-6 輪對話才能給出有用建議。這份報告只能作為對話開頭。"
+    },
+    "firstAction": {
+      "title": "下一步",
+      "action": "重新進行診斷對話",
+      "description": "把產業背景、團隊規模、最具體的痛點先講出來。"
+    },
+    "overallScore": 25,
+
+    "coreInsight": "資料太薄、目前無法精準診斷",
+    "currentAnalysis": "你提供的資訊不足以判斷現況。建議回到對話、把產業、規模、最具體的痛點講清楚再來。",
+    "currentKeyPoints": [
+      { "type": "gap", "label": "缺口", "text": "缺產業背景、缺規模資訊、缺具體痛點" },
+      { "type": "urgency", "label": "建議", "text": "重新對話、給足 5-6 輪資訊" }
+    ],
+    "opportunities": [],
+    "risks": [
+      "資訊不足貿然導入 AI、容易失焦、做了沒效",
+      "建議先想清楚『最痛的一個問題』再來談"
+    ],
+    "path": [
+      { "phase": "第一步", "title": "回到對話", "description": "重新跑一輪 ORION 診斷、講清楚你的狀況。" }
+    ],
+    "chairmanNote": "我看你回得很短、可能是時間趕、也可能是不想講。沒關係、有空再回來。或直接 email 寫一段你的狀況、我來找你。"
+  }
+}

@@ -1,12 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { getFixture, FIXTURE_LIST, isPreviewAllowed } from '../data/fixtures';
 
 /*
  ═══════════════════════════════════════════════════
   Orion Report Page — V3.1 解鎖版
   深色金色主題 / 40% 免費 + 解鎖閘門 + 60% 鎖定
   Session ID 驗證 / Email 解鎖 / 帳號登入
+  T7: 支援 previewTemplate（fixture 預覽、不打 LLM）
  ═══════════════════════════════════════════════════
 */
+
+interface ReportProps {
+  previewTemplate?: string;
+}
 
 interface ReportData {
   coreProblem: { title: string; description: string };
@@ -31,9 +37,14 @@ const LOADING_HINTS = [
   { text: '整合策略建議與行動方案...', pct: 90 },
 ];
 
-export default function Report() {
-  const [state, setState] = useState<PageState>('loading');
-  const [report, setReport] = useState<ReportData | null>(null);
+export default function Report({ previewTemplate }: ReportProps = {}) {
+  const isPreview = !!previewTemplate;
+  const [state, setState] = useState<PageState>(isPreview ? 'ready' : 'loading');
+  const [report, setReport] = useState<ReportData | null>(() => {
+    if (!isPreview || !previewTemplate) return null;
+    const fx = getFixture(previewTemplate);
+    return fx ? (fx.report as ReportData) : null;
+  });
   const [error, setError] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -66,25 +77,41 @@ export default function Report() {
   const [consultationState, setConsultationState] =
     useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
-  // ── 檢查 session_id ──
+  // ── 檢查 session_id ──（preview 模式跳過）
   useEffect(() => {
+    if (isPreview) return;
     if (!sessionId) {
       setError('無效的分析連結，請重新進行診斷');
       setState('error');
       return;
     }
     // session_id 存在，繼續載入
-  }, [sessionId]);
+  }, [sessionId, isPreview]);
 
-  // ── P0-01：開信追蹤 pixel（fire-and-forget、失敗不影響使用者） ──
+  // ── T7：preview token 檢查 ──
   useEffect(() => {
-    if (!sessionId) return;
+    if (!isPreview) return;
+    const token = params.get('dev_token');
+    if (!isPreviewAllowed(token)) {
+      setError('Preview 需要 dev_token（prod 環境保護）');
+      setState('error');
+      return;
+    }
+    if (!report) {
+      setError(`找不到 fixture：${previewTemplate}`);
+      setState('error');
+    }
+  }, [isPreview, previewTemplate, report]);
+
+  // ── P0-01：開信追蹤 pixel（preview 模式跳過、避免污染後台 status） ──
+  useEffect(() => {
+    if (isPreview || !sessionId) return;
     fetch(`https://orion-hub.zeabur.app/api/reports/${sessionId}/track-open`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ reportId: 'web-view' }),
     }).catch(() => { /* 靜默 */ });
-  }, [sessionId]);
+  }, [sessionId, isPreview]);
 
   // ── P0-01：請求 Chairman 深聊 ──
   const handleRequestConsultation = useCallback(async () => {
@@ -133,8 +160,9 @@ export default function Report() {
     return () => clearInterval(timer);
   }, [state, report]);
 
-  // ── Fetch report ──
+  // ── Fetch report ──（preview 模式跳過、用 fixture）
   useEffect(() => {
+    if (isPreview) return;
     if (!sessionId) return;
 
     const controller = new AbortController();
@@ -155,7 +183,7 @@ export default function Report() {
         setError(err.name === 'AbortError' ? '回應逾時，請重試' : '報告生成失敗');
         setState('error');
       });
-  }, [sessionId]);
+  }, [sessionId, isPreview]);
 
   // ── Email 解鎖 ──
   const handleEmailUnlock = async (e: React.FormEvent) => {
@@ -559,6 +587,28 @@ export default function Report() {
     <div className="report-container">
       <style>{CSS_STYLES}</style>
 
+      {/* T7：preview banner */}
+      {isPreview && (
+        <div className="preview-banner">
+          <span className="pb-tag">PREVIEW</span>
+          <span className="pb-name">樣板：{previewTemplate}</span>
+          <select
+            className="pb-switch"
+            value={previewTemplate}
+            onChange={(e) => {
+              const t = e.target.value;
+              const dt = params.get('dev_token');
+              const url = `/report/preview/${t}${dt ? `?dev_token=${encodeURIComponent(dt)}` : ''}`;
+              window.location.href = url;
+            }}
+          >
+            {FIXTURE_LIST.map(f => (
+              <option key={f.id} value={f.id}>{f.label}</option>
+            ))}
+          </select>
+        </div>
+      )}
+
       {/* 版本標籤 */}
       {reportVersion > 1 && (
         <div className="version-badge">V{reportVersion} 策略已更新</div>
@@ -951,6 +1001,48 @@ const CSS_STYLES = `
     color: #e8c96a;
     font-weight: 600;
   }
+
+  /* T7：PREVIEW banner */
+  .preview-banner {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: linear-gradient(90deg, #FFD369 0%, #C5A059 100%);
+    color: #0a0a0a;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    font-family: 'JetBrains Mono', 'Noto Sans TC', monospace;
+    letter-spacing: 0.06em;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.35);
+  }
+  .preview-banner .pb-tag {
+    background: #0a0a0a;
+    color: #FFD369;
+    padding: 2px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+  }
+  .preview-banner .pb-name { font-weight: 500; opacity: 0.85; }
+  .preview-banner .pb-switch {
+    background: rgba(0,0,0,0.18);
+    color: #0a0a0a;
+    border: 1px solid rgba(0,0,0,0.4);
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .preview-banner + .version-badge,
+  .preview-banner ~ .report-container { padding-top: 50px; }
+  body:has(.preview-banner) { padding-top: 36px; }
 
   /* P0-01：Chairman 親筆 CTA — 黑金深色 / HUD 角線裝飾 */
   .chairman-cta {

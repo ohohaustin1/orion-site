@@ -80,6 +80,11 @@ function Router() {
       {/* /report → AI Diagnostic Report */}
       <Route path="/report" component={Report} />
 
+      {/* T7：staging 預覽路由（用 fixture、不打 LLM） */}
+      <Route path="/report/preview/:templateName">
+        {(params: { templateName: string }) => <Report previewTemplate={params.templateName} />}
+      </Route>
+
       {/* 側欄功能頁 */}
       <Route path="/projects">
         {() => (
