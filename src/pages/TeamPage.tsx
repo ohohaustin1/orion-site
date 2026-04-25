@@ -1,13 +1,18 @@
 import React from 'react';
+import { Crown, Cpu, Lightbulb, BrainCircuit, Heart, BarChart3, Link2 } from 'lucide-react';
 import PageSEO from '../components/PageSEO';
 
+// Task F (2026-04-26)：團隊頁改角色卡
+// Chairman 親令：拿掉 AI 生圖頭像、改 role icon + 真實職責描述
+// 「沒明確內容、寫『招募中』更誠實」— 只 Austin 是真實創辦人、其他改 ROLE-only 卡
+type RoleIcon = React.ComponentType<{ size?: number; strokeWidth?: number }>;
 interface Member {
-  name: string;
-  title: string;
-  specialties: string;
-  intro: string;
-  experience: string;
-  photo: string; // filename inside public/team/
+  name: string;        // 真實人名 OR 「招募中」
+  title: string;       // 角色 / 職位
+  specialties: string; // 擅長領域
+  responsibility: string; // 核心責任（取代 intro 第一人稱長句）
+  status?: 'active' | 'recruiting'; // recruiting → 顯示招募中 banner
+  Icon: RoleIcon;
 }
 
 const team: Member[] = [
@@ -15,57 +20,57 @@ const team: Member[] = [
     name: 'Austin 許燿宸',
     title: 'Chairman・創辦人',
     specialties: '商業策略、AI 系統決策、企業顧問',
-    intro: '跨境生意出身，把商業直覺轉化成 AI 系統，相信每個老闆都值得一個永遠在線的顧問',
-    experience: '10 年商業策略經驗，服務過 3 個國家市場',
-    photo: 'AUSTIN.png',
+    responsibility: '訂方向、把商業直覺轉化成 AI 系統決策、最終把關所有對外承諾',
+    status: 'active',
+    Icon: Crown,
   },
   {
-    name: '魏宇霆 David',
+    name: '招募中',
     title: '首席技術長 CTO',
-    specialties: '電商系統、ERP/CRM、AWS/GCP、區塊鏈、iOS/Android、資安',
-    intro: '把複雜系統變成你看得懂的工具',
-    experience: '8 年全棧架構經驗，主導過 50+ 企業系統建置',
-    photo: '魏宇霆 David.png',
+    specialties: '電商 / ERP / CRM、AWS / GCP、全棧架構、資安',
+    responsibility: '系統可用性、安全與效能、上線品質',
+    status: 'recruiting',
+    Icon: Cpu,
   },
   {
-    name: '王艾倫 Aaron',
+    name: '招募中',
     title: '首席 AI 策略官',
-    specialties: 'AI 落地、商業自動化、流程優化',
-    intro: '專注把 AI 能力轉化為可落地的商業決策，不談理論只談結果',
-    experience: '6 年企業顧問經驗，協助 30+ 中小企業導入 AI',
-    photo: '王艾倫 Aaron.png',
+    specialties: 'AI 落地、商業自動化、流程拆解',
+    responsibility: '把 AI 能力翻譯成客戶聽得懂的 ROI、不談理論只談結果',
+    status: 'recruiting',
+    Icon: Lightbulb,
   },
   {
-    name: '陳建宏 Kevin',
+    name: '招募中',
     title: '首席 AI 架構師',
-    specialties: '機器學習、決策自動化、n8n',
-    intro: '讓機器學會思考商業邏輯，把你的決策流程自動化',
-    experience: '5 年 AI 工程經驗，建置過 20+ 自動化系統',
-    photo: '陳建宏 Kevin.png',
+    specialties: '機器學習、決策自動化、n8n / Workflow',
+    responsibility: '讓機器學會跑商業邏輯、把決策流程自動化',
+    status: 'recruiting',
+    Icon: BrainCircuit,
   },
   {
-    name: '林佳穎 Iris',
+    name: '招募中',
     title: '客戶體驗總監',
     specialties: '用戶研究、對話設計、品牌體驗',
-    intro: '相信好的系統應該讓客戶感覺被理解，而不是被處理',
-    experience: '7 年 UX 設計經驗，服務過電商、金融、醫療產業',
-    photo: '林佳穎 Iris.png',
+    responsibility: '讓系統感覺被理解、不是被處理',
+    status: 'recruiting',
+    Icon: Heart,
   },
   {
-    name: '張雅婷 Tina',
+    name: '招募中',
     title: '數據分析師',
     specialties: '數據建模、商業洞察、ROI 分析',
-    intro: '從數字裡看出你看不到的錢，把直覺變成可驗證的策略',
-    experience: '5 年數據分析經驗，幫助客戶平均提升 23% 轉化率',
-    photo: '張雅婷 Tina.png',
+    responsibility: '從數字找錢、把直覺變成可驗證策略',
+    status: 'recruiting',
+    Icon: BarChart3,
   },
   {
-    name: '吳明哲 Marcus',
+    name: '招募中',
     title: '系統整合工程師',
     specialties: 'API 整合、資料庫、全棧開發',
-    intro: '讓所有工具說同一種語言，n8n、API、資料庫全部打通',
-    experience: '6 年系統整合經驗，精通 10+ 主流平台串接',
-    photo: '吳明哲 Marcus.png',
+    responsibility: '讓所有工具說同一種語言、n8n / API / DB 全打通',
+    status: 'recruiting',
+    Icon: Link2,
   },
 ];
 
@@ -171,6 +176,30 @@ const TEAM_CSS = `
 .team-card:hover .team-avatar {
   filter: drop-shadow(0 0 16px rgba(197,160,89,0.7)) drop-shadow(0 0 32px rgba(197,160,89,0.3));
 }
+/* Task F：角色卡 — icon 取代 AI 生圖頭像 */
+.team-avatar-icon {
+  background: radial-gradient(circle at center, rgba(197,160,89,0.18) 0%, rgba(10,10,10,0.92) 70%);
+  color: #C5A059;
+}
+.team-avatar-icon svg {
+  filter: drop-shadow(0 0 8px rgba(197,160,89,0.55));
+}
+.team-card-recruiting .team-name {
+  color: rgba(255,255,255,0.45);
+  font-style: italic;
+}
+.team-recruiting-badge {
+  display: inline-block;
+  margin-bottom: 14px;
+  padding: 3px 10px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: #C5A059;
+  background: rgba(197,160,89,0.10);
+  border: 1px solid rgba(197,160,89,0.35);
+  border-radius: 4px;
+}
 
 .team-name {
   color: #ffffff;
@@ -241,27 +270,25 @@ export default function TeamPage() {
       </header>
 
       <div className="team-grid">
-        {team.map((m) => (
-          <article key={m.name} className="team-card">
-            <div className="team-avatar">
-              <img src={`/team/${encodeURIComponent(m.photo)}`} alt={m.name} loading="lazy" />
+        {team.map((m, idx) => (
+          <article key={`${m.title}-${idx}`} className={`team-card ${m.status === 'recruiting' ? 'team-card-recruiting' : ''}`}>
+            <div className="team-avatar team-avatar-icon">
+              <m.Icon size={48} strokeWidth={1.4} />
             </div>
             <h3 className="team-name">{m.name}</h3>
             <div className="team-title">{m.title}</div>
+            {m.status === 'recruiting' && (
+              <div className="team-recruiting-badge">RECRUITING</div>
+            )}
 
             <div className="team-section">
-              <span className="team-section-label">專長</span>
+              <span className="team-section-label">擅長領域</span>
               <div className="team-specialties">{m.specialties}</div>
             </div>
 
             <div className="team-section">
-              <span className="team-section-label">介紹</span>
-              <p className="team-intro">{m.intro}</p>
-            </div>
-
-            <div className="team-section">
-              <span className="team-section-label">年資</span>
-              <div className="team-experience">{m.experience}</div>
+              <span className="team-section-label">核心責任</span>
+              <p className="team-intro">{m.responsibility}</p>
             </div>
           </article>
         ))}
