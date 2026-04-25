@@ -948,6 +948,23 @@ body {
   font-weight: 500;
 }
 
+/* MOBILE-2：手機端 /cases 主要文字 ≥ 14px、tag/label ≥ 13px */
+@media (max-width: 768px) {
+  .case-row p,
+  .case-results p {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .case-tag,
+  .case-label {
+    font-size: 13px;
+  }
+  .case-duration {
+    font-size: 12px;
+    opacity: 0.7;
+  }
+}
+
 /* ================================================
    FILTER BAR
    ================================================ */
