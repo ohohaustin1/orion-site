@@ -25,6 +25,19 @@ const HERO_CSS = `
   letter-spacing: 0.05em;
 }
 
+/* SEO：visually-hidden h1（讓 Google 抓得到頁面主題、視覺不影響）*/
+.hero-v16-h1-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* HERO3 背景層 — 獨立 div 以便做 scale 呼吸動畫 */
 .hero-v16-bg {
   position: absolute;
@@ -219,6 +232,7 @@ export default function HeroSection() {
       <style dangerouslySetInnerHTML={{ __html: HERO_CSS }} />
 
       <section className="hero-v16" aria-label="Orion AI 首頁主視覺">
+        <h1 className="hero-v16-h1-sr">Orion 獵戶座智鑑 — 企業級 AI 成交引擎</h1>
         <div className="hero-v16-bg" aria-hidden="true" />
 
         {/* 眼睛發光 */}
