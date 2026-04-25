@@ -1,6 +1,8 @@
 {
-  "buildCommand": null,
+  "buildCommand": "",
+  "installCommand": "",
   "outputDirectory": "dist",
+  "framework": null,
   "routes": [
     { "src": "/report/preview/(.*)", "dest": "/index.html" },
     { "src": "/report", "dest": "/index.html" },
