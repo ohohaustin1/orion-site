@@ -62,6 +62,10 @@ export default function Report() {
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get('session');
 
+  // P0-01：Chairman 深聊請求按鈕狀態
+  const [consultationState, setConsultationState] =
+    useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+
   // ── 檢查 session_id ──
   useEffect(() => {
     if (!sessionId) {
@@ -71,6 +75,34 @@ export default function Report() {
     }
     // session_id 存在，繼續載入
   }, [sessionId]);
+
+  // ── P0-01：開信追蹤 pixel（fire-and-forget、失敗不影響使用者） ──
+  useEffect(() => {
+    if (!sessionId) return;
+    fetch(`https://orion-hub.zeabur.app/api/reports/${sessionId}/track-open`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reportId: 'web-view' }),
+    }).catch(() => { /* 靜默 */ });
+  }, [sessionId]);
+
+  // ── P0-01：請求 Chairman 深聊 ──
+  const handleRequestConsultation = useCallback(async () => {
+    if (!sessionId || consultationState === 'submitting' || consultationState === 'success') return;
+    setConsultationState('submitting');
+    try {
+      const res = await fetch(
+        `https://orion-hub.zeabur.app/api/leads/${sessionId}/request-consultation`,
+        { method: 'POST', headers: { 'Content-Type': 'application/json' } }
+      );
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (data.ok) setConsultationState('success');
+      else setConsultationState('error');
+    } catch {
+      setConsultationState('error');
+    }
+  }, [sessionId, consultationState]);
 
   // ── 6-stage progress bar ──
   useEffect(() => {
@@ -464,10 +496,32 @@ export default function Report() {
         </div>
       )}
 
-      {/* CTA 區塊 */}
-      <div className="cta-section">
-        <div className="cta-main">👉 預約 AI 導入拆解（30分鐘）</div>
-        <div className="cta-secondary">👉 聯絡策略工程師</div>
+      {/* P0-01：Chairman 親筆 CTA */}
+      <div className="chairman-cta">
+        <div className="chairman-cta-label">Chairman 親筆</div>
+        <div className="chairman-cta-quote">
+          根據你今天說的情況，我建議你優先處理「<span className="chairman-cta-highlight">{report?.coreProblem?.title || '你提到的核心問題'}</span>」。<br />
+          這種問題我們看過很多次、通常 6-12 週可以見效。<br />
+          我想跟你聊 30 分鐘、把方向確認清楚。
+        </div>
+        <div className="chairman-cta-sign">— Austin（Chairman）</div>
+
+        {consultationState === 'success' ? (
+          <div className="chairman-cta-success">
+            ✅ 已收到！Chairman 通常 1 小時內聯絡。
+          </div>
+        ) : (
+          <button
+            className="chairman-cta-btn"
+            onClick={handleRequestConsultation}
+            disabled={consultationState === 'submitting'}
+          >
+            {consultationState === 'submitting' ? '送出中…' : '我想跟 Chairman 深聊 30 分鐘'}
+          </button>
+        )}
+        {consultationState === 'error' && (
+          <div className="chairman-cta-error">送出失敗、請稍後重試</div>
+        )}
       </div>
     </div>
   );
@@ -898,25 +952,109 @@ const CSS_STYLES = `
     font-weight: 600;
   }
 
-  .cta-section {
-    text-align: center;
-    margin-top: 40px;
-    padding: 32px;
-    background: rgba(212, 168, 83, 0.08);
-    border: 1px solid rgba(212, 168, 83, 0.2);
-    border-radius: 8px;
+  /* P0-01：Chairman 親筆 CTA — 黑金深色 / HUD 角線裝飾 */
+  .chairman-cta {
+    position: relative;
+    margin-top: 56px;
+    padding: 40px 36px 36px;
+    background:
+      radial-gradient(ellipse at top, rgba(212, 168, 83, 0.10) 0%, rgba(0, 0, 0, 0) 70%),
+      linear-gradient(180deg, #0d0d10 0%, #050507 100%);
+    border: 1px solid rgba(212, 168, 83, 0.28);
+    border-radius: 6px;
+    box-shadow:
+      0 0 0 1px rgba(212, 168, 83, 0.04),
+      0 24px 60px rgba(0, 0, 0, 0.5),
+      0 0 60px rgba(212, 168, 83, 0.06);
   }
-
-  .cta-main {
-    font-size: 18px;
-    font-weight: 700;
-    color: #e8c96a;
-    margin-bottom: 16px;
+  /* 4 角 HUD 裝飾線 */
+  .chairman-cta::before,
+  .chairman-cta::after {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 1px solid #C5A059;
   }
-
-  .cta-secondary {
+  .chairman-cta::before {
+    top: -1px; left: -1px;
+    border-right: 0; border-bottom: 0;
+  }
+  .chairman-cta::after {
+    bottom: -1px; right: -1px;
+    border-left: 0; border-top: 0;
+  }
+  .chairman-cta-label {
+    font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: #C5A059;
+    margin-bottom: 18px;
+  }
+  .chairman-cta-quote {
+    font-size: 17px;
+    line-height: 1.85;
+    color: #e8e6df;
+    margin-bottom: 18px;
+    font-style: italic;
+  }
+  .chairman-cta-highlight {
+    color: #FFD369;
+    font-weight: 600;
+    font-style: normal;
+    background: rgba(255, 211, 105, 0.08);
+    padding: 1px 8px;
+    border-radius: 3px;
+  }
+  .chairman-cta-sign {
+    font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
+    color: #C5A059;
     font-size: 14px;
-    color: #8a93a8;
+    text-align: right;
+    margin-bottom: 28px;
+    letter-spacing: 0.06em;
+  }
+  .chairman-cta-btn {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, #FFD369 0%, #C5A059 100%);
+    color: #0a0a0a;
+    border: 0;
+    padding: 18px 24px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    font-family: inherit;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.18);
+  }
+  .chairman-cta-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 28px rgba(212, 168, 83, 0.35);
+  }
+  .chairman-cta-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .chairman-cta-success {
+    margin-top: 4px;
+    padding: 16px;
+    text-align: center;
+    background: rgba(74, 222, 128, 0.08);
+    border: 1px solid rgba(74, 222, 128, 0.3);
+    color: #4ade80;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .chairman-cta-error {
+    margin-top: 12px;
+    text-align: center;
+    color: #ef4444;
+    font-size: 13px;
   }
 
   @media (max-width: 768px) {
@@ -940,6 +1078,12 @@ const CSS_STYLES = `
     .card-2 .metrics-row {
       flex-direction: column;
     }
+    .chairman-cta {
+      padding: 28px 20px 24px;
+      margin-top: 36px;
+    }
+    .chairman-cta-quote { font-size: 15px; line-height: 1.75; }
+    .chairman-cta-btn { padding: 16px 18px; font-size: 15px; }
   }
 
   /* ── Version Badge ── */
