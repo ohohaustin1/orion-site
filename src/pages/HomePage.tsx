@@ -269,7 +269,7 @@ export default function HomePage() {
         <ScrollReveal delay={1.1}>
           <div className="co-trust-author">
             <span className="co-trust-avatar">
-              <img src="/TEAM/AUSTIN.png" alt="Austin 許燿宸" />
+              <img src="/team/AUSTIN.png" alt="Austin 許燿宸" />
             </span>
             <span>— Austin，ORION 創辦人</span>
           </div>

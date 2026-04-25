@@ -47,7 +47,7 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    sourcemap: false, // TD-007: dist 進 git、不產 .map 省 ~18MB
     rollupOptions: {
       output: {
         manualChunks: {

@@ -1,12 +1,10 @@
 {
-  "cleanUrls": true,
+  "buildCommand": null,
+  "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/home", "destination": "/home/index.html" },
-    { "source": "/cases", "destination": "/cases/index.html" },
-    { "source": "/insights", "destination": "/insights/index.html" },
-    { "source": "/about", "destination": "/about/index.html" },
-    { "source": "/team", "destination": "/team/index.html" },
-    { "source": "/resources", "destination": "/resources/index.html" },
-    { "source": "/((?!.*\\.).+)", "destination": "/index.html" }
+    {
+      "source": "/((?!home$|cases$|insights$|about$|team$|resources$|home/.*|cases/.*|insights/.*|about/.*|team/.*|resources/.*|assets/.*|brand/.*|textures/.*|.*\\.[a-zA-Z0-9]+$).*)",
+      "destination": "/index.html"
+    }
   ]
 }

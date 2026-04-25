@@ -1,5 +1,6 @@
 node_modules/
-dist/
+# TD-007：dist/ 進 git（本地 prerender、Vercel 純 static host）但排除 sourcemap
+dist/**/*.map
 .env
 .env.local
 *.log

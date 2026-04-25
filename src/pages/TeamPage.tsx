@@ -7,7 +7,7 @@ interface Member {
   specialties: string;
   intro: string;
   experience: string;
-  photo: string; // filename inside public/TEAM/
+  photo: string; // filename inside public/team/
 }
 
 const team: Member[] = [
@@ -244,7 +244,7 @@ export default function TeamPage() {
         {team.map((m) => (
           <article key={m.name} className="team-card">
             <div className="team-avatar">
-              <img src={`/TEAM/${encodeURIComponent(m.photo)}`} alt={m.name} loading="lazy" />
+              <img src={`/team/${encodeURIComponent(m.photo)}`} alt={m.name} loading="lazy" />
             </div>
             <h3 className="team-name">{m.name}</h3>
             <div className="team-title">{m.title}</div>
