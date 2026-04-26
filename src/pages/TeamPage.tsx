@@ -1,78 +1,36 @@
-import React from 'react';
-import { Crown, Cpu, Lightbulb, BrainCircuit, Heart, BarChart3, Link2 } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Crown, Cpu, Lightbulb, BrainCircuit, Heart, BarChart3, Link2, Users } from 'lucide-react';
 import PageSEO from '../components/PageSEO';
 
-// Task F (2026-04-26)：團隊頁改角色卡
-// Chairman 親令：拿掉 AI 生圖頭像、改 role icon + 真實職責描述
-// 「沒明確內容、寫『招募中』更誠實」— 只 Austin 是真實創辦人、其他改 ROLE-only 卡
+// 2026-04-26 Chairman 修正 F：拿回 DB-driven、條件渲染
+// 有 image_url → 真人照片卡 / 無 image_url → role icon 招募中卡
+// 後台 admin 改 image_url 即可切換、不需動 code
+
 type RoleIcon = React.ComponentType<{ size?: number; strokeWidth?: number }>;
+
 interface Member {
-  name: string;        // 真實人名 OR 「招募中」
-  title: string;       // 角色 / 職位
-  specialties: string; // 擅長領域
-  responsibility: string; // 核心責任（取代 intro 第一人稱長句）
-  status?: 'active' | 'recruiting'; // recruiting → 顯示招募中 banner
-  Icon: RoleIcon;
+  id: number;
+  name: string;
+  title: string;
+  bio?: string | null;
+  image_url: string | null;
+  linkedin?: string | null;
 }
 
-const team: Member[] = [
-  {
-    name: 'Austin 許燿宸',
-    title: 'Chairman・創辦人',
-    specialties: '商業策略、AI 系統決策、企業顧問',
-    responsibility: '訂方向、把商業直覺轉化成 AI 系統決策、最終把關所有對外承諾',
-    status: 'active',
-    Icon: Crown,
-  },
-  {
-    name: '招募中',
-    title: '首席技術長 CTO',
-    specialties: '電商 / ERP / CRM、AWS / GCP、全棧架構、資安',
-    responsibility: '系統可用性、安全與效能、上線品質',
-    status: 'recruiting',
-    Icon: Cpu,
-  },
-  {
-    name: '招募中',
-    title: '首席 AI 策略官',
-    specialties: 'AI 落地、商業自動化、流程拆解',
-    responsibility: '把 AI 能力翻譯成客戶聽得懂的 ROI、不談理論只談結果',
-    status: 'recruiting',
-    Icon: Lightbulb,
-  },
-  {
-    name: '招募中',
-    title: '首席 AI 架構師',
-    specialties: '機器學習、決策自動化、n8n / Workflow',
-    responsibility: '讓機器學會跑商業邏輯、把決策流程自動化',
-    status: 'recruiting',
-    Icon: BrainCircuit,
-  },
-  {
-    name: '招募中',
-    title: '客戶體驗總監',
-    specialties: '用戶研究、對話設計、品牌體驗',
-    responsibility: '讓系統感覺被理解、不是被處理',
-    status: 'recruiting',
-    Icon: Heart,
-  },
-  {
-    name: '招募中',
-    title: '數據分析師',
-    specialties: '數據建模、商業洞察、ROI 分析',
-    responsibility: '從數字找錢、把直覺變成可驗證策略',
-    status: 'recruiting',
-    Icon: BarChart3,
-  },
-  {
-    name: '招募中',
-    title: '系統整合工程師',
-    specialties: 'API 整合、資料庫、全棧開發',
-    responsibility: '讓所有工具說同一種語言、n8n / API / DB 全打通',
-    status: 'recruiting',
-    Icon: Link2,
-  },
-];
+// title 關鍵字 → role icon（image_url 缺時顯示）
+function pickIcon(title: string): RoleIcon {
+  const t = (title || '').toLowerCase();
+  if (/chairman|創辦|founder/i.test(title)) return Crown;
+  if (/cto|技術長|架構/i.test(title)) return Cpu;
+  if (/ai 策略|策略官|strategy/i.test(t)) return Lightbulb;
+  if (/ai 架構|architect|機器學習/i.test(title)) return BrainCircuit;
+  if (/體驗|ux|customer|客戶/i.test(title)) return Heart;
+  if (/數據|分析|analyst|data/i.test(title)) return BarChart3;
+  if (/整合|integration|系統/i.test(title)) return Link2;
+  return Users;
+}
+
+const API_BASE = (import.meta as any).env?.VITE_API_BASE_URL || 'https://orion-hub.zeabur.app';
 
 const TEAM_CSS = `
 .team-page {
@@ -252,9 +210,47 @@ const TEAM_CSS = `
   line-height: 1.6;
   letter-spacing: 0.02em;
 }
+/* 2026-04-26 loading skeleton */
+@keyframes teamSkPulse { 0%,100% { opacity: 0.45 } 50% { opacity: 0.85 } }
+.team-card-skeleton { pointer-events: none; }
+.team-avatar-skeleton {
+  background: linear-gradient(135deg, rgba(197,160,89,0.10), rgba(10,10,10,0.7));
+  animation: teamSkPulse 1.6s ease-in-out infinite;
+}
+.team-card-skeleton .sk-line {
+  height: 12px;
+  background: rgba(197,160,89,0.12);
+  border-radius: 4px;
+  margin: 8px 0;
+  animation: teamSkPulse 1.6s ease-in-out infinite;
+}
+.team-card-skeleton .sk-line-1 { width: 70%; }
+.team-card-skeleton .sk-line-2 { width: 45%; }
 `;
 
 export default function TeamPage() {
+  const [team, setTeam] = useState<Member[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`${API_BASE}/api/public/team`)
+      .then((r) => r.json())
+      .then((j) => {
+        if (cancelled) return;
+        if (j && Array.isArray(j.team)) setTeam(j.team);
+        else setErr('team list empty');
+        setLoading(false);
+      })
+      .catch((e) => {
+        if (cancelled) return;
+        setErr(e.message || 'fetch failed');
+        setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, []);
+
   return (
     <div className="team-page">
       <PageSEO
@@ -269,30 +265,60 @@ export default function TeamPage() {
         <p>我們不是顧問公司，我們是你事業的長期戰友</p>
       </header>
 
+      {loading && (
+        <div className="team-grid">
+          {Array.from({ length: 7 }).map((_, i) => (
+            <article key={`sk-${i}`} className="team-card team-card-skeleton" aria-hidden="true">
+              <div className="team-avatar team-avatar-skeleton" />
+              <div className="sk-line sk-line-1" />
+              <div className="sk-line sk-line-2" />
+            </article>
+          ))}
+        </div>
+      )}
+
+      {err && !loading && (
+        <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.5)', padding: '32px 16px' }}>
+          團隊資料暫時無法載入、請稍後再試
+        </div>
+      )}
+
+      {!loading && !err && (
       <div className="team-grid">
-        {team.map((m, idx) => (
-          <article key={`${m.title}-${idx}`} className={`team-card ${m.status === 'recruiting' ? 'team-card-recruiting' : ''}`}>
-            <div className="team-avatar team-avatar-icon">
-              <m.Icon size={48} strokeWidth={1.4} />
-            </div>
-            <h3 className="team-name">{m.name}</h3>
-            <div className="team-title">{m.title}</div>
-            {m.status === 'recruiting' && (
-              <div className="team-recruiting-badge">RECRUITING</div>
-            )}
+        {team.map((m) => {
+          const Icon = pickIcon(m.title);
+          const hasPhoto = !!(m.image_url && m.image_url.trim().length > 0);
+          return (
+            <article key={m.id} className={`team-card ${hasPhoto ? '' : 'team-card-recruiting'}`}>
+              {hasPhoto ? (
+                <div className="team-avatar">
+                  <img src={m.image_url as string} alt={m.name} loading="lazy" />
+                </div>
+              ) : (
+                <div className="team-avatar team-avatar-icon">
+                  <Icon size={48} strokeWidth={1.4} />
+                </div>
+              )}
+              <h3 className="team-name">{hasPhoto ? m.name : '招募中'}</h3>
+              <div className="team-title">{m.title}</div>
+              {!hasPhoto && (
+                <div className="team-recruiting-badge">RECRUITING</div>
+              )}
 
-            <div className="team-section">
-              <span className="team-section-label">擅長領域</span>
-              <div className="team-specialties">{m.specialties}</div>
-            </div>
+              <div className="team-section">
+                <span className="team-section-label">擅長領域</span>
+                <div className="team-specialties">{(m.bio || '').split('\n')[0] || '—'}</div>
+              </div>
 
-            <div className="team-section">
-              <span className="team-section-label">核心責任</span>
-              <p className="team-intro">{m.responsibility}</p>
-            </div>
-          </article>
-        ))}
+              <div className="team-section">
+                <span className="team-section-label">核心責任</span>
+                <p className="team-intro">{(m.bio || '').split('\n').slice(1).join(' ').trim() || (m.bio || '—')}</p>
+              </div>
+            </article>
+          );
+        })}
       </div>
+      )}
     </div>
   );
 }
