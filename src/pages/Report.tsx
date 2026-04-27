@@ -559,8 +559,13 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
   // T2：黑金重設計 — 上半（公開部分）
   // Hero + 客戶卡 + 核心洞察 + 現況分析（含 3 個 KeyPoint）+ 痛點量化 + 模糊遮罩
   const renderFreeContent = () => {
-    // anti-empty：不再用「待診斷」placeholder fallback、空就空（state guard 上層擋）
-    const coreInsight = report?.coreInsight || report?.coreProblem?.title || '';
+    // anti-empty：不再用「待診斷」placeholder fallback
+    // 兼容 PR2 (snake_case) 和 PR3 (camelCase) cache schema
+    const coreInsight = report?.coreInsight
+      || report?.coreProblem?.title
+      || report?.opening_line
+      || report?.current_state
+      || '';
     const currentAnalysis = report?.currentAnalysis || report?.coreProblem?.description || '';
     const keyPoints = report?.currentKeyPoints || [];
     return (
