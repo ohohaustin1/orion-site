@@ -1,14 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Filter, Crosshair, ChevronRight, AlertTriangle, Brain, Target, DollarSign, Check, ChevronDown } from 'lucide-react';
-import { allCases, type CaseStudy } from '../data/cases';
-import { fetchIndustries, getIndustryColor, FALLBACK_INDUSTRIES, type Industry } from '../lib/industries';
+import { Filter, Check, ChevronDown, User, X, Lightbulb, Wrench, BarChart3 } from 'lucide-react';
+import { allCases, type CaseStudy as BaseCase } from '../data/cases';
+import { fetchIndustries, FALLBACK_INDUSTRIES, type Industry } from '../lib/industries';
 import PageSEO from '../components/PageSEO';
 
 const DIAG_URL = 'https://orion-hub.zeabur.app';
 const API_URL = 'https://orion-hub.zeabur.app/api/public/cases';
 const IQA_URL = 'https://orion-hub.zeabur.app/api/public/industry-qa';
 
-// 2026-04-27 產業問答 schema
+// 2026-04-27 v6 案例故事化擴展（從 BaseCase 加 7 欄位 + metrics）
+interface MetricItem { label: string; value: string }
+interface CaseStudy extends BaseCase {
+  hero_number?: string;
+  hero_money?: string;
+  hook_question?: string;
+  story_empathy?: string;
+  story_failed_attempt?: string;
+  story_aha_moment?: string;
+  story_solution?: string;
+  metrics?: MetricItem[];
+}
+
 interface IndustryQA {
   id: number;
   industry: string;
@@ -30,9 +42,17 @@ interface ApiCase {
   results?: string;
   duration?: string;
   featured?: 0 | 1 | boolean;
+  // 2026-04-27 v6 故事化新欄位
+  hero_number?: string | null;
+  hero_money?: string | null;
+  hook_question?: string | null;
+  story_empathy?: string | null;
+  story_failed_attempt?: string | null;
+  story_aha_moment?: string | null;
+  story_solution?: string | null;
+  metrics?: MetricItem[];
 }
 
-// 把 API snake_case 映射成 TS interface camelCase
 function apiToCaseStudy(c: ApiCase): CaseStudy {
   return {
     id: c.id,
@@ -45,6 +65,14 @@ function apiToCaseStudy(c: ApiCase): CaseStudy {
     results: c.results || '',
     duration: c.duration || '',
     featured: !!c.featured,
+    hero_number: c.hero_number || '',
+    hero_money: c.hero_money || '',
+    hook_question: c.hook_question || '',
+    story_empathy: c.story_empathy || c.pain || '',
+    story_failed_attempt: c.story_failed_attempt || c.wrong_move || '',
+    story_aha_moment: c.story_aha_moment || c.ai_insight || '',
+    story_solution: c.story_solution || c.solution || '',
+    metrics: Array.isArray(c.metrics) ? c.metrics : [],
   };
 }
 
@@ -98,6 +126,11 @@ export default function CasesPage() {
   // 產業問答 state
   const [allIqa, setAllIqa] = useState<IndustryQA[]>([]);
   const currentIqa = filter !== '全部' ? allIqa.find((q) => q.industry === filter) : null;
+  // 2026-04-27 單開機制：同時只展開一張 case card
+  const [openCardId, setOpenCardId] = useState<number | null>(null);
+  // filter 切換時收合所有
+  useEffect(() => { setOpenCardId(null); }, [filter]);
+  const toggleCard = (id: number) => setOpenCardId((prev) => (prev === id ? null : id));
 
   const loading = cases === null;
   const effectiveCases = cases ?? allCases;
@@ -164,100 +197,18 @@ export default function CasesPage() {
                 <div className="sk-bar short"></div>
               </div>
             ))
-          : filtered.map((c, i) => (
-              <div
-                key={c.id}
-                className="orion-case-card"
-                style={{ animationDelay: `${i * 0.05}s` }}
-              >
-                <div className="case-tag" style={{ background: getIndustryColor(c.industry) }}>
-                  {c.industry}
-                </div>
-                <h3 className="case-company">{c.company}</h3>
-
-                <div className="case-row">
-                  <span className="case-label" style={{
-                    background: 'rgba(231,76,60,0.15)',
-                    color: '#e74c3c',
-                  }}>
-                    <Crosshair size={10} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} />
-                    原始問題
-                  </span>
-                  <p>{c.problem}</p>
-                </div>
-
-                <div className="case-row">
-                  <span className="case-label" style={{
-                    background: 'rgba(255,152,0,0.15)',
-                    color: '#ff9800',
-                  }}>
-                    <AlertTriangle size={10} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} />
-                    錯誤決策
-                  </span>
-                  <p>{c.wrongMove}</p>
-                </div>
-
-                <div className="case-row">
-                  <span className="case-label" style={{
-                    background: 'rgba(33,150,243,0.15)',
-                    color: '#2196f3',
-                  }}>
-                    <Brain size={10} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} />
-                    AI 拆解
-                  </span>
-                  <p>{c.aiInsight}</p>
-                </div>
-
-                <div className="case-row">
-                  <span className="case-label solution" style={{
-                    background: 'rgba(201,168,76,0.15)',
-                    color: 'var(--orion-gold)',
-                  }}>
-                    <Target size={10} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} />
-                    執行策略
-                  </span>
-                  <p>{c.strategy}</p>
-                </div>
-
-                <div className="case-results">
-                  <DollarSign size={14} />
-                  <p>{c.results}</p>
-                </div>
-                <div className="case-duration">{c.duration}</div>
-
-                <a
-                  href={DIAG_URL}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 6,
-                    marginTop: 14,
-                    padding: '10px 16px',
-                    background: 'rgba(201,168,76,0.08)',
-                    border: '1px solid rgba(201,168,76,0.2)',
-                    borderRadius: 8,
-                    color: 'var(--orion-gold)',
-                    fontSize: '0.78rem',
-                    fontWeight: 600,
-                    textDecoration: 'none',
-                    transition: 'all 0.2s',
-                    cursor: 'pointer',
-                  }}
-                  onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.background = 'rgba(201,168,76,0.15)';
-                    (e.currentTarget as HTMLElement).style.borderColor = 'var(--orion-gold)';
-                  }}
-                  onMouseLeave={e => {
-                    (e.currentTarget as HTMLElement).style.background = 'rgba(201,168,76,0.08)';
-                    (e.currentTarget as HTMLElement).style.borderColor = 'rgba(201,168,76,0.2)';
-                  }}
-                >
-                  想了解您的專屬策略？→ 立即啟動診斷
-                  <ChevronRight size={14} />
-                </a>
-              </div>
-            ))}
+          : filtered.map((c) => {
+              const iqa = allIqa.find((q) => q.industry === c.industry);
+              return (
+                <CaseCardV2
+                  key={c.id}
+                  caseData={c}
+                  industryQa={iqa}
+                  isOpen={openCardId === c.id}
+                  onToggle={() => toggleCard(c.id)}
+                />
+              );
+            })}
       </div>
 
       {!loading && filtered.length === 0 && (
@@ -265,27 +216,110 @@ export default function CasesPage() {
           目前此產業尚無案例
         </div>
       )}
+    </div>
+  );
+}
 
-      {/* Layer 3：三問三答 Accordion — 只在選了特定產業時 */}
-      {currentIqa && (
-        <section className="iqa-section">
-          <h2 className="iqa-section-title">這個產業的老闆、通常問我們 3 個問題</h2>
-          <div className="iqa-accordion">
-            <IqaAccordionItem title={currentIqa.q1.title} answer={currentIqa.q1.answer} defaultOpen tag="Q1" />
-            <IqaAccordionItem title={currentIqa.q2.title} answer={currentIqa.q2.answer}             tag="Q2" />
-            <IqaAccordionItem title={currentIqa.q3.title} answer={currentIqa.q3.answer}             tag="Q3" />
-          </div>
-        </section>
-      )}
+// ── 2026-04-27 v6 CaseCardV2：可展開故事卡 ──
+interface CaseCardV2Props {
+  caseData: CaseStudy;
+  industryQa?: IndustryQA;
+  isOpen: boolean;
+  onToggle: () => void;
+}
 
-      {/* Layer 4：CTA — 只在選了特定產業時 */}
-      {currentIqa && (
-        <section className="iqa-cta">
-          <h2 className="iqa-cta-title">跟你的情況像嗎？</h2>
-          <p className="iqa-cta-sub">3 分鐘免費診斷、我們幫你看看你的 {filter} 還能怎麼做</p>
-          <a href={DIAG_URL} className="iqa-cta-btn">免費診斷 →</a>
-        </section>
-      )}
+function CaseCardV2({ caseData: c, industryQa, isOpen, onToggle }: CaseCardV2Props) {
+  const heroNumber = c.hero_number || '';
+  const heroMoney = c.hero_money || '';
+  const hook = c.hook_question || '';
+  const metrics = (c.metrics && c.metrics.length > 0) ? c.metrics : [];
+
+  return (
+    <article className={`case-card-v2 ${isOpen ? 'is-open' : ''}`}>
+      <button
+        type="button"
+        className="case-card-summary"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+      >
+        <span className="industry-chip industry-chip--outline">{c.industry}</span>
+        <h3 className="company-name">{c.company}</h3>
+
+        <div className="hero-metrics">
+          {heroNumber && (
+            <div className="hero-metric">
+              <span className="metric-value stat-number">{heroNumber}</span>
+            </div>
+          )}
+          {heroMoney && heroMoney !== heroNumber && (
+            <div className="hero-metric secondary">
+              <span className="metric-value stat-number">{heroMoney}</span>
+            </div>
+          )}
+        </div>
+
+        {hook && <p className="hook-line">{hook}</p>}
+
+        <span className="expand-btn">
+          {isOpen ? '收合 ▲' : '展開案例 ▼'}
+        </span>
+      </button>
+
+      <div className="case-expanded">
+        <div className="case-expanded-inner">
+          <StoryStep icon={<User size={18} />} label="他跟你一樣">{c.story_empathy}</StoryStep>
+          <StoryStep icon={<X size={18} />} label="他試過這些、都沒用">{c.story_failed_attempt}</StoryStep>
+          <StoryStep icon={<Lightbulb size={18} />} label="真正的問題在這裡">{c.story_aha_moment}</StoryStep>
+          <StoryStep icon={<Wrench size={18} />} label="我們只做了一件事">{c.story_solution}</StoryStep>
+
+          {metrics.length > 0 && (
+            <div className="story-results">
+              <div className="story-step-header">
+                <BarChart3 size={18} className="story-step-icon" />
+                <span className="story-step-label">然後發生了這些變化</span>
+              </div>
+              <div className="metrics-grid">
+                {metrics.map((m, i) => (
+                  <div key={i} className="metric-item">
+                    {m.label && <span className="metric-item-label">{m.label}</span>}
+                    <span className="metric-item-value stat-number">{m.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {industryQa && (
+            <section className="case-qa">
+              <h4>這個產業的老闆、通常問我們 3 個問題</h4>
+              <div className="iqa-accordion">
+                <IqaAccordionItem title={industryQa.q1.title} answer={industryQa.q1.answer} defaultOpen tag="Q1" />
+                <IqaAccordionItem title={industryQa.q2.title} answer={industryQa.q2.answer}             tag="Q2" />
+                <IqaAccordionItem title={industryQa.q3.title} answer={industryQa.q3.answer}             tag="Q3" />
+              </div>
+            </section>
+          )}
+
+          <section className="case-cta">
+            <h4>跟你的情況像嗎？</h4>
+            <p>3 分鐘免費診斷、我們幫你看看還能怎麼做</p>
+            <a href={DIAG_URL} className="iqa-cta-btn">免費診斷 →</a>
+          </section>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function StoryStep({ icon, label, children }: { icon: React.ReactNode; label: string; children?: React.ReactNode }) {
+  if (!children) return null;
+  return (
+    <div className="story-step">
+      <div className="story-step-header">
+        <span className="story-step-icon">{icon}</span>
+        <span className="story-step-label">{label}</span>
+      </div>
+      <p className="story-step-content">{children}</p>
     </div>
   );
 }

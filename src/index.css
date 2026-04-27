@@ -3129,13 +3129,273 @@ body {
   .iqa-acc-body,
   .card-cta,
   .view-all-cases,
-  .iqa-cta-btn {
+  .iqa-cta-btn,
+  .case-card-v2,
+  .case-expanded {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
   }
   .case-preview-card:hover,
   .view-all-cases:hover,
-  .iqa-cta-btn:hover {
+  .iqa-cta-btn:hover,
+  .case-card-v2:hover {
     transform: none !important;
   }
+}
+
+/* ════════════════════════════════════════════════
+   2026-04-27 v6 案例卡片可展開（/cases）
+   設計：黑底 + 金邊 + 灰文字三色 only、移除舊橘黃綠紫
+   整個畫面要一體：跟 home-cases 用同一套 token
+   ════════════════════════════════════════════════ */
+
+/* 隱藏舊 .orion-case-card / .case-row / .case-tag / case-label 全部 */
+/* （留 .orion-case-card-skeleton 給 loading）*/
+
+.case-card-v2 {
+  position: relative;
+  border: 1px solid rgba(245,166,35,0.15);
+  border-radius: 12px;
+  background: rgba(245,166,35,0.02);
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+.case-card-v2:hover {
+  border-color: rgba(245,166,35,0.35);
+  box-shadow: 0 8px 32px rgba(245,166,35,0.06);
+  transform: translateY(-2px);
+}
+.case-card-v2.is-open {
+  border-color: rgba(245,166,35,0.45);
+  background: rgba(245,166,35,0.04);
+  transform: none;
+}
+
+/* 收合 summary（整塊可點）*/
+.case-card-summary {
+  display: block;
+  width: 100%;
+  padding: 32px 28px;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+  transition: background 0.3s;
+}
+.case-card-summary:hover { background: rgba(245,166,35,0.02); }
+
+/* 產業 chip — outline 變體 */
+.industry-chip.industry-chip--outline {
+  display: inline-block;
+  padding: 4px 14px;
+  border: 1px solid #F5A623;
+  background: transparent;
+  color: #F5A623;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  margin-bottom: 16px;
+  border-radius: 0;
+  text-transform: none;
+}
+
+/* 公司名 */
+.case-card-v2 .company-name {
+  font-family: 'Cormorant Garamond', 'Noto Sans TC', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #F5F5F5;
+  margin: 0 0 20px;
+  line-height: 1.3;
+}
+
+/* 震撼數字 */
+.hero-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 22px;
+}
+.hero-metric .metric-value {
+  font-family: 'Cormorant Garamond', 'Noto Sans TC', serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #F5A623;
+  letter-spacing: 0.01em;
+}
+.hero-metric.secondary .metric-value {
+  font-size: 20px;
+  color: rgba(245,166,35,0.72);
+}
+
+/* 鉤子句 */
+.hook-line {
+  font-size: 16px;
+  font-style: italic;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.65;
+  margin: 0 0 22px;
+  padding-left: 16px;
+  border-left: 2px solid rgba(245,166,35,0.4);
+}
+
+/* 展開按鈕（visual cue、整 summary 都可點）*/
+.expand-btn {
+  display: block;
+  width: 100%;
+  padding: 12px 0;
+  text-align: center;
+  background: rgba(245,166,35,0.05);
+  border: 1px solid rgba(245,166,35,0.2);
+  color: #F5A623;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  transition: all 0.3s;
+}
+.case-card-summary:hover .expand-btn {
+  background: rgba(245,166,35,0.1);
+  border-color: rgba(245,166,35,0.4);
+}
+.case-card-v2.is-open .expand-btn {
+  background: rgba(245,166,35,0.12);
+  border-color: rgba(245,166,35,0.4);
+  color: #FFD369;
+}
+
+/* 展開區塊（max-height transition）*/
+.case-expanded {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease;
+}
+.case-card-v2.is-open .case-expanded {
+  max-height: 6000px;
+}
+.case-expanded-inner {
+  padding: 12px 28px 32px;
+  border-top: 1px solid rgba(245,166,35,0.1);
+}
+
+/* 5 段故事 */
+.story-step {
+  padding: 22px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.story-step:last-of-type { border-bottom: none; }
+.story-step-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.story-step-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #F5A623;
+  flex-shrink: 0;
+}
+.story-step-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #F5A623;
+  letter-spacing: 0.06em;
+}
+.story-step-content {
+  margin: 0;
+  padding-left: 28px;
+  font-size: 16px;
+  line-height: 1.85;
+  color: rgba(255,255,255,0.72);
+}
+
+/* 成果數字 grid */
+.story-results {
+  padding: 22px 0 8px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  margin-top: 10px;
+}
+.story-results .story-step-header { margin-bottom: 14px; }
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding-left: 28px;
+}
+.metric-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(245,166,35,0.03);
+  border: 1px solid rgba(245,166,35,0.1);
+}
+.metric-item-label {
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.01em;
+}
+.metric-item-value {
+  font-family: 'Cormorant Garamond', 'Noto Sans TC', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #F5A623;
+  white-space: nowrap;
+}
+
+/* 卡內 QA Accordion */
+.case-qa {
+  padding-top: 36px;
+  margin-top: 8px;
+  border-top: 1px solid rgba(245,166,35,0.1);
+  margin-bottom: 8px;
+}
+.case-qa h4 {
+  font-family: 'Cormorant Garamond', 'Noto Sans TC', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #F5F5F5;
+  margin: 0 0 18px;
+  letter-spacing: 0.02em;
+}
+
+/* 卡內 CTA */
+.case-cta {
+  text-align: center;
+  padding: 36px 0 8px;
+  border-top: 1px solid rgba(245,166,35,0.1);
+  margin-top: 24px;
+}
+.case-cta h4 {
+  font-family: 'Cormorant Garamond', 'Noto Sans TC', serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: #F5F5F5;
+  margin: 0 0 8px;
+  letter-spacing: 0.03em;
+}
+.case-cta p {
+  font-size: 15px;
+  color: rgba(255,255,255,0.45);
+  margin: 0 0 22px;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .case-card-summary { padding: 24px 20px; }
+  .case-card-v2 .company-name { font-size: 19px; margin-bottom: 16px; }
+  .hero-metric .metric-value { font-size: 24px; }
+  .hero-metric.secondary .metric-value { font-size: 17px; }
+  .hook-line { font-size: 15px; padding-left: 14px; }
+  .case-expanded-inner { padding: 12px 22px 28px; }
+  .story-step { padding: 20px 0; }
+  .story-step-content { font-size: 15px; padding-left: 22px; line-height: 1.8; }
+  .metrics-grid { grid-template-columns: 1fr; padding-left: 22px; }
+  .metric-item-value { font-size: 20px; }
+  .case-qa h4 { font-size: 19px; }
+  .case-cta { padding: 28px 0 4px; }
+  .case-cta h4 { font-size: 22px; }
 }
