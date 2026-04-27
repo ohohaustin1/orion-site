@@ -42,21 +42,14 @@ interface PreviewLeadInfo {
 type PageState = 'loading' | 'ready' | 'error';
 type UnlockMode = 'email' | 'account' | null;
 
-// T1：拉到 12 個 hint、平均 15s 一句、撐 180 秒、覆蓋 Sonnet 完整生成週期
-// 移除禁用詞：賦能 → 行動 / 方案
+// 2026-04-27 David bug fix：6 hints × 5s = 30s 一輪、配合 poll-based loading
 const LOADING_HINTS = [
-  { text: '顧問正在閱讀你的回答...', pct: 8 },
-  { text: '對標你的行業案例庫...', pct: 16 },
-  { text: '抓取你提到的關鍵字...', pct: 24 },
-  { text: '比對 200+ 產業實戰報告...', pct: 32 },
-  { text: '運算每月隱藏費用與損失...', pct: 42 },
-  { text: '量化你的時間成本...', pct: 50 },
-  { text: '生成客製化行動方案...', pct: 58 },
-  { text: '計算投資報酬區間...', pct: 66 },
-  { text: '整理 3 個關鍵建議...', pct: 74 },
-  { text: '撰寫風險與機會分析...', pct: 82 },
-  { text: '整合策略路徑...', pct: 90 },
-  { text: '即將完成最後校對...', pct: 96 },
+  { text: '正在分析你的回答...',                 pct: 12 },
+  { text: '對照 14 個產業的成功案例...',          pct: 28 },
+  { text: '找出你業務的 3 個關鍵機會點...',       pct: 48 },
+  { text: '整理你的風險評估...',                 pct: 65 },
+  { text: '撰寫個人化建議路徑...',               pct: 82 },
+  { text: '報告即將完成...',                    pct: 95 },
 ];
 
 export default function Report({ previewTemplate }: ReportProps = {}) {
@@ -189,8 +182,8 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
     }
   }, [sessionId, consultationState, isPreview]);
 
-  // ── 12-stage progress bar （每 15s 換一句、撐 ~180s） ──
-  // T1：原 5s 換太快、12 個 hint 一輪 60s、Sonnet 90s+ 後就停在最後一句。改 15s。
+  // 2026-04-27 David bug fix：6 hints × 5s = 30s 一輪、之後停在最後一句、
+  // 配合 polling loop 真實偵測 ready
   useEffect(() => {
     if (state !== 'loading') return;
     const interval = setInterval(() => {
@@ -200,7 +193,7 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
         setProgress(LOADING_HINTS[next].pct);
         return next;
       });
-    }, 15000);
+    }, 5000);
     setProgress(LOADING_HINTS[0].pct);
     return () => clearInterval(interval);
   }, [state]);
@@ -219,32 +212,57 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
     return () => clearInterval(timer);
   }, [state, report]);
 
-  // ── Fetch report ──（preview 模式跳過、用 fixture）
+  // 2026-04-27 David bug 修復：poll-based loading（替代 single fetch 200s 阻塞）
+  // - 每 3s GET /api/reports/:sessionId/status（輕量 cache check）
+  // - status=ready → fetch 完整 /api/report/:sessionId（cache 命中、ms 級）
+  // - 失敗 5s retry、240s 後 timeout
   useEffect(() => {
-    if (isPreview) return;
-    if (!sessionId) return;
+    if (isPreview || !sessionId) return;
+    let aborted = false;
+    let pollTimer: ReturnType<typeof setTimeout> | undefined;
+    const startTime = Date.now();
+    const MAX_WAIT_MS = 240000;
 
-    const controller = new AbortController();
-    // T1：timeout 45s → 200s
-    // 真實 Sonnet 4.6 / 4000 tokens 完整生成 ~ 90-180s
-    // 原 45s 過短會 abort + retry 累積到 5+ 分鐘、客戶以為當機
-    const timeout = setTimeout(() => controller.abort(), 200000);
-
-    fetch(`https://orion-hub.zeabur.app/api/report/${sessionId}`, { signal: controller.signal })
-      .then(res => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.json(); })
-      .then(data => {
-        clearTimeout(timeout);
-        setProgress(100);
-        if (data.success && data.report) {
-          setReport(data.report);
-          setTimeout(() => setState('ready'), 800);
-        } else { throw new Error(data.error || 'Unknown error'); }
-      })
-      .catch(err => {
-        clearTimeout(timeout);
-        setError(err.name === 'AbortError' ? '報告生成需要更多時間、請重新載入頁面再試' : '報告生成失敗');
+    async function poll() {
+      if (aborted) return;
+      const elapsed = Date.now() - startTime;
+      if (elapsed > MAX_WAIT_MS) {
+        setError('報告生成超過 4 分鐘、請重新載入頁面再試');
         setState('error');
-      });
+        return;
+      }
+      try {
+        const statusRes = await fetch(`https://orion-hub.zeabur.app/api/reports/${sessionId}/status`);
+        const statusData = await statusRes.json();
+        if (statusData.status === 'ready') {
+          // ready：拿完整 cache
+          const fullRes = await fetch(`https://orion-hub.zeabur.app/api/report/${sessionId}`);
+          if (!fullRes.ok) throw new Error(`HTTP ${fullRes.status}`);
+          const fullData = await fullRes.json();
+          if (fullData.success && fullData.report) {
+            if (aborted) return;
+            setReport(fullData.report);
+            setProgress(100);
+            setTimeout(() => { if (!aborted) setState('ready'); }, 500);
+            return;
+          }
+          throw new Error(fullData.error || '報告內容空');
+        }
+        // generating：3s 後再 poll、進度條微增（封頂 95%）
+        setProgress((prev) => Math.min(prev + 1, 95));
+        pollTimer = setTimeout(poll, 3000);
+      } catch (e) {
+        if (aborted) return;
+        // 暫時錯誤、5s 後重試（不直接放棄、避免短暫網路中斷誤殺）
+        pollTimer = setTimeout(poll, 5000);
+      }
+    }
+
+    poll();
+    return () => {
+      aborted = true;
+      if (pollTimer) clearTimeout(pollTimer);
+    };
   }, [sessionId, isPreview]);
 
   // ── Email 解鎖 ──
@@ -500,11 +518,39 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
     </div>
   );
 
+  // 2026-04-27 David bug 修復：anti-empty guard
+  // 報告必須有 coreInsight 才算 ready、否則整體走 loading view
+  const isReportReady = !!(report && (report.coreInsight || report.coreProblem?.title));
+
+  // 寄至信箱 handler（既有 POST /api/report/email、現只是接 alert）
+  const handleSendEmail = async () => {
+    if (!isReportReady) return;
+    const email = window.prompt('請輸入收件 Email：');
+    if (!email) return;
+    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      alert('Email 格式不正確');
+      return;
+    }
+    try {
+      const res = await fetch('https://orion-hub.zeabur.app/api/report/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId, email, lang: 'zh-TW' }),
+      });
+      const data = await res.json();
+      if (data.ok) alert(data.message || '已寄出！請查收信箱');
+      else alert('寄送失敗：' + (data.error || '未知錯誤'));
+    } catch (e: any) {
+      alert('網路錯誤：' + (e.message || '請稍後重試'));
+    }
+  };
+
   // ── 40% 免費內容 ──
   // T2：黑金重設計 — 上半（公開部分）
   // Hero + 客戶卡 + 核心洞察 + 現況分析（含 3 個 KeyPoint）+ 痛點量化 + 模糊遮罩
   const renderFreeContent = () => {
-    const coreInsight = report?.coreInsight || report?.coreProblem?.title || '你的核心問題待診斷';
+    // anti-empty：不再用「待診斷」placeholder fallback、空就空（state guard 上層擋）
+    const coreInsight = report?.coreInsight || report?.coreProblem?.title || '';
     const currentAnalysis = report?.currentAnalysis || report?.coreProblem?.description || '';
     const keyPoints = report?.currentKeyPoints || [];
     return (
@@ -719,8 +765,20 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
         {/* Footer */}
         <footer className="r-footer">
           <div className="r-footer-actions">
-            <button className="r-footer-btn" onClick={() => window.print()}>下載 PDF</button>
-            <button className="r-footer-btn" onClick={() => alert('email 寄送功能即將上線')}>寄至信箱</button>
+            <button
+              className="r-footer-btn"
+              disabled={!isReportReady}
+              onClick={() => isReportReady && window.print()}
+            >
+              {isReportReady ? '下載 PDF' : '報告生成中...'}
+            </button>
+            <button
+              className="r-footer-btn"
+              disabled={!isReportReady}
+              onClick={handleSendEmail}
+            >
+              {isReportReady ? '寄至信箱' : '報告生成中...'}
+            </button>
             <button className="r-footer-btn" onClick={() => {
               if (navigator.share) navigator.share({ title: 'ORION 診斷報告', url: window.location.href }).catch(() => {});
               else navigator.clipboard?.writeText(window.location.href).then(() => alert('連結已複製'));
@@ -750,15 +808,20 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
     );
   }
 
-  if (state === 'loading') {
+  // 2026-04-27 David bug 修復 anti-empty：state ready 但內容空也走 loading view
+  // 例外：preview 模式直接信任 fixture
+  if (state === 'loading' || (!isPreview && state === 'ready' && !isReportReady)) {
     return (
       <div className="report-container loading-state">
+        <style>{CSS_STYLES}</style>
         <div className="loading-box">
-          <div className="loading-ring"></div>
-          <div className="loading-hint">{LOADING_HINTS[hintIndex]?.text}</div>
+          <img className="loading-griffin" src="/brand/griffin-256.png" alt="ORION" />
+          <div className="loading-title">報告生成中</div>
+          <div className="loading-hint">{LOADING_HINTS[hintIndex]?.text || '報告即將完成...'}</div>
           <div className="progress-bar">
             <div className="progress-fill" style={{ width: `${progress}%` }}></div>
           </div>
+          <div className="loading-eta">預估 60-90 秒、請稍候</div>
         </div>
       </div>
     );
@@ -967,29 +1030,51 @@ const CSS_STYLES = `
 
   .loading-box {
     text-align: center;
-    background: rgba(212, 168, 83, 0.05);
-    border: 1px solid rgba(212, 168, 83, 0.2);
-    border-radius: 8px;
-    padding: 40px;
-    max-width: 400px;
+    background: rgba(212, 168, 83, 0.04);
+    border: 1px solid rgba(245, 166, 35, 0.18);
+    border-radius: 12px;
+    padding: 56px 40px;
+    max-width: 460px;
+    width: 90%;
   }
 
-  .loading-ring {
-    width: 60px;
-    height: 60px;
-    border: 3px solid rgba(212, 168, 83, 0.2);
-    border-top-color: #d4a853;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 24px;
+  /* 2026-04-27 David bug fix：獅鷲呼吸動畫取代 ring spinner */
+  .loading-griffin {
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 28px;
+    display: block;
+    object-fit: contain;
+    filter: drop-shadow(0 0 24px rgba(245,166,35,0.45));
+    animation: griffinBreathe 3s ease-in-out infinite;
+  }
+  @keyframes griffinBreathe {
+    0%, 100% { transform: scale(1); opacity: 0.85; filter: drop-shadow(0 0 16px rgba(245,166,35,0.35)); }
+    50%      { transform: scale(1.04); opacity: 1; filter: drop-shadow(0 0 32px rgba(245,166,35,0.65)); }
   }
 
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-title {
+    font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: #FFD369;
+    letter-spacing: 0.04em;
+    margin-bottom: 10px;
+  }
 
   .loading-hint {
-    font-size: 14px;
-    color: #8a93a8;
-    margin-bottom: 16px;
+    font-size: 15px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 20px;
+    min-height: 22px;
+    transition: opacity 0.4s;
+  }
+
+  .loading-eta {
+    margin-top: 16px;
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.06em;
   }
 
   .progress-bar {
@@ -2107,10 +2192,15 @@ const CSS_STYLES = `
     letter-spacing: 0.06em;
     transition: all 0.15s;
   }
-  .r-footer-btn:hover {
+  .r-footer-btn:hover:not(:disabled) {
     color: #FFD369;
     border-color: #F5A623;
     background: rgba(245,166,35,0.04);
+  }
+  .r-footer-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    color: rgba(245,166,35,0.5);
   }
   .r-footer-disclaimer {
     text-align: center;
@@ -2118,6 +2208,44 @@ const CSS_STYLES = `
     font-size: 11.5px;
     letter-spacing: 0.04em;
     line-height: 1.7;
+  }
+
+  /* 2026-04-27 David bug fix：@media print 隱藏非報告主體 */
+  @media print {
+    /* hide footer buttons / unlock gate / consultation modal / sidebar / nav */
+    .r-footer-actions,
+    .r-modal-backdrop, .r-modal,
+    .r-chairman-cta, .unlock-gate,
+    .preview-banner,
+    nav, aside,
+    .orion-mobile-drawer-trigger,
+    .orion-sidebar-desktop {
+      display: none !important;
+    }
+    /* 報告主體：白底黑字、易讀、省墨 */
+    body, .report-container {
+      background: #ffffff !important;
+      color: #1a1a1a !important;
+    }
+    .r-hero-title, .r-section-label, .r-section-title,
+    .r-quote-mark, .r-chairman-label, .r-chairman-name {
+      color: #8B6914 !important;
+    }
+    .r-paragraph, .r-quote, .r-chairman-quote, .r-keypoint {
+      color: #1a1a1a !important;
+    }
+    .r-section, .r-opp-card, .r-timeline-row {
+      page-break-inside: avoid;
+    }
+    .r-chairman {
+      page-break-before: auto;
+    }
+    /* 拿掉動畫 */
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+    @page { margin: 1.5cm; }
   }
 
   /* ════════════════════════════════════════════════════════════
