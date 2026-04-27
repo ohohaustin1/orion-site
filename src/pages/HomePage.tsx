@@ -296,7 +296,7 @@ export default function HomePage() {
   );
 }
 
-// ── 2026-04-27 精選案例：被「原來」說服後的下一步、3 張黑金卡 + 看更多 ──
+// ── 2026-04-27 精選案例 v2（精緻化）：Chairman UI 統一指令 ──
 interface PreviewCase {
   id: number;
   industry: string;
@@ -313,12 +313,38 @@ function pickFeatured(allCases: PreviewCase[]): PreviewCase[] {
     const c = allCases.find((x) => x.industry === ind);
     if (c) picked.push(c);
   }
-  // 不足補前幾筆
   for (const c of allCases) {
     if (picked.length >= 3) break;
     if (!picked.find((p) => p.id === c.id)) picked.push(c);
   }
   return picked.slice(0, 3);
+}
+
+// 拆「公司名（補充說明）」→ ['公司名', '補充說明']
+function splitCompanyName(s: string): { name: string; scale: string } {
+  const m = s.match(/^(.+?)[（(]([^）)]+)[）)]\s*$/);
+  if (m) return { name: m[1].trim(), scale: m[2].trim() };
+  return { name: s, scale: '' };
+}
+
+// 解析 results 字串為 {label, value} 列、最多 3 行
+//  範例：'食材浪費 -38.4%，缺貨率 -67.1%，月省 NT$33.6 萬'
+//   → [{label:'食材浪費',value:'-38.4%'}, {label:'缺貨率',value:'-67.1%'}, {label:'月省',value:'NT$33.6 萬'}]
+function parseMetrics(results: string): Array<{ label: string; value: string }> {
+  if (!results) return [];
+  const segments = results.split(/[，,]/).map((s) => s.trim()).filter(Boolean).slice(0, 4);
+  // 數字+單位 token：±-+ 數字逗點小數 + (% / 萬 / 倍 / 分 / hr / min / x / ×) 可帶尾字
+  const numTokenRe = /([+\-]?(?:NT\$\s*)?[\d,.]+\s*(?:%|萬|倍|分|hr|min|x|×)\S*)\s*$/;
+  return segments.map((seg) => {
+    const m = seg.match(numTokenRe);
+    if (m && m.index !== undefined) {
+      const value = m[1].trim();
+      const label = seg.slice(0, m.index).trim();
+      // label 過長代表解析不乾淨、回退單行
+      if (label && label.length <= 18) return { label, value };
+    }
+    return { label: '', value: seg };
+  });
 }
 
 function FeaturedCasesSection() {
@@ -332,33 +358,50 @@ function FeaturedCasesSection() {
         const list: PreviewCase[] = Array.isArray(j?.cases) ? j.cases : [];
         setFeatured(pickFeatured(list));
       })
-      .catch(() => { /* fail silent — section 不顯示 */ });
+      .catch(() => { /* fail silent */ });
     return () => { aborted = true; };
   }, []);
   if (!featured.length) return null;
   return (
-    <section className="home-cases-preview">
+    <section className="home-cases-preview home-section">
       <ScrollReveal>
         <>
           <h2 className="home-cases-preview-title">他們也這樣做了</h2>
           <p className="home-cases-preview-sub">不是只有你遇到這些問題、他們比你早一步</p>
         </>
       </ScrollReveal>
-      <div className="home-cases-grid">
-        {featured.map((c) => (
-          <a
-            key={c.id}
-            href={`/cases?industry=${encodeURIComponent(c.industry)}`}
-            className="home-case-card"
-          >
-            <span className="home-case-chip">{c.industry}</span>
-            <div className="home-case-company">{c.company}</div>
-            <div className="home-case-result">{c.results}</div>
-            <div className="home-case-link">看完整案例 →</div>
-          </a>
-        ))}
+      <div className="home-cases-grid stagger-children">
+        {featured.map((c) => {
+          const { name, scale } = splitCompanyName(c.company);
+          const metrics = parseMetrics(c.results);
+          return (
+            <article key={c.id} className="case-preview-card">
+              <span className="industry-chip">{c.industry}</span>
+              <div className="card-company-name">{name}</div>
+              {scale && <div className="card-company-scale">{scale}</div>}
+              <div className="card-divider" />
+              <div className="card-metrics">
+                {metrics.map((m, i) => (
+                  <div key={i} className={`card-metric-row ${m.label ? '' : 'card-metric-row--single'}`}>
+                    {m.label && <span className="metric-label">{m.label}</span>}
+                    <span className="metric-value stat-number">{m.value}</span>
+                  </div>
+                ))}
+              </div>
+              <a
+                href={`/cases?industry=${encodeURIComponent(c.industry)}`}
+                className="card-cta"
+                aria-label={`看完整案例：${name}`}
+              >
+                看完整案例 →
+              </a>
+            </article>
+          );
+        })}
       </div>
-      <a href="/cases" className="home-cases-viewall">看更多案例 →</a>
+      <div style={{ textAlign: 'center' }}>
+        <a href="/cases" className="view-all-cases">看更多案例 →</a>
+      </div>
     </section>
   );
 }
