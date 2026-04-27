@@ -3223,6 +3223,11 @@ body {
   font-weight: 600;
   color: #F5A623;
   letter-spacing: 0.01em;
+  /* 防溢出保險：太長自動斷行、不會被截斷或溢出卡片 */
+  display: block;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.25;
 }
 .hero-metric.secondary .metric-value {
   font-size: 20px;
@@ -3343,7 +3348,11 @@ body {
   font-size: 22px;
   font-weight: 600;
   color: #F5A623;
-  white-space: nowrap;
+  /* 防溢出：grid 格子寬度有限、值太長時自動斷行 */
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.25;
+  text-align: right;
 }
 
 /* 卡內 QA Accordion */
