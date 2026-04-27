@@ -216,6 +216,11 @@ export default function HomePage() {
 
       <GoldParticleDivider />
 
+      {/* 7.5（2026-04-27）他們也這樣做了：精選 3 案例（被「原來」說服後的下一步） */}
+      <FeaturedCasesSection />
+
+      <GoldParticleDivider />
+
       {/* 8. 3D 地球連線 */}
       <section className="co-section">
         <div className="co-section-header">
@@ -288,5 +293,72 @@ export default function HomePage() {
         </ScrollReveal>
       </section>
     </div>
+  );
+}
+
+// ── 2026-04-27 精選案例：被「原來」說服後的下一步、3 張黑金卡 + 看更多 ──
+interface PreviewCase {
+  id: number;
+  industry: string;
+  company: string;
+  results: string;
+}
+
+// Chairman 指定優先序：餐飲（食材-38.4%）/ 房地產（成交+27.4%）/ 電商（退貨-21.8%）
+const PREFERRED_INDUSTRIES = ['餐飲連鎖', '房地產仲介', '電商零售'];
+
+function pickFeatured(allCases: PreviewCase[]): PreviewCase[] {
+  const picked: PreviewCase[] = [];
+  for (const ind of PREFERRED_INDUSTRIES) {
+    const c = allCases.find((x) => x.industry === ind);
+    if (c) picked.push(c);
+  }
+  // 不足補前幾筆
+  for (const c of allCases) {
+    if (picked.length >= 3) break;
+    if (!picked.find((p) => p.id === c.id)) picked.push(c);
+  }
+  return picked.slice(0, 3);
+}
+
+function FeaturedCasesSection() {
+  const [featured, setFeatured] = useState<PreviewCase[]>([]);
+  useEffect(() => {
+    let aborted = false;
+    fetch('https://orion-hub.zeabur.app/api/public/cases')
+      .then((r) => r.json())
+      .then((j) => {
+        if (aborted) return;
+        const list: PreviewCase[] = Array.isArray(j?.cases) ? j.cases : [];
+        setFeatured(pickFeatured(list));
+      })
+      .catch(() => { /* fail silent — section 不顯示 */ });
+    return () => { aborted = true; };
+  }, []);
+  if (!featured.length) return null;
+  return (
+    <section className="home-cases-preview">
+      <ScrollReveal>
+        <>
+          <h2 className="home-cases-preview-title">他們也這樣做了</h2>
+          <p className="home-cases-preview-sub">不是只有你遇到這些問題、他們比你早一步</p>
+        </>
+      </ScrollReveal>
+      <div className="home-cases-grid">
+        {featured.map((c) => (
+          <a
+            key={c.id}
+            href={`/cases?industry=${encodeURIComponent(c.industry)}`}
+            className="home-case-card"
+          >
+            <span className="home-case-chip">{c.industry}</span>
+            <div className="home-case-company">{c.company}</div>
+            <div className="home-case-result">{c.results}</div>
+            <div className="home-case-link">看完整案例 →</div>
+          </a>
+        ))}
+      </div>
+      <a href="/cases" className="home-cases-viewall">看更多案例 →</a>
+    </section>
   );
 }

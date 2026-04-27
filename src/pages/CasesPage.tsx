@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Filter, Crosshair, ChevronRight, AlertTriangle, Brain, Target, DollarSign } from 'lucide-react';
+import { Filter, Crosshair, ChevronRight, AlertTriangle, Brain, Target, DollarSign, Check, ChevronDown } from 'lucide-react';
 import { allCases, type CaseStudy } from '../data/cases';
 import { fetchIndustries, getIndustryColor, FALLBACK_INDUSTRIES, type Industry } from '../lib/industries';
 import PageSEO from '../components/PageSEO';
 
 const DIAG_URL = 'https://orion-hub.zeabur.app';
 const API_URL = 'https://orion-hub.zeabur.app/api/public/cases';
+const IQA_URL = 'https://orion-hub.zeabur.app/api/public/industry-qa';
+
+// 2026-04-27 產業問答 schema
+interface IndustryQA {
+  id: number;
+  industry: string;
+  resonance: string[];
+  q1: { title: string; answer: string };
+  q2: { title: string; answer: string };
+  q3: { title: string; answer: string };
+}
 
 // API response shape（orion-hub /api/public/cases 的 cms_cases 欄位）
 interface ApiCase {
@@ -40,7 +51,13 @@ function apiToCaseStudy(c: ApiCase): CaseStudy {
 export default function CasesPage() {
   // null = loading（尚未 fetch 回）；實陣列 = 已載入（API 或 fallback）
   const [cases, setCases] = useState<CaseStudy[] | null>(null);
-  const [filter, setFilter] = useState('全部');
+  // 2026-04-27：讀 ?industry=XXX URL param、首頁精選卡跳過來自動選那個產業
+  const initialFilter = (() => {
+    if (typeof window === 'undefined') return '全部';
+    try { return new URLSearchParams(window.location.search).get('industry') || '全部'; }
+    catch { return '全部'; }
+  })();
+  const [filter, setFilter] = useState(initialFilter);
   // TD-INDUSTRIES-sync：從 /api/public/industries 取單一來源、失敗 fallback
   const [industriesSrc, setIndustriesSrc] = useState<Industry[]>(FALLBACK_INDUSTRIES);
 
@@ -66,11 +83,21 @@ export default function CasesPage() {
     // TD-INDUSTRIES-sync：fetch 產業清單（cache 命中即返、失敗 fallback）
     fetchIndustries().then((list) => { if (!aborted) setIndustriesSrc(list); });
 
+    // 2026-04-27：一次拉全部 14 產業問答（用 Map 之後切產業即時切換、無需 re-fetch）
+    fetch(IQA_URL)
+      .then((r) => r.json())
+      .then((j) => { if (!aborted && j?.qa) setAllIqa(j.qa); })
+      .catch(() => { /* fail silent */ });
+
     return () => {
       aborted = true;
       ctrl.abort();
     };
   }, []);
+
+  // 產業問答 state
+  const [allIqa, setAllIqa] = useState<IndustryQA[]>([]);
+  const currentIqa = filter !== '全部' ? allIqa.find((q) => q.industry === filter) : null;
 
   const loading = cases === null;
   const effectiveCases = cases ?? allCases;
@@ -109,6 +136,20 @@ export default function CasesPage() {
           </button>
         ))}
       </div>
+
+      {/* Layer 1：共鳴 — 只在選了特定產業時 */}
+      {currentIqa && (
+        <section className="iqa-resonance">
+          <h2 className="iqa-resonance-title">{filter}老闆、你是不是也遇到？</h2>
+          <ul className="iqa-resonance-list">
+            {currentIqa.resonance.map((r, i) => (
+              <li key={i} className="iqa-resonance-item">
+                <Check size={18} className="iqa-check" /> {r}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <div className="orion-cases-grid full">
         {loading
@@ -222,6 +263,49 @@ export default function CasesPage() {
       {!loading && filtered.length === 0 && (
         <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--orion-text-secondary)' }}>
           目前此產業尚無案例
+        </div>
+      )}
+
+      {/* Layer 3：三問三答 Accordion — 只在選了特定產業時 */}
+      {currentIqa && (
+        <section className="iqa-section">
+          <h2 className="iqa-section-title">這個產業的老闆、通常問我們 3 個問題</h2>
+          <div className="iqa-accordion">
+            <IqaAccordionItem title={currentIqa.q1.title} answer={currentIqa.q1.answer} defaultOpen tag="Q1" />
+            <IqaAccordionItem title={currentIqa.q2.title} answer={currentIqa.q2.answer}             tag="Q2" />
+            <IqaAccordionItem title={currentIqa.q3.title} answer={currentIqa.q3.answer}             tag="Q3" />
+          </div>
+        </section>
+      )}
+
+      {/* Layer 4：CTA — 只在選了特定產業時 */}
+      {currentIqa && (
+        <section className="iqa-cta">
+          <h2 className="iqa-cta-title">跟你的情況像嗎？</h2>
+          <p className="iqa-cta-sub">3 分鐘免費診斷、我們幫你看看你的 {filter} 還能怎麼做</p>
+          <a href={DIAG_URL} className="iqa-cta-btn">免費診斷 →</a>
+        </section>
+      )}
+    </div>
+  );
+}
+
+// ── 2026-04-27 IqaAccordionItem 元件 ──
+function IqaAccordionItem({ title, answer, defaultOpen, tag }: { title: string; answer: string; defaultOpen?: boolean; tag: string }) {
+  const [open, setOpen] = useState(!!defaultOpen);
+  const onToggle = () => setOpen((v) => !v);
+  return (
+    <div className={`iqa-acc-item ${open ? 'iqa-acc-open' : ''}`}>
+      <button type="button" className="iqa-acc-header" onClick={onToggle} aria-expanded={open}>
+        <span className="iqa-acc-tag">{tag}</span>
+        <span className="iqa-acc-title">{title}</span>
+        <ChevronDown size={20} className="iqa-acc-chevron" />
+      </button>
+      {open && (
+        <div className="iqa-acc-body">
+          {answer.split(/\n\n+/).map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
         </div>
       )}
     </div>

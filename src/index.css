@@ -2542,3 +2542,287 @@ body {
   .orion-mobile-drawer { animation: none; }
   .orion-mobile-drawer-backdrop { animation: none; }
 }
+
+/* ════════════════════════════════════════════════
+   2026-04-27 產業問答（共鳴 + Accordion + CTA）
+   ════════════════════════════════════════════════ */
+
+/* Layer 1：共鳴 */
+.iqa-resonance {
+  max-width: 760px;
+  margin: 32px auto 28px;
+  padding: 28px 24px;
+  border-top: 1px solid rgba(245,166,35,0.15);
+  border-bottom: 1px solid rgba(245,166,35,0.15);
+}
+.iqa-resonance-title {
+  font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #F5A623;
+  letter-spacing: 0.02em;
+  margin: 0 0 18px;
+}
+.iqa-resonance-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.iqa-resonance-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.86);
+}
+.iqa-check {
+  color: #F5A623;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Layer 3：Accordion 三問 */
+.iqa-section {
+  max-width: 760px;
+  margin: 40px auto 24px;
+  padding: 0 16px;
+}
+.iqa-section-title {
+  font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: #FFD369;
+  letter-spacing: 0.02em;
+  margin: 0 0 18px;
+  text-align: center;
+}
+.iqa-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.iqa-acc-item {
+  border: 1px solid rgba(245,166,35,0.18);
+  border-radius: 6px;
+  background: rgba(15,12,8,0.5);
+  overflow: hidden;
+  transition: border-color 0.2s, background 0.2s;
+}
+.iqa-acc-item.iqa-acc-open {
+  border-color: rgba(245,166,35,0.45);
+  background: rgba(20,16,10,0.7);
+}
+.iqa-acc-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 18px 22px;
+  background: transparent;
+  border: 0;
+  color: #F5F5F5;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  /* MOBILE 觸控區 ≥ 44px */
+  min-height: 56px;
+}
+.iqa-acc-header:hover {
+  background: rgba(245,166,35,0.05);
+}
+.iqa-acc-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  background: rgba(245,166,35,0.16);
+  color: #F5A623;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.iqa-acc-title {
+  flex: 1;
+}
+.iqa-acc-chevron {
+  color: #F5A623;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.iqa-acc-open .iqa-acc-chevron {
+  transform: rotate(180deg);
+}
+.iqa-acc-body {
+  padding: 4px 22px 22px;
+  font-size: 15px;
+  line-height: 1.85;
+  color: rgba(255,255,255,0.82);
+}
+.iqa-acc-body p {
+  margin: 0 0 14px;
+}
+.iqa-acc-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* Layer 4：CTA */
+.iqa-cta {
+  max-width: 680px;
+  margin: 48px auto 64px;
+  padding: 40px 24px;
+  text-align: center;
+  border: 1px solid rgba(245,166,35,0.2);
+  border-radius: 8px;
+  background: radial-gradient(ellipse at top, rgba(245,166,35,0.06) 0%, transparent 70%);
+}
+.iqa-cta-title {
+  font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+  font-size: 30px;
+  font-weight: 600;
+  color: #FFD369;
+  margin: 0 0 8px;
+  letter-spacing: 0.03em;
+}
+.iqa-cta-sub {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.7);
+  margin: 0 0 22px;
+}
+.iqa-cta-btn {
+  display: inline-block;
+  padding: 14px 38px;
+  background: #F5A623;
+  color: #0a0a0a;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+  min-height: 48px;
+  line-height: 20px;
+}
+.iqa-cta-btn:hover {
+  background: #FFD369;
+  transform: translateY(-1px);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .iqa-resonance, .iqa-section, .iqa-cta { padding-left: 18px; padding-right: 18px; }
+  .iqa-resonance-title, .iqa-cta-title { font-size: 24px; }
+  .iqa-section-title { font-size: 22px; }
+  .iqa-acc-header { padding: 16px 18px; font-size: 15px; min-height: 60px; }
+  .iqa-acc-body { padding: 4px 18px 20px; font-size: 14.5px; }
+}
+
+/* ════════════════════════════════════════════════
+   2026-04-27 首頁「他們也這樣做了」精選案例
+   ════════════════════════════════════════════════ */
+.home-cases-preview {
+  max-width: 1100px;
+  margin: 64px auto;
+  padding: 0 24px;
+  text-align: center;
+}
+.home-cases-preview-title {
+  font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+  font-size: 32px;
+  font-weight: 600;
+  color: #F5A623;
+  margin: 0 0 6px;
+  letter-spacing: 0.03em;
+}
+.home-cases-preview-sub {
+  font-size: 14.5px;
+  color: rgba(255,255,255,0.65);
+  margin: 0 0 32px;
+  letter-spacing: 0.03em;
+}
+.home-cases-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.home-case-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px 20px;
+  background: rgba(15,12,8,0.55);
+  border: 1px solid rgba(245,166,35,0.18);
+  border-radius: 6px;
+  text-align: left;
+  transition: all 0.25s;
+  min-height: 180px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.home-case-card:hover {
+  border-color: rgba(245,166,35,0.55);
+  background: rgba(20,16,10,0.75);
+  transform: translateY(-2px);
+}
+.home-case-chip {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 3px 10px;
+  background: rgba(245,166,35,0.15);
+  color: #F5A623;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+.home-case-company {
+  font-size: 15px;
+  font-weight: 700;
+  color: #F5F5F5;
+  margin: 4px 0 0;
+}
+.home-case-result {
+  flex: 1;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.78);
+}
+.home-case-link {
+  font-size: 12.5px;
+  color: #F5A623;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+.home-cases-viewall {
+  display: inline-block;
+  padding: 12px 28px;
+  color: #F5A623;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  border: 1px solid rgba(245,166,35,0.3);
+  border-radius: 4px;
+  transition: all 0.2s;
+  min-height: 44px;
+  line-height: 20px;
+}
+.home-cases-viewall:hover {
+  background: rgba(245,166,35,0.08);
+  border-color: #F5A623;
+}
+@media (max-width: 768px) {
+  .home-cases-preview { margin: 48px auto; padding: 0 18px; }
+  .home-cases-preview-title { font-size: 26px; }
+  .home-cases-grid { grid-template-columns: 1fr; gap: 12px; }
+  .home-case-card { min-height: auto; }
+}
