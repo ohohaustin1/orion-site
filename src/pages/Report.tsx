@@ -519,8 +519,18 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
   );
 
   // 2026-04-27 David bug 修復：anti-empty guard
-  // 報告必須有 coreInsight 才算 ready、否則整體走 loading view
-  const isReportReady = !!(report && (report.coreInsight || report.coreProblem?.title));
+  // 報告必須有實質內容才算 ready、否則整體走 loading view
+  // 同時相容 PR3 camelCase (coreInsight) 和 PR2 snake_case (opening_line / core_logic) cached schema
+  const isReportReady = !!(
+    report && (
+      report.coreInsight ||
+      report.coreProblem?.title ||
+      report.opening_line ||
+      report.core_logic ||
+      report.current_state ||
+      report.future_state
+    )
+  );
 
   // 寄至信箱 handler（既有 POST /api/report/email、現只是接 alert）
   const handleSendEmail = async () => {
