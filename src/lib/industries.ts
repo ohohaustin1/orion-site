@@ -8,7 +8,9 @@
  * 若 API 回傳新增產業而本地沒有顏色，用 fallback gold。
  */
 
-const API_URL = 'https://orion-hub.zeabur.app/api/public/industries';
+// CN-PROXY-VERCEL-EDGE-001: API 經 Vercel Edge proxy（CN）或直連 zeabur（其他）
+import { API_BASE } from './api-base';
+const API_URL = `${API_BASE}/api/public/industries`;
 const TIMEOUT_MS = 4000;
 
 export interface Industry {

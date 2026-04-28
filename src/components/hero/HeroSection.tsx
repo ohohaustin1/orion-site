@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { DIAG_URL } from '../../lib/api-base';
 
 /**
  * HeroSection v16 — Cinematic v1
@@ -223,7 +224,8 @@ export default function HeroSection() {
     e.preventDefault();
     const trimmed = q.trim();
     // Chairman 2026-04-24：Hero CTA 直達捕獲室（Zeabur），不再停在 orion01.com 自家首頁
-    const base = 'https://orion-hub.zeabur.app';
+    // CN-PROXY-VERCEL-EDGE-001: page nav 用 DIAG_URL（永遠直連、不走 proxy、HTML 不透傳）
+    const base = DIAG_URL;
     window.location.href = trimmed ? `${base}/?q=${encodeURIComponent(trimmed)}` : `${base}/`;
   };
 

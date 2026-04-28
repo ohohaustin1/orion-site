@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
+import { API_BASE } from "../lib/api-base";
 
 export default function Login() {
   const { isAuthenticated, loading } = useAuth();
@@ -31,7 +32,7 @@ export default function Login() {
     setError(null);
 
     try {
-      const res = await fetch("https://orion-hub.zeabur.app/api/auth/login", {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BookOpen, Zap, ChevronDown, ChevronUp, ExternalLink, AlertTriangle, ArrowRight } from 'lucide-react';
 import PageSEO from '../components/PageSEO';
-
-const DIAG_URL = 'https://orion-hub.zeabur.app';
+import { DIAG_URL } from '../lib/api-base';
 
 const articles = [
   {

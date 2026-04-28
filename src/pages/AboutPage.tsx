@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Cpu, Workflow, Cloud, Zap, ArrowRight, Users, MessageSquare, Video, FileText, ShoppingCart, UserCheck, Server, BarChart3, Lightbulb, Clock, Target, CheckCircle2, Shield } from 'lucide-react';
 import PageSEO from '../components/PageSEO';
-
-const DIAG_URL = 'https://orion-hub.zeabur.app';
+import { DIAG_URL } from '../lib/api-base';
 
 const capabilities = [
   {

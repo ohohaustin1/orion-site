@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getFixture, FIXTURE_LIST, isPreviewAllowed } from '../data/fixtures';
+import { API_BASE } from '../lib/api-base';
 
 /*
  ═══════════════════════════════════════════════════
@@ -128,7 +129,7 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
   // ── P0-01：開信追蹤 pixel（preview 模式跳過、避免污染後台 status） ──
   useEffect(() => {
     if (isPreview || !sessionId) return;
-    fetch(`https://orion-hub.zeabur.app/api/reports/${sessionId}/track-open`, {
+    fetch(`${API_BASE}/api/reports/${sessionId}/track-open`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ reportId: 'web-view' }),
@@ -164,7 +165,7 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
         return;
       }
       const res = await fetch(
-        `https://orion-hub.zeabur.app/api/leads/${sessionId}/request-consultation`,
+        `${API_BASE}/api/leads/${sessionId}/request-consultation`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -232,11 +233,11 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
         return;
       }
       try {
-        const statusRes = await fetch(`https://orion-hub.zeabur.app/api/reports/${sessionId}/status`);
+        const statusRes = await fetch(`${API_BASE}/api/reports/${sessionId}/status`);
         const statusData = await statusRes.json();
         if (statusData.status === 'ready') {
           // ready：拿完整 cache
-          const fullRes = await fetch(`https://orion-hub.zeabur.app/api/report/${sessionId}`);
+          const fullRes = await fetch(`${API_BASE}/api/report/${sessionId}`);
           if (!fullRes.ok) throw new Error(`HTTP ${fullRes.status}`);
           const fullData = await fullRes.json();
           if (fullData.success && fullData.report) {
@@ -275,7 +276,7 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
     setUnlockSubmitting(true);
     setUnlockError('');
     try {
-      const res = await fetch('https://orion-hub.zeabur.app/api/unlock', {
+      const res = await fetch(`${API_BASE}/api/unlock`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -314,7 +315,7 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
     setUnlockSubmitting(true);
     setUnlockError('');
     try {
-      const res = await fetch('https://orion-hub.zeabur.app/api/auth/login', {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -363,7 +364,7 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 120000); // T1: 45s → 120s
-      const res = await fetch('https://orion-hub.zeabur.app/api/report/refine', {
+      const res = await fetch(`${API_BASE}/api/report/refine`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ session_id: sessionId, extra_input: trimmed }),
@@ -542,7 +543,7 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
       return;
     }
     try {
-      const res = await fetch('https://orion-hub.zeabur.app/api/report/email', {
+      const res = await fetch(`${API_BASE}/api/report/email`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sessionId, email, lang: 'zh-TW' }),
@@ -916,7 +917,7 @@ function ContactModal({ onClose, onSubmit, submitting }: ContactModalProps) {
 
   // T4：嘗試從 CMS 拉真實聯絡方式（失敗保留硬碼）
   useEffect(() => {
-    fetch('https://orion-hub.zeabur.app/api/public/contact-methods')
+    fetch(`${API_BASE}/api/public/contact-methods`)
       .then(r => r.ok ? r.json() : null)
       .then(j => {
         if (j && Array.isArray(j.methods) && j.methods.length > 0) {
