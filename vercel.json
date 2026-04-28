@@ -3,10 +3,6 @@
   "installCommand": "",
   "outputDirectory": "dist",
   "framework": null,
-  "functions": {
-    "api/proxy/[...path].ts": { "runtime": "edge" },
-    "api/hello.ts": { "runtime": "edge" }
-  },
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
