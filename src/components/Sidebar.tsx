@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Trophy, BarChart3, Building2, BookOpen, Zap, Home, Menu, X, Shield, Users, Activity, LayoutDashboard } from 'lucide-react';
+import { DIAG_URL } from '../lib/api-base';
 
 /** ShieldScan — 自設計盾牌 + 中央掃描線 icon（Chairman 2026-04-24 企業 QA 深層掃描專用）*/
 const ShieldScanIcon = ({ size = 16 }: { size?: number }) => (
@@ -102,14 +103,14 @@ export default function Sidebar() {
         <div className="orion-sidebar-cta">
           <a
             className="orion-sidebar-cta-link"
-            href="https://orion-hub.zeabur.app"
+            href={DIAG_URL}
           >
             <span className="orion-sidebar-cta-icon"><Activity size={16} /></span>
             <span className="orion-sidebar-cta-text">系統監測</span>
           </a>
           <a
             className="orion-sidebar-cta-link is-warrior"
-            href="https://orion-hub.zeabur.app/?mode=warrior"
+            href={`${DIAG_URL}/?mode=warrior`}
           >
             <span className="orion-sidebar-cta-icon"><ShieldScanIcon size={16} /></span>
             <div className="orion-sidebar-cta-body">
@@ -119,7 +120,7 @@ export default function Sidebar() {
           </a>
           <a
             className="orion-sidebar-cta-link"
-            href="https://orion-hub.zeabur.app/admin"
+            href={`${DIAG_URL}/admin`}
           >
             <span className="orion-sidebar-cta-icon"><LayoutDashboard size={16} /></span>
             <span className="orion-sidebar-cta-text">管理台</span>
@@ -183,14 +184,14 @@ export default function Sidebar() {
             </nav>
             <div className="orion-mobile-drawer-cta">
               <a
-                href="https://orion-hub.zeabur.app"
+                href={DIAG_URL}
                 onClick={() => setMobileOpen(false)}
               >
                 <Activity size={16} />
                 <span>系統監測</span>
               </a>
               <a
-                href="https://orion-hub.zeabur.app/?mode=warrior"
+                href={`${DIAG_URL}/?mode=warrior`}
                 onClick={() => setMobileOpen(false)}
                 className="is-warrior"
               >
@@ -198,7 +199,7 @@ export default function Sidebar() {
                 <span>企業 QA 深層掃描</span>
               </a>
               <a
-                href="https://orion-hub.zeabur.app/admin"
+                href={`${DIAG_URL}/admin`}
                 onClick={() => setMobileOpen(false)}
               >
                 <LayoutDashboard size={16} />
@@ -228,7 +229,7 @@ export default function Sidebar() {
         {/* 手機底部 tab 多一個「監測」快捷 */}
         <button
           className="orion-mobile-tab-item warroom"
-          onClick={() => window.location.href = 'https://orion-hub.zeabur.app'}
+          onClick={() => window.location.href = DIAG_URL}
         >
           <Activity size={20} />
           <span>監測</span>

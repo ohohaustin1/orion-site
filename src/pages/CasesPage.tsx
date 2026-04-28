@@ -3,10 +3,11 @@ import { Filter, Check, ChevronDown, User, X, Lightbulb, Wrench, BarChart3 } fro
 import { allCases, type CaseStudy as BaseCase } from '../data/cases';
 import { fetchIndustries, FALLBACK_INDUSTRIES, type Industry } from '../lib/industries';
 import PageSEO from '../components/PageSEO';
+import { API_BASE, DIAG_URL } from '../lib/api-base';
 
-const DIAG_URL = 'https://orion-hub.zeabur.app';
-const API_URL = 'https://orion-hub.zeabur.app/api/public/cases';
-const IQA_URL = 'https://orion-hub.zeabur.app/api/public/industry-qa';
+// CN-PROXY-VERCEL-EDGE-001: API_BASE 走 proxy（CN）/ 直連（其他）；DIAG_URL 永遠直連（page nav）
+const API_URL = `${API_BASE}/api/public/cases`;
+const IQA_URL = `${API_BASE}/api/public/industry-qa`;
 
 // 2026-04-27 v6 案例故事化擴展（從 BaseCase 加 7 欄位 + metrics）
 interface MetricItem { label: string; value: string }

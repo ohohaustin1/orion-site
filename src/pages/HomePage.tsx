@@ -3,6 +3,7 @@ import PageSEO from '../components/PageSEO';
 import { LoadingRitual } from '../components/LoadingRitual';
 import HeroSection from '../components/hero/HeroSection';
 import ErrorBoundary from '../components/ErrorBoundary';
+import { API_BASE, DIAG_URL } from '../lib/api-base';
 
 // Cinematic v1 共用組件（shared/ barrel → 指向 effects/ 實作）
 import {
@@ -92,7 +93,7 @@ export default function HomePage() {
         description="說出你的問題，Orion AI 幫你找出失去的錢。企業級 AI 成交引擎，3 個月打造 10 個賺錢系統。"
         url="/home"
       />
-      <LoadingRitual active={showRitual} onComplete={() => { window.location.href = 'https://orion-hub.zeabur.app/'; }} />
+      <LoadingRitual active={showRitual} onComplete={() => { window.location.href = `${DIAG_URL}/`; }} />
 
       {/* 頂部滾動進度條 */}
       <div className="orion-scroll-progress" style={{ transform: `scaleX(${scrollPct})` }} />
@@ -287,7 +288,7 @@ export default function HomePage() {
           <h2>你的下一個系統，從這裡開始</h2>
         </ScrollReveal>
         <ScrollReveal delay={0.2} className="co-final-cta-btn-wrap">
-          <BreathingButton onClick={() => { window.location.href = 'https://orion-hub.zeabur.app/'; }}>
+          <BreathingButton onClick={() => { window.location.href = `${DIAG_URL}/`; }}>
             現在對話 →
           </BreathingButton>
         </ScrollReveal>
@@ -351,7 +352,7 @@ function FeaturedCasesSection() {
   const [featured, setFeatured] = useState<PreviewCase[]>([]);
   useEffect(() => {
     let aborted = false;
-    fetch('https://orion-hub.zeabur.app/api/public/cases')
+    fetch(`${API_BASE}/api/public/cases`)
       .then((r) => r.json())
       .then((j) => {
         if (aborted) return;

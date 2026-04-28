@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { API_BASE } from "../lib/api-base";
 
 export default function Register() {
   const [, navigate] = useLocation();
@@ -34,7 +35,7 @@ export default function Register() {
     setError(null);
 
     try {
-      const res = await fetch("https://orion-hub.zeabur.app/api/auth/register", {
+      const res = await fetch(`${API_BASE}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Crown, Cpu, Lightbulb, BrainCircuit, Heart, BarChart3, Link2, Users } from 'lucide-react';
 import PageSEO from '../components/PageSEO';
+import { API_BASE } from '../lib/api-base';
 
 // 2026-04-26 Chairman 修正 F：拿回 DB-driven、條件渲染
 // 有 image_url → 真人照片卡 / 無 image_url → role icon 招募中卡
@@ -30,7 +31,8 @@ function pickIcon(title: string): RoleIcon {
   return Users;
 }
 
-const API_BASE = (import.meta as any).env?.VITE_API_BASE_URL || 'https://orion-hub.zeabur.app';
+// CN-PROXY-VERCEL-EDGE-001: API_BASE 統一從 src/lib/api-base.ts import
+//                            原 env-aware logic 已合進 api-base.ts、保留 VITE_API_BASE_URL override
 
 const TEAM_CSS = `
 .team-page {

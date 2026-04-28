@@ -13,6 +13,7 @@ import {
   MessageSquare, ChevronDown, ChevronUp, Terminal,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { API_BASE } from '@/lib/api-base';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -1126,8 +1127,9 @@ export default function WarRoom() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  // ── API 絕對路徑（規範第3條：嚴禁相對路徑） ──
-  const API_BASE = 'https://orion-hub.zeabur.app';
+  // ── API 絕對路徑（CN-PROXY-VERCEL-EDGE-001：CN 走 /api/proxy、其他直連） ──
+  // 注：規範第3條「嚴禁相對路徑」針對 backend SDK；前端走 proxy 是另一回事
+  // 詳見 src/lib/api-base.ts
   const chatSessionId = useRef<string>('session-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8));
   const [isAustinMode, setIsAustinMode] = useState(false);
 

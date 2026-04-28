@@ -1,7 +1,6 @@
 import React from 'react';
 import { Zap } from 'lucide-react';
-
-const DIAG_URL = 'https://orion-hub.zeabur.app';
+import { DIAG_URL } from '../lib/api-base';
 
 export default function CTAFloat() {
   return (
