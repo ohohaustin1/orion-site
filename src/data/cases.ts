@@ -9,6 +9,16 @@ export interface CaseStudy {
   results: string;       // 【結果（含金額）】
   duration: string;
   featured?: boolean;
+  // ─── CN-CASE-EXPAND-FIX-001：v6 故事化 7 欄位 ───
+  // 給 fallback 路徑（API timeout / CN 客戶 / 離線）展開時有完整內容渲染
+  // API 路徑由 apiToCaseStudy mapper 填、本檔的值是 fallback 兜底
+  hero_number?: string;
+  hero_money?: string;
+  hook_question?: string;
+  story_empathy?: string;
+  story_failed_attempt?: string;
+  story_aha_moment?: string;
+  story_solution?: string;
 }
 
 export const caseStudies: CaseStudy[] = [
@@ -24,6 +34,13 @@ export const caseStudies: CaseStudy[] = [
     results: '成交率從 8.7% → 23.1%（+27.4%），業務跟進效率 +312.6%，月均成交額增加 NT$2,340 萬',
     duration: '3 週導入',
     featured: true,
+    hero_number: '成交率 +27.4%',
+    hero_money: '月增 NT$2,340 萬',
+    hook_question: '你怎麼知道 320 組詢問裡、誰最該先打？',
+    story_empathy: '你每天看 320 組詢問跑進來、業務照表打給每一個、成交率還是 8.7%。錢花在廣告、人加在前線、數字反而越做越差。',
+    story_failed_attempt: '加派人力、開大廣告、結果 CPL 飆 41.3%、成交率掉。問題不在投不夠多。',
+    story_aha_moment: '問題不在流量、在篩選——71.6% 的高意向被歸到低優先級、業務根本沒打。',
+    story_solution: '導入 AI 評分、用對話語意 + 瀏覽行為 + 回覆速度自動標 A/B/C 級。業務先打 A 級、3 週後成交率翻到 23%。',
   },
   {
     id: 2,
@@ -36,6 +53,13 @@ export const caseStudies: CaseStudy[] = [
     results: '客服成本 -43.7%，回覆時間 7.8hr → 2.4min，退貨率 -21.8%，客戶滿意度 +34.2%',
     duration: '4 週導入',
     featured: true,
+    hero_number: '回覆 7.8hr → 2.4min',
+    hero_money: '客服成本省下近半',
+    hook_question: '480 封訊息、71% 是同一題、你還請人回？',
+    story_empathy: '客服每天 480 封訊息、回覆要 7.8 小時。退貨率 18.6%、業績越做越虛。看似業務做得起來、實際在燒錢。',
+    story_failed_attempt: '外包客服一個月 NT$12.8 萬、希望省事、結果客戶滿意度反掉 14.7%。錢花了沒解決問題。',
+    story_aha_moment: '退貨不是商品壞——是 63% 的客戶買前不知道尺碼跟色差。資訊不足、選錯了再退。',
+    story_solution: '建 AI 客服回覆引擎吃掉 71% 重複問題、再加商品推薦讓客戶買對。退貨率掉 21%、客服成本省一半。',
   },
   {
     id: 3,
@@ -48,6 +72,13 @@ export const caseStudies: CaseStudy[] = [
     results: '報價時間從 2.8 天 → 2.1hr（-91.3%），訂單流失率 -37.6%，月營收 +NT$43.7 萬',
     duration: '2 週導入',
     featured: true,
+    hero_number: '報價 2.8 天 → 2.1hr',
+    hero_money: '月救回 NT$43.7 萬',
+    hook_question: '報價要等 3 天、客戶早跑去下一家——你怎麼追？',
+    story_empathy: '報價靠電話傳真、來回 2.8 天。客戶等不下去、轉頭找別家。月損訂單估 NT$870 萬、看著錢流走。',
+    story_failed_attempt: '加 2 個業務助理專門處理報價、人事成本上去、速度才從 2.8 天降到 1.4 天。慢一倍還是慢。',
+    story_aha_moment: '瓶頸不在人手、在邏輯——87.3% 的詢價可以用歷史報價、材料成本、客戶等級自動算出、根本不需要人工。',
+    story_solution: '建 AI 報價系統 + 線上詢價、客戶下單同時拿到報價。2.8 天變 2.1 小時、訂單流失率掉近四成。',
   },
   {
     id: 4,
@@ -60,6 +91,13 @@ export const caseStudies: CaseStudy[] = [
     results: '毛利率 +17.8%，人力成本 -24.6%，外送自取比例 +41.3%，月營收 +NT$28.3 萬',
     duration: '3 週導入',
     featured: true,
+    hero_number: '毛利率 +17.8%',
+    hero_money: '月增 NT$28.3 萬',
+    hook_question: '哪些品項真的賺錢？尖峰客人為何點不到？',
+    story_empathy: '品項一堆、不知哪個賺；外送抽 34.5% 吃利潤；排班用紙本、尖峰人不夠、離峰人在等。每個月看數字結出來、不知下個月該動哪。',
+    story_failed_attempt: '想用「砍品項加漲價」直接擠出利潤、結果客單價 -8.6%、回購率 -12.4%。客人不買單、自己先掉血。',
+    story_aha_moment: '利潤流失不在品項、在時段——尖峰備料不夠損 31.7% 營收、離峰人力又閒著。',
+    story_solution: '幫他建銷售儀表板、看每個品項哪個時段在賺；再用 AI 預測排班。3 週後毛利率拉 17.8%、人力成本砍 24%。',
   },
   {
     id: 5,
@@ -72,6 +110,13 @@ export const caseStudies: CaseStudy[] = [
     results: '提案製作時間 -61.4%，客戶轉換率 +34.7%，業務人均產值 +2.38 倍，月營收 +NT$67.2 萬',
     duration: '2 週導入',
     featured: true,
+    hero_number: '提案時間 -61.4%',
+    hero_money: '月增 NT$67.2 萬',
+    hook_question: '提案寫一份要 12.5 小時、你還在徒手打？',
+    story_empathy: '每份提案 12.5 小時手寫、客戶資料散在 LINE / Email / 筆記、上次談到哪、得翻 3 個地方才想起。錢花在打字、不是動腦。',
+    story_failed_attempt: '想用「買通用 CRM」一勞永逸、結果顧問嫌資料輸入太麻煩、4 個月後使用率剩 23.8%、又回到散落的筆記。',
+    story_aha_moment: 'CRM 不是工具不夠好——是手動錄入太累、顧問根本不想用。',
+    story_solution: '幫他建一鍵抓客戶會議重點 + 自動產提案、顧問只動一下就能出。提案時間掉 61%、人均產值翻 2.38 倍。',
   },
   // ===== 15 額外案例 =====
   {
@@ -84,6 +129,13 @@ export const caseStudies: CaseStudy[] = [
     strategy: '部署 AI 智能排診系統 + 電子病歷自動摘要引擎 + 候診即時通知推播',
     results: '候診時間 -53.2%，每日門診量 +29.4%，病歷整理時間 -71.6%，月營收 +NT$31.8 萬',
     duration: '4 週導入',
+    hero_number: '候診時間 -53.2%',
+    hero_money: '月增 NT$31.8 萬',
+    hook_question: '病人等 47 分鐘、為什麼好好排還是塞？',
+    story_empathy: '病人候診 47 分鐘、抱怨壓在櫃台；醫師每天多花 1.5 小時整理紙本病歷、下班晚兩小時。看似診所很忙、實際在內耗。',
+    story_failed_attempt: '想用「買套裝 HIS」一次解決、結果護理師嫌系統太複雜、3 個月後又退回紙本。錢花了沒人用。',
+    story_aha_moment: '候診長不是掛號順序壞——是診間節奏沒預測準、37% 時段全擠在一起。',
+    story_solution: '幫他建 AI 排診、看每個診間的真實節奏分配病人；病歷讓 AI 寫摘要、醫師只要確認。候診掉一半、每日門診量多 29%。',
   },
   {
     id: 7,
@@ -95,6 +147,13 @@ export const caseStudies: CaseStudy[] = [
     strategy: '建置 AI 預約提醒 + 回診自動追蹤排程 + 滿意度即時回饋分析系統',
     results: '爽約率 24.7% → 5.8%，回診率 +41.3%，Google 評分 3.8 → 4.7，月營收 +NT$18.4 萬',
     duration: '3 週導入',
+    hero_number: '爽約 24.7% → 5.8%',
+    hero_money: '月增 NT$18.4 萬',
+    hook_question: '24% 病人爽約、護理師打到累、為什麼還是擋不住？',
+    story_empathy: '預約爽約 1/4、護理師每天打 2.3 小時電話提醒、嗓子快啞了、爽約還是接近 20%。看著行事曆都是空格、診間在等人。',
+    story_failed_attempt: '想用「人工每個都打」補洞、結果護理師爆肝、爽約只從 24.7% 降到 19.1%。人撐不住、效果還沒出來。',
+    story_aha_moment: '爽約不是隨機——集中在週一跟週五下午。這些時段需要的是雙重確認、不是一視同仁的提醒。',
+    story_solution: '建 AI 預約提醒、看時段送不同強度的訊息；高風險時段自動雙重確認。爽約掉到 5.8%、Google 評分從 3.8 衝到 4.7。',
   },
   {
     id: 8,
@@ -106,6 +165,13 @@ export const caseStudies: CaseStudy[] = [
     strategy: '開發 AI 法規語意搜尋引擎 + 案件進度管理系統 + 客戶自助查詢平台',
     results: '法規搜尋時間 -84.7%，案件處理效率 +46.2%，客戶滿意度 +37.8%',
     duration: '5 週導入',
+    hero_number: '法規搜尋 -84.7%',
+    hero_money: '案件處理時間省下近半',
+    hook_question: '法規一堆、找一條要 42 分鐘、你還在翻？',
+    story_empathy: '案件資料找一份要 42 分鐘、法規更新沒人盯、客戶想查進度又得打電話到事務所。律師專業在腦袋、不在翻檔案。',
+    story_failed_attempt: '想用「自建知識庫 Wiki」省搜尋時間、結果沒人有空更新、6 個月後使用率 14.2%、Wiki 變擺設。',
+    story_aha_moment: '知識庫沒人用不是工具壞——是讓律師手動分類太貴、應該用 AI 看內容自己找、不靠人標。',
+    story_solution: '建 AI 法規搜尋、律師打關鍵字 AI 自己抓相關條文；案件進度給客戶自己查。搜尋時間從 42 分鐘掉到 6 分鐘。',
   },
   {
     id: 9,
@@ -117,6 +183,13 @@ export const caseStudies: CaseStudy[] = [
     strategy: '導入 AI 合約審閱輔助系統 + 風險條款自動標註 + 知識庫驅動培訓平台',
     results: '合約審閱時間 -64.8%，風險遺漏率 12.4% → 1.7%，新人培訓週期 -52.3%',
     duration: '4 週導入',
+    hero_number: '風險遺漏 12.4% → 1.7%',
+    hero_money: '合約審閱時間省下三分之二',
+    hook_question: '同一個風險條款有 27 種寫法、SOP 寫得完嗎？',
+    story_empathy: '合約一份來、資深律師低頭比對 3 小時；新人接手要練 6 個月才敢看。漏一條風險條款、整起糾紛賠錢的是事務所。',
+    story_failed_attempt: '想用「48 頁 SOP」把流程寫死、人人照做就好、結果只有 31.6% 的人在跟。SOP 厚到沒人記得住、漏的還是漏。',
+    story_aha_moment: 'SOP 沒辦法涵蓋語意變化——同一個風險條款有 27 種寫法、人腦記不住。',
+    story_solution: '建 AI 看合約、自動標出風險條款、不論寫法怎麼變都能抓。律師只審 AI 標的點、新人 3 個月就上手。風險遺漏掉到 1.7%。',
   },
   {
     id: 10,
@@ -128,6 +201,13 @@ export const caseStudies: CaseStudy[] = [
     strategy: '建置 AI 學習進度分析引擎 + 家長即時通報系統 + 自適應教材推薦模型',
     results: '學生成績平均 +17.6%，家長滿意度 +56.3%，續班率 62% → 83.4%，月營收 +NT$14.7 萬',
     duration: '3 週導入',
+    hero_number: '續班率 62% → 83.4%',
+    hero_money: '月增 NT$14.7 萬',
+    hook_question: '家長問「我的孩子最近怎樣」、你 8 小時才回得出來？',
+    story_empathy: '學生進度寫紙本、家長一問教師花 8 小時整理；教材一套到底、學得快學得慢都同一份。家長感受不到差別、續班就在搖。',
+    story_failed_attempt: '想用「買教學平台」一次到位、結果功能太雜、教師花更多時間搞系統、教學品質還掉。錢花在工具、學生沒受益。',
+    story_aha_moment: '家長要的不是漂亮的成績報表——是「我的孩子這週哪裡卡住」這種即時的、具體的回饋。',
+    story_solution: '建 AI 進度看板、學生每天做題後系統就抓出他的弱點；教師看一眼就能跟家長說。續班率從 62% 衝到 83%。',
   },
   {
     id: 11,
@@ -139,6 +219,13 @@ export const caseStudies: CaseStudy[] = [
     strategy: '導入 AI 智能排課引擎 + 教師產能最佳化模型 + 出席預測與自動提醒',
     results: '排課衝突 14 → 0 次，教師利用率 +34.7%，出席率 71.2% → 91.8%',
     duration: '2 週導入',
+    hero_number: '排課衝突 14 → 0',
+    hero_money: '出席率 71% → 92%',
+    hook_question: '14 個排課衝突、家長月月投訴、Google 日曆夠嗎？',
+    story_empathy: '每月 14 次排課衝突、家長 8+ 通投訴；教師有空閒沒事做、忙的時候排不下來；學員衝堂跑掉、續課數字搖。',
+    story_failed_attempt: '想用「Google 日曆」便宜湊合、結果多教室交叉一排就亂、家長一通投訴、衝突就要重排一次。',
+    story_aha_moment: '排課不是工具夠不夠好——是條件太多。教師偏好、教室容量、學員衝堂、人腦排不出最佳組合。',
+    story_solution: '建 AI 排課引擎、把所有條件丟進去自動算最優解；學員衝堂提前一週預警。排課衝突歸零、教師利用率拉高 34%。',
   },
   {
     id: 12,
@@ -150,6 +237,13 @@ export const caseStudies: CaseStudy[] = [
     strategy: '部署 AI 揀貨路徑最佳化 + 智能庫位動態規劃 + 錯誤即時偵測預警',
     results: '揀貨效率 +41.8%，出錯率 -77.4%，倉儲利用率 +32.6%，月省 NT$23.1 萬',
     duration: '4 週導入',
+    hero_number: '揀貨效率 +41.8%',
+    hero_money: '月省 NT$23.1 萬',
+    hook_question: '貨架重劃花 47 萬、3 個月又失效、為什麼？',
+    story_empathy: '揀貨員每單 8.3 分鐘、從這頭走到那頭；錯誤每 22 單就出 1 個；倉儲空間有近 30% 在積貨。物流的時間就是金錢、慢一倍就是賠一倍。',
+    story_failed_attempt: '想用「重劃貨架」一次性解決、花 47 萬請人重新擺、結果 3 個月後 SKU 變了、又開始亂。一次性的錢沒辦法解持續的問題。',
+    story_aha_moment: '靜態貨架沒辦法跟上 SKU 週轉變化——應該讓庫位自己動、AI 根據訂單頻率即時調。',
+    story_solution: '建 AI 即時動態調庫位、把熱門品自動移到揀貨路徑近的位置、錯誤即時偵測。揀貨效率拉 42%、出錯率掉 77%、月省 23 萬。',
   },
   {
     id: 13,
@@ -161,6 +255,13 @@ export const caseStudies: CaseStudy[] = [
     strategy: '建置 AI 最佳路線規劃引擎 + 油耗分析儀表板 + 客戶即時貨態追蹤平台',
     results: '配送效率 +27.6%，油耗成本 -18.9%，客訴率 -63.4%，月省 NT$34.6 萬',
     duration: '5 週導入',
+    hero_number: '油耗成本 -18.9%',
+    hero_money: '月省 NT$34.6 萬',
+    hook_question: '裝了 GPS、油耗只降 2%——你怎麼知道哪裡浪費？',
+    story_empathy: '23 輛車的調度全在你腦袋裡、油費佔營收近五分之一；客戶打來問「我的貨到哪了」、得開系統一台台查。看似在管車、實際在打雜。',
+    story_failed_attempt: '想用「裝 GPS 看位置」就能解決、花錢裝完才發現只能「看」不能「規劃」、油耗只降 2.1%。看到問題不等於解決問題。',
+    story_aha_moment: 'GPS 看到位置、但決定不了路線——油耗要降、得 AI 算最佳路徑、不只標座標。',
+    story_solution: '建 AI 路線規劃、根據訂單地點 / 交通狀況 / 油耗即時算最優路線；客戶能自助查貨態。油耗掉近 19%、客訴跌六成。',
   },
   {
     id: 14,
@@ -172,6 +273,13 @@ export const caseStudies: CaseStudy[] = [
     strategy: '導入 AI 設計概念快速生成 + 3D 即時渲染互動展示 + 專案里程碑智能追蹤',
     results: '提案修改 7.2 → 3.3 次（-54.2%），簽約率 +31.4%，準時完成率 57.6% → 88.7%',
     duration: '4 週導入',
+    hero_number: '提案修改 7.2 → 3.3 次',
+    hero_money: '準時完成率 57% → 89%',
+    hook_question: '同一份提案改 7 次、客戶還是說「不是這個」、為什麼？',
+    story_empathy: '提案改 7.2 次、會議排到爆、設計師時間 34.8% 全在開會、實際畫圖時間越來越少。客戶還是說「我想的不是這樣」、又再來一次。',
+    story_failed_attempt: '想用「多請 PM 多開會」把溝通拉緊、結果設計師時間都在會議、出圖速度更慢、提案還是改不完。人力補不了認知落差。',
+    story_aha_moment: '提案改不停不是設計沒做好——是客戶的「想像」跟「看到」中間沒橋。光看平面圖、客戶根本不知道實際長怎樣。',
+    story_solution: '建 AI 看草圖即時生 3D 渲染、客戶看著實景討論、不用想像。提案修改從 7.2 次掉到 3.3 次、準時完成率衝到 89%。',
   },
   {
     id: 15,
@@ -183,6 +291,13 @@ export const caseStudies: CaseStudy[] = [
     strategy: '部署 AI 預約排程最佳化 + 客戶偏好記憶系統 + 回流行銷自動化引擎',
     results: '預約效率 +47.3%，設計師空檔 -61.2%，客戶回流率 +43.6%，月營收 +NT$19.4 萬',
     duration: '2 週導入',
+    hero_number: '預約效率 +47.3%',
+    hero_money: '月增 NT$19.4 萬',
+    hook_question: '一年流失 43% 客人、你連他們上次染什麼顏色都記不住。',
+    story_empathy: '預約一團亂、月漏 38 筆；設計師空檔 2.7 小時沒事做；客戶剪完一次、隔半年想起、就去別家了。沙龍客流像漏水、補不及。',
+    story_failed_attempt: '想用「換預約系統」就能解決、3 套系統試過、結果都只是把紙本搬上線、預約還是漏、客戶還是流失。系統對了問題不對。',
+    story_aha_moment: '客戶流失的根因是「被遺忘感」——74% 流失客戶上次消費後沒收到任何個人化關懷。系統再好、不記得他想要什麼、就留不住人。',
+    story_solution: '建 AI 記每個客戶上次染什麼顏色 / 喜歡哪個設計師 / 多久該回來；該回的時候自動發 LINE。客戶回流率拉 43%。',
   },
   {
     id: 16,
@@ -194,6 +309,13 @@ export const caseStudies: CaseStudy[] = [
     strategy: '建置 AI 社群數據分析 + 精準促銷策略推薦 + 會員 CRM 自動化系統',
     results: 'IG 互動率 +118.4%，促銷 ROI +3.17 倍，會員消費頻率 +36.2%，月營收 +NT$11.6 萬',
     duration: '3 週導入',
+    hero_number: 'IG 互動率 +118%',
+    hero_money: '月增 NT$11.6 萬',
+    hook_question: '請小編一個月 3.5 萬、互動率反掉、你連數據都沒看？',
+    story_empathy: 'IG 發文沒人按、促銷靠直覺打、會員資料散在 Excel 翻不到；錢花在行銷、看不到回來的客人是哪個動作換來的。',
+    story_failed_attempt: '想用「請外部小編」省事、月花 NT$3.5 萬、結果互動率反降 7.2%。錢花了、不知道為什麼沒效。',
+    story_aha_moment: '問題不在內容寫得好不好——是發文時間 / hashtag / 內容類型全靠猜、沒有數據回饋、永遠在試錯。',
+    story_solution: '建 AI 看社群數據、看哪個時段 / 哪種貼文 / 哪些 hashtag 真的帶客流；促銷推薦自動排。互動率翻一倍、ROI 拉 3.17 倍。',
   },
   {
     id: 17,
@@ -205,6 +327,13 @@ export const caseStudies: CaseStudy[] = [
     strategy: '導入 AI 車輛保養預測模型 + 自動回廠提醒排程 + 零件需求預測採購系統',
     results: '回廠率 +56.3%，零件缺貨率 -73.1%，月營收 +NT$22.7 萬',
     duration: '3 週導入',
+    hero_number: '回廠率 +56.3%',
+    hero_money: '月增 NT$22.7 萬',
+    hook_question: '客戶把你的提醒當垃圾訊息封鎖、你還在群發？',
+    story_empathy: '維修紀錄寫紙本翻得慢；回廠提醒靠人記、忘了就流失；零件三不五時缺貨、客戶來了還得等。每件都是小事、加起來就是漏水。',
+    story_failed_attempt: '想用「LINE 群組發提醒」省事、結果客戶覺得是垃圾訊息、27% 直接封鎖。便宜的解法反而趕走客人。',
+    story_aha_moment: '客戶要的不是「該回廠了」這種廣告——是「你的煞車皮還能跑 1,200 公里」這種專業預測。一個是被打擾、一個是被照顧。',
+    story_solution: '建 AI 看每台車的維修紀錄 + 行駛狀況、預測什麼零件什麼時候該換、提前發訊息給車主。回廠率拉 56%、缺貨率掉 73%。',
   },
   {
     id: 18,
@@ -216,6 +345,13 @@ export const caseStudies: CaseStudy[] = [
     strategy: '部署 AI 客戶分群引擎 + 成交機率預測模型 + 續保到期自動追蹤系統',
     results: '成交率 11.8% → 27.6%（+133.9%），續保率 +41.7%，業務人效 +2.14 倍，月營收 +NT$53.8 萬',
     duration: '3 週導入',
+    hero_number: '成交率 11.8% → 27.6%',
+    hero_money: '月增 NT$53.8 萬',
+    hook_question: '買了 CRM、業務 6 個月只 2 人在用、為什麼？',
+    story_empathy: '2,400 個名單散在 Excel / Email / 業務手機；成交靠話術、續保追蹤不完整；每個業務都在重做別人做過的事。',
+    story_failed_attempt: '想用「買 CRM 強制業務用」管起來、結果業務嫌每筆都要打字、6 個月後只 2 個人在用。系統很好、但沒人用就等於沒有。',
+    story_aha_moment: 'CRM 不是工具不夠好——是業務沒看到「為什麼要花時間」。給他「這客戶 78% 機率成交」、他自己會搶著用。',
+    story_solution: '建 AI 看每個客戶背景算成交機率、業務看高分先打；續保到期自動提醒。成交率從 12% 翻到 28%、人效翻 2.14 倍。',
   },
   {
     id: 19,
@@ -227,6 +363,13 @@ export const caseStudies: CaseStudy[] = [
     strategy: '開發 AI 理賠文件自動審核 + 進度即時通知 + 異常案件偵測預警系統',
     results: '理賠處理 14.3 → 5.9 天（-58.7%），客戶滿意度 +46.2%，異常偵測率 +87.4%',
     duration: '5 週導入',
+    hero_number: '理賠 14.3 → 5.9 天',
+    hero_money: '處理時間省下六成',
+    hook_question: '加人加班反而誤判更多、人海戰術為什麼破不了？',
+    story_empathy: '理賠一案要 14.3 天才出來、客戶等到焦躁、投訴一年 23%；3 位資深審核員天天加班、誤判還上升。團隊在燒、業績沒拉。',
+    story_failed_attempt: '想用「加人加班補洞」把案件處理量沖出來、結果品質不穩、誤判反升 6.4%。人撐到累、效果反而退步。',
+    story_aha_moment: '人工審核的瓶頸不在「人不夠多」——是 82.7% 案件屬標準型態、根本不需要人工腦袋判斷。把標準的丟給 AI、人去看異常。',
+    story_solution: '建 AI 自動審標準案件、人只看異常的；客戶能即時看進度。理賠時間從 14 天掉到 6 天、異常偵測準度拉 87%。',
   },
   {
     id: 20,
@@ -238,6 +381,13 @@ export const caseStudies: CaseStudy[] = [
     strategy: '建置 AI 會員流失預測 + 智能私教排課系統 + 設備 IoT 即時監控預警',
     results: '續約率 44.8% → 71.6%，私教營收 +37.4%，設備故障率 -64.8%，月營收 +NT$41.2 萬',
     duration: '4 週導入',
+    hero_number: '續約率 45% → 72%',
+    hero_money: '月增 NT$41.2 萬',
+    hook_question: '會員年流失一半、推折扣只是把流失提早——為什麼？',
+    story_empathy: '年續約率不到一半、私教排課排不滿、設備壞了 3 天才知道。看似生意還在、實際上每年要重 build 一半的會員。',
+    story_failed_attempt: '想用「打折優惠」綁人續約、結果吸引來的都是價格敏感型、3 個月後流失 61%。便宜換來的、便宜也會走。',
+    story_aha_moment: '續約低不是「會員嫌貴」——是 67% 流失會員說「我感覺沒有進步」。健身房賣的不是器材、是成就感。',
+    story_solution: '建 AI 看每個會員的訓練紀錄、預測誰快流失、推一對一強化；設備 IoT 監控、故障當下就知道。續約率從 45% 衝到 72%。',
   },
 ];
 
