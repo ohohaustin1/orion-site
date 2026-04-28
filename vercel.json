@@ -3,19 +3,7 @@
   "installCommand": "",
   "outputDirectory": "dist",
   "framework": null,
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/report/preview/(.*)", "dest": "/index.html" },
-    { "src": "/report", "dest": "/index.html" },
-    { "src": "/war-room", "dest": "/index.html" },
-    { "src": "/login", "dest": "/index.html" },
-    { "src": "/register", "dest": "/index.html" },
-    { "src": "/forgot-password", "dest": "/index.html" },
-    { "src": "/projects(/.*)?", "dest": "/index.html" },
-    { "src": "/clients(/.*)?", "dest": "/index.html" },
-    { "src": "/dashboard", "dest": "/index.html" },
-    { "src": "/handoff", "dest": "/index.html" },
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/index.html" }
+  "rewrites": [
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
