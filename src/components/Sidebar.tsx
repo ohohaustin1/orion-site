@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
-import { Trophy, BarChart3, Building2, BookOpen, Zap, Home, Menu, X, Shield, Users, Activity, LayoutDashboard } from 'lucide-react';
+import { Trophy, BarChart3, Building2, BookOpen, Zap, Home, Menu, X, Shield, Users, Activity, LayoutDashboard, Briefcase } from 'lucide-react';
 import { DIAG_URL } from '../lib/api-base';
 
 /** ShieldScan — 自設計盾牌 + 中央掃描線 icon（Chairman 2026-04-24 企業 QA 深層掃描專用）*/
@@ -97,6 +97,16 @@ export default function Sidebar() {
               </button>
             );
           })}
+          {/* CC-FIX-JOIN-US-PLACEMENT-001: 加入我們 跨域連 hub /join-us 招聘頁
+              （orion-site 內無 /jobs 頁、目前 hub 是唯一招聘 landing） */}
+          <a
+            className="orion-sidebar-item"
+            href={`${DIAG_URL}/join-us`}
+            style={{ textDecoration: 'none' }}
+          >
+            <Briefcase size={18} />
+            <span>加入我們</span>
+          </a>
         </nav>
 
         {/* 產品入口 — Chairman 2026-04-24 */}
@@ -181,6 +191,16 @@ export default function Sidebar() {
                   </button>
                 );
               })}
+              {/* CC-FIX-JOIN-US-PLACEMENT-001: 加入我們 mobile drawer 同步、不進 bottom tab（iPhone-SE 7 button 擠）*/}
+              <a
+                className="orion-mobile-drawer-item"
+                href={`${DIAG_URL}/join-us`}
+                onClick={() => setMobileOpen(false)}
+                style={{ textDecoration: 'none' }}
+              >
+                <Briefcase size={20} />
+                <span>加入我們</span>
+              </a>
             </nav>
             <div className="orion-mobile-drawer-cta">
               <a
