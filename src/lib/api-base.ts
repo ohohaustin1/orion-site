@@ -49,14 +49,19 @@ const isCNClient = detectIsCNClient();
 
 /**
  * API_BASE — fetch 呼叫用
- * CN 客戶 → /api/proxy（同網域、Vercel Edge 自動 server-side hop）
- * 其他 → https://orion-hub.zeabur.app（直連、Asia 以外體驗無 regression）
  *
- * 也可用環境變數 VITE_API_BASE_URL 強制指定（CI / 測試）
+ * 🚨 ROLLBACK 2026-04-28：Vercel Edge function 部署後一直 404（PR #2 #3 #4 #5
+ * 都試過 vercel.json routes / rewrites / functions config、Vercel 都不 dispatch
+ * 到 api/ folder）。為避免 CN 客戶 hit /api/proxy/* 拿到 404（比直連 zeabur
+ * 慢更糟）、暫時 force 直連 zeabur。等 Chairman check Vercel dashboard 找出
+ * 為何 api/ 沒被 detect、再恢復條件路由。
+ *
+ * 原邏輯（待恢復）：
+ *   isCNClient ? VERCEL_PROXY : ZEABUR_DIRECT
  */
 export const API_BASE: string =
   ((import.meta as any).env?.VITE_API_BASE_URL as string | undefined) ??
-  (isCNClient ? VERCEL_PROXY : ZEABUR_DIRECT);
+  ZEABUR_DIRECT;  // 暫時 force direct、見上方 ROLLBACK 註
 
 /**
  * DIAG_URL — 頁面跳轉到 capture chat（O 對話）
