@@ -79,12 +79,15 @@ export default async function handler(request: Request) {
 
   const url = new URL(request.url);
 
-  // /api/proxy/<rest> → upstream /<rest>
-  // /api/proxy/api/health → upstream /api/health
-  // /api/proxy → upstream /
-  let targetPath = url.pathname.replace(/^\/api\/proxy/, '');
-  if (!targetPath || targetPath === '') targetPath = '/';
-  const targetUrl = `${UPSTREAM_BASE}${targetPath}${url.search}`;
+  // Vercel 不支援 [...path].ts catch-all（Next.js only）、改 vercel.json rewrite：
+  //   /api/proxy/:path* → /api/proxy?upstream=:path*
+  // 從 query 讀 upstream path、保留其他 query params 透傳給上游。
+  const upstreamPath = url.searchParams.get('upstream') || '';
+  const upstreamQuery = new URLSearchParams();
+  url.searchParams.forEach((v, k) => { if (k !== 'upstream') upstreamQuery.append(k, v); });
+  const upstreamQueryStr = upstreamQuery.toString() ? `?${upstreamQuery.toString()}` : '';
+  const cleanPath = upstreamPath ? `/${upstreamPath}` : '/';
+  const targetUrl = `${UPSTREAM_BASE}${cleanPath}${upstreamQueryStr}`;
 
   const proxyHeaders = filterRequestHeaders(request.headers);
 
