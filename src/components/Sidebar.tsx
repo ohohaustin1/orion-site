@@ -105,7 +105,7 @@ export default function Sidebar() {
             style={{ textDecoration: 'none' }}
           >
             <Briefcase size={18} />
-            <span>加入我們</span>
+            <span>招兵買馬</span>
           </a>
         </nav>
 
@@ -199,7 +199,7 @@ export default function Sidebar() {
                 style={{ textDecoration: 'none' }}
               >
                 <Briefcase size={20} />
-                <span>加入我們</span>
+                <span>招兵買馬</span>
               </a>
             </nav>
             <div className="orion-mobile-drawer-cta">
