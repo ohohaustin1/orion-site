@@ -906,13 +906,15 @@ interface ContactModalProps {
   submitting: boolean;
 }
 function ContactModal({ onClose, onSubmit, submitting }: ContactModalProps) {
+  const CALENDLY_URL = import.meta.env.VITE_CALENDLY_URL
+                    || 'https://calendly.com/ohohaustin1/30min';
   const [methods, setMethods] = useState<Array<{
     key: string; label: string; value: string; url?: string; badge?: string;
   }>>([
     { key: 'line',     label: 'LINE 官方帳號',          value: '@orion-ai',                          url: 'https://line.me/R/ti/p/@orion-ai',           badge: '最快' },
     { key: 'phone',    label: '電話',                    value: '+886 2 0000 0000',                   url: 'tel:+886200000000',                          badge: '9:00–21:00' },
     { key: 'mail',     label: 'Email',                   value: 'austin@orion01.com',                 url: 'mailto:austin@orion01.com' },
-    { key: 'calendly', label: '預約 30 分鐘深聊',       value: '選你方便的時段',                      url: 'https://calendly.com/austin-orion/30min',    badge: '建議' },
+    { key: 'calendly', label: '預約 30 分鐘深聊',       value: '選你方便的時段',                      url: CALENDLY_URL,                                  badge: '建議' },
   ]);
 
   // T4：嘗試從 CMS 拉真實聯絡方式（失敗保留硬碼）
