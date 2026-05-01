@@ -131,6 +131,8 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
   const [isUnlocked, setIsUnlocked] = useState(isPreview);
   const [authUser, setAuthUser] = useState<AuthUser>(null);
   const [authChecking, setAuthChecking] = useState(!isPreview);  // mount 時 fetch /api/auth/me
+  // T-OAUTH-RETURN-URL-001:OAuth callback 帶 ?login_error= 回來時、顯示 inline 錯誤
+  const [authError, setAuthError] = useState<string | null>(null);
 
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get('session');
@@ -317,8 +319,33 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
   // 因為 (1) /auth/* 是 HTML page nav、Vercel proxy 不處理 (2) cookie 跨域要 zeabur 直發、
   // 不能經 Vercel edge 中轉。
   const handleOAuthLogin = useCallback((provider: 'google' | 'facebook') => {
+    // T-OAUTH-RETURN-URL-001:state 是 OAuth 標準 cross-domain context preservation 機制。
+    // 取代既有 ?return=(backend 仍接 ~1 week back-compat、之後 drop)。
     const returnUrl = encodeURIComponent(window.location.href);
-    window.location.href = `${DIAG_URL}/auth/${provider}?return=${returnUrl}`;
+    window.location.href = `${DIAG_URL}/auth/${provider}?state=${returnUrl}`;
+  }, []);
+
+  // T-OAUTH-RETURN-URL-001:OAuth callback 帶 ?login_success=1 或 ?login_error=...
+  // 回到本頁時偵測、顯示對應 UX,並 cleanup URL(防 refresh 重複觸發)。
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const sp = new URLSearchParams(window.location.search);
+    const success = sp.get('login_success');
+    const errCode = sp.get('login_error');
+    if (errCode === 'oauth_failed' || errCode === 'invalid_return_url') {
+      setAuthError('登入失敗、請再試一次或換另一個帳號');
+      if (errCode === 'invalid_return_url') {
+        console.warn('[Report] OAuth invalid_return_url — return URL not whitelisted');
+      }
+    }
+    // Strip login_success / login_error 不污染 URL(refresh 不重觸發)
+    if (success || errCode) {
+      sp.delete('login_success');
+      sp.delete('login_error');
+      const cleanQuery = sp.toString();
+      const cleanUrl = window.location.pathname + (cleanQuery ? '?' + cleanQuery : '') + window.location.hash;
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
   }, []);
 
   // 頁面載入時(且非 preview)、檢查是否已 OAuth 登入。
@@ -459,6 +486,10 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
         <div className="unlock-title">🔒 解鎖完整 AI 分析報告</div>
         <div className="unlock-subtitle">選擇你的帳號繼續</div>
       </div>
+
+      {authError && (
+        <div className="unlock-error" role="alert">{authError}</div>
+      )}
 
       {authChecking ? (
         <div className="unlock-checking">確認登入狀態...</div>
