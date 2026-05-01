@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getFixture, FIXTURE_LIST, isPreviewAllowed } from '../data/fixtures';
-import { API_BASE } from '../lib/api-base';
+import { API_BASE, DIAG_URL } from '../lib/api-base';
 
 /*
  ═══════════════════════════════════════════════════
@@ -82,7 +82,9 @@ interface PreviewLeadInfo {
 }
 
 type PageState = 'loading' | 'ready' | 'error';
-type UnlockMode = 'email' | 'account' | null;
+// T-OAUTH-FOUNDATION-001:OAuth 統一身份取代 email-fill / 帳號登入。
+// UnlockMode type 廢除(不再有 'email' / 'account' 兩種模式、只有 OAuth)。
+type AuthUser = { email: string; provider: string; displayName?: string | null } | null;
 
 // 2026-04-27 David bug fix：6 hints × 5s = 30s 一輪、配合 poll-based loading
 const LOADING_HINTS = [
@@ -125,12 +127,10 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
   const [showLengthWarning, setShowLengthWarning] = useState(false);
 
   // ── 解鎖狀態 ──（T7：preview 模式自動解鎖、Chairman 看完整版）
+  // T-OAUTH-FOUNDATION-001:OAuth 取代 email-fill。isUnlocked 由 /api/auth/me 回應決定。
   const [isUnlocked, setIsUnlocked] = useState(isPreview);
-  const [unlockMode, setUnlockMode] = useState<UnlockMode>(null);
-  const [unlockEmail, setUnlockEmail] = useState('');
-  const [unlockPassword, setUnlockPassword] = useState('');
-  const [unlockError, setUnlockError] = useState('');
-  const [unlockSubmitting, setUnlockSubmitting] = useState(false);
+  const [authUser, setAuthUser] = useState<AuthUser>(null);
+  const [authChecking, setAuthChecking] = useState(!isPreview);  // mount 時 fetch /api/auth/me
 
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get('session');
@@ -307,80 +307,51 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
     };
   }, [sessionId, isPreview]);
 
-  // ── Email 解鎖 ──
-  const handleEmailUnlock = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!unlockEmail.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-      setUnlockError('請輸入有效的電子郵件');
-      return;
-    }
-    setUnlockSubmitting(true);
-    setUnlockError('');
-    try {
-      const res = await fetch(`${API_BASE}/api/unlock`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          session_id: sessionId,
-          email: unlockEmail,
-          unlock_method: 'email'
-        })
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      if (data.ok) {
-        setIsUnlocked(true);
-        setUnlockMode('email');
-        localStorage.setItem(`unlock_${sessionId}`, 'true');
-      } else {
-        setUnlockError(data.error || '解鎖失敗，請重試');
-      }
-    } catch (err: any) {
-      setUnlockError(err.message || '網路錯誤');
-    } finally {
-      setUnlockSubmitting(false);
-    }
-  };
+  // ── T-OAUTH-FOUNDATION-001:OAuth 統一身份解鎖 ──
+  // 取代既有 handleEmailUnlock (POST /api/unlock) + handleAccountLogin (POST /api/auth/login)。
+  // 客戶點 OAuth button → 跳到 orion-hub /auth/<provider>?return=<本頁> →
+  // OAuth roundtrip 完成後 backend set cookie 並 302 redirect 回本頁 →
+  // 本頁 mount useEffect 打 /api/auth/me、credentials:include 帶 cookie → setIsUnlocked(true)。
+  //
+  // 為什麼用 DIAG_URL 不用 API_BASE:DIAG_URL=ZEABUR_DIRECT 永遠直連 zeabur,
+  // 因為 (1) /auth/* 是 HTML page nav、Vercel proxy 不處理 (2) cookie 跨域要 zeabur 直發、
+  // 不能經 Vercel edge 中轉。
+  const handleOAuthLogin = useCallback((provider: 'google' | 'facebook') => {
+    const returnUrl = encodeURIComponent(window.location.href);
+    window.location.href = `${DIAG_URL}/auth/${provider}?return=${returnUrl}`;
+  }, []);
 
-  // ── 帳號登入 ──
-  const handleAccountLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!unlockEmail.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-      setUnlockError('請輸入有效的電子郵件');
+  // 頁面載入時(且非 preview)、檢查是否已 OAuth 登入。
+  // 200 → 自動解鎖、無須再點 OAuth button(localStorage bug 自然修通、cookie 持久化)
+  // 401 → 維持 isUnlocked=false、顯示 OAuth gate
+  useEffect(() => {
+    if (isPreview) {
+      setAuthChecking(false);
       return;
     }
-    if (unlockPassword.length < 6) {
-      setUnlockError('密碼至少 6 個字元');
-      return;
-    }
-    setUnlockSubmitting(true);
-    setUnlockError('');
-    try {
-      const res = await fetch(`${API_BASE}/api/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: unlockEmail,
-          password: unlockPassword,
-          session_id: sessionId
-        })
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      if (data.ok && data.token) {
-        localStorage.setItem('auth_token', data.token);
-        setIsUnlocked(true);
-        setUnlockMode('account');
-        localStorage.setItem(`unlock_${sessionId}`, 'true');
-      } else {
-        setUnlockError(data.error || '登入失敗，請檢查帳號密碼');
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch(`${DIAG_URL}/api/auth/me`, {
+          credentials: 'include',  // 必要:跨域 cookie
+        });
+        if (!mounted) return;
+        if (res.ok) {
+          const data = await res.json();
+          setAuthUser({ email: data.email, provider: data.provider, displayName: data.displayName });
+          setIsUnlocked(true);
+        }
+        // 401 / 其他 → 不解鎖、顯示 OAuth gate(預設行為)
+      } catch (err) {
+        // network error → 也維持未解鎖、靜默(避免阻擋 UI)
+        // (報告本身仍會 fetch 並 render 公開部分;遮罩仍蓋著直到 OAuth)
+        console.warn('[Report] auth check failed:', err);
+      } finally {
+        if (mounted) setAuthChecking(false);
       }
-    } catch (err: any) {
-      setUnlockError(err.message || '網路錯誤');
-    } finally {
-      setUnlockSubmitting(false);
-    }
-  };
+    })();
+    return () => { mounted = false; };
+  }, [isPreview]);
 
   // ── 補充需求重新生成 ──
   const handleRefine = async () => {
@@ -477,86 +448,54 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
     );
   };
 
-  // ── Render 解鎖閘門 ──
+  // ── T-OAUTH-FOUNDATION-001:Render 解鎖閘門(OAuth 統一身份)──
+  // 取代既有 email-fill / 帳號登入 / 已 disabled SSO 三段。
+  // 點 Google / Facebook → 跳到 orion-hub /auth/<provider>?return=<本頁> →
+  // OAuth roundtrip → cookie set → redirect 回本頁 → useEffect 已 fetch /api/auth/me → setIsUnlocked(true)。
+  // authChecking=true 期間顯示 loading 而非 OAuth gate(避免閃爍)。
   const renderUnlockGate = () => (
     <div className="unlock-gate">
       <div className="unlock-header">
         <div className="unlock-title">🔒 解鎖完整 AI 分析報告</div>
-        <div className="unlock-subtitle">選擇一種方式繼續，即可查看完整策略、建議與落地方案</div>
+        <div className="unlock-subtitle">選擇你的帳號繼續</div>
       </div>
 
-      {unlockError && <div className="unlock-error">{unlockError}</div>}
+      {authChecking ? (
+        <div className="unlock-checking">確認登入狀態...</div>
+      ) : (
+        <>
+          <div className="unlock-oauth-buttons">
+            <button
+              type="button"
+              className="oauth-btn oauth-google"
+              onClick={() => handleOAuthLogin('google')}
+              aria-label="使用 Google 帳號繼續"
+            >
+              <svg className="oauth-icon" viewBox="0 0 18 18" aria-hidden="true">
+                <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.265h2.908c1.702-1.567 2.684-3.874 2.684-6.622z"/>
+                <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.265c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
+                <path fill="#FBBC05" d="M3.964 10.704A5.41 5.41 0 0 1 3.682 9c0-.591.102-1.166.282-1.704V4.964H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.036l3.007-2.332z"/>
+                <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.964L3.964 7.296C4.672 5.169 6.656 3.58 9 3.58z"/>
+              </svg>
+              <span>使用 Google 繼續</span>
+            </button>
 
-      {/* Email 快速解鎖 */}
-      <div className="unlock-section">
-        <div className="unlock-section-title">─── 快速解鎖（推薦）───</div>
-        <form onSubmit={handleEmailUnlock} className="unlock-form">
-          <input
-            type="email"
-            placeholder="輸入您的電子郵件"
-            value={unlockEmail}
-            onChange={(e) => setUnlockEmail(e.target.value)}
-            disabled={unlockSubmitting}
-            className="unlock-input"
-          />
-          <button
-            type="submit"
-            disabled={unlockSubmitting}
-            className="unlock-button"
-          >
-            {unlockSubmitting ? '解鎖中...' : '👉 立即解鎖'}
-          </button>
-        </form>
-      </div>
-
-      {/* 帳號登入 */}
-      <div className="unlock-section">
-        <div className="unlock-section-title">─── 或使用帳號登入 ───</div>
-        <form onSubmit={handleAccountLogin} className="unlock-form">
-          <input
-            type="email"
-            placeholder="電子郵件"
-            value={unlockEmail}
-            onChange={(e) => setUnlockEmail(e.target.value)}
-            disabled={unlockSubmitting}
-            className="unlock-input"
-          />
-          <input
-            type="password"
-            placeholder="密碼"
-            value={unlockPassword}
-            onChange={(e) => setUnlockPassword(e.target.value)}
-            disabled={unlockSubmitting}
-            className="unlock-input"
-          />
-          <button
-            type="submit"
-            disabled={unlockSubmitting}
-            className="unlock-button"
-          >
-            {unlockSubmitting ? '登入中...' : '👉 登入並解鎖'}
-          </button>
-          <div className="unlock-forgot">
-            忘記密碼？→ <span className="text-gold">請聯絡客服</span>
+            <button
+              type="button"
+              className="oauth-btn oauth-facebook"
+              onClick={() => handleOAuthLogin('facebook')}
+              aria-label="使用 Facebook 帳號繼續"
+            >
+              <svg className="oauth-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="#1877F2" d="M24 12c0-6.627-5.373-12-12-12S0 5.373 0 12c0 5.99 4.388 10.954 10.125 11.854V15.469H7.078V12h3.047V9.356c0-3.007 1.792-4.668 4.533-4.668 1.312 0 2.686.234 2.686.234v2.953H15.83c-1.491 0-1.956.925-1.956 1.875V12h3.328l-.532 3.469h-2.796v8.385C19.612 22.954 24 17.99 24 12z"/>
+              </svg>
+              <span>使用 Facebook 繼續</span>
+            </button>
           </div>
-        </form>
-      </div>
 
-      {/* SSO（disabled） */}
-      <div className="unlock-section">
-        <div className="unlock-section-title">─── 或一鍵登入（即將推出）───</div>
-        <div className="unlock-sso">
-          <button className="sso-button" disabled title="即將推出">
-            使用 Google 繼續
-          </button>
-          <button className="sso-button" disabled title="即將推出">
-            使用 Apple 繼續
-          </button>
-          <button className="sso-button" disabled title="即將推出">
-            使用 Facebook 繼續
-          </button>
-        </div>
-      </div>
+          <p className="unlock-oauth-note">登入後、O 會幫你解鎖完整報告、永久記住你</p>
+        </>
+      )}
     </div>
   );
 
@@ -1510,6 +1449,77 @@ const CSS_STYLES = `
     font-size: 14px;
     cursor: not-allowed;
     opacity: 0.5;
+  }
+
+  /* T-OAUTH-FOUNDATION-001:OAuth 統一身份按鈕(取代 email-fill / 帳號登入)*/
+  .unlock-checking {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    padding: 32px 0;
+    letter-spacing: 0.04em;
+  }
+  .unlock-oauth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .oauth-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid;
+    letter-spacing: 0.02em;
+  }
+  .oauth-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  .oauth-btn:active {
+    transform: translateY(0);
+  }
+  .oauth-google {
+    background: #fff;
+    color: #3c4043;
+    border-color: rgba(255, 255, 255, 0.9);
+  }
+  .oauth-google:hover {
+    background: #f8f9fa;
+  }
+  .oauth-facebook {
+    background: #1877F2;
+    color: #fff;
+    border-color: #1877F2;
+  }
+  .oauth-facebook:hover {
+    background: #166FE5;
+  }
+  .oauth-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+  .unlock-oauth-note {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12.5px;
+    margin-top: 18px;
+    letter-spacing: 0.02em;
+  }
+  @media (max-width: 480px) {
+    .oauth-btn {
+      padding: 13px 16px;
+      font-size: 14px;
+    }
   }
 
   .locked-content {
