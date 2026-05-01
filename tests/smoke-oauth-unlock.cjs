@@ -58,6 +58,34 @@ check('OAuth click handler uses DIAG_URL (not API_BASE)', () => {
     'must use DIAG_URL for OAuth redirect');
 });
 
+check('T-OAUTH-RETURN-URL-001:OAuth init uses ?state= (not ?return=)', () => {
+  // state 是 OAuth 標準 cross-domain 機制(取代既有 ?return=)
+  assert.ok(/\?state=\$\{returnUrl\}/.test(tsx),
+    'OAuth init URL must use ?state= query param');
+  assert.ok(!/\?return=\$\{returnUrl\}/.test(tsx),
+    '?return= should be replaced with ?state=');
+});
+
+check('T-OAUTH-RETURN-URL-001:detects login_success/login_error on mount', () => {
+  // useEffect must read URLSearchParams + detect login_success/error
+  assert.ok(/login_success/.test(tsx) && /login_error/.test(tsx),
+    'must detect both login_success + login_error query params');
+  assert.ok(/oauth_failed|invalid_return_url/.test(tsx),
+    'must handle specific error codes (oauth_failed / invalid_return_url)');
+});
+
+check('T-OAUTH-RETURN-URL-001:strips OAuth query params via replaceState', () => {
+  // 防 refresh 重觸發、cleanup URL via window.history.replaceState
+  assert.ok(/window\.history\.replaceState/.test(tsx),
+    'must use window.history.replaceState to clean up OAuth callback params');
+});
+
+check('T-OAUTH-RETURN-URL-001:authError state + inline error UI', () => {
+  assert.ok(/setAuthError/.test(tsx), 'authError state must exist');
+  assert.ok(/authError\s*&&[\s\S]{0,200}unlock-error/.test(tsx),
+    'authError inline error must render in unlock gate via .unlock-error class');
+});
+
 check('DIAG_URL imported from api-base', () => {
   assert.ok(/import\s*\{\s*[^}]*DIAG_URL[^}]*\}\s*from\s*['"]\.\.\/lib\/api-base['"]/.test(tsx),
     'DIAG_URL must be imported');
