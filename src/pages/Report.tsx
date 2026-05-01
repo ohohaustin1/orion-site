@@ -32,6 +32,47 @@ interface ReportData {
   risks?: string[];
   path?: Array<{ phase: string; title: string; description: string }>;
   chairmanNote?: string;
+  // T-REPORT-RENDER-FIX-001：v2 schema (snake_case、產自 capture/prompts/report-system-v2.md)。
+  // 過去 2-3 週 backend 已升 v2、frontend 沒對應 render block,造成 96% 內容被吃掉。
+  // 本次 PR 補齊 render path,v1 fallback 全保留。
+  opening_line?: string;
+  diagnosis_level?: {
+    icon?: string;
+    label?: string;
+    one_sentence?: string;  // v2.1 後 deprecated、保留向後相容
+    next_step?: string;
+  };
+  current_state?: {
+    title?: string;
+    bullets?: string[];
+    closing_line?: string;
+  };
+  future_state?: {
+    title?: string;
+    bullets?: string[];
+    closing_line?: string;
+  };
+  core_logic?: string;
+  three_steps?: Array<{
+    step?: number;
+    when?: string;
+    what?: string;
+  }>;
+  cost_of_inaction?: {
+    show?: boolean | string;
+    content?: string;
+  };
+  roi_estimate?: {
+    time_saved_per_month?: string;
+    money_saved_per_month?: string;
+    money_saved_per_year?: string;
+    basis?: string;
+  };
+  o_letter?: string;
+  cta?: {
+    main?: string;
+    sub?: string;
+  };
 }
 
 interface PreviewLeadInfo {
@@ -565,7 +606,7 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
     const coreInsight = report?.coreInsight
       || report?.coreProblem?.title
       || report?.opening_line
-      || report?.current_state
+      || report?.current_state?.title
       || '';
     const currentAnalysis = report?.currentAnalysis || report?.coreProblem?.description || '';
     const keyPoints = report?.currentKeyPoints || [];
@@ -663,15 +704,142 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
     const opportunities = report?.opportunities || [];
     const risks = report?.risks || [];
     const path = report?.path || [];
-    const chairmanNote = report?.chairmanNote || (
+    // T-REPORT-RENDER-FIX-001:v2 fields。每個都 optional、empty 時整段不 render。
+    const dx = report?.diagnosis_level;
+    const cs = report?.current_state;
+    const fs = report?.future_state;
+    const csBullets = (cs?.bullets || []).filter(b => typeof b === 'string' && b.trim());
+    const fsBullets = (fs?.bullets || []).filter(b => typeof b === 'string' && b.trim());
+    const threeSteps = (report?.three_steps || []).filter(s => s && (s.what || s.when));
+    const coi = report?.cost_of_inaction;
+    const showCoi = coi && (coi.show === true || coi.show === 'true') && coi.content;
+    const roi = report?.roi_estimate;
+    const hasRoi = roi && (roi.time_saved_per_month || roi.money_saved_per_month || roi.money_saved_per_year);
+    const oLetter = (report?.o_letter || '').trim();
+    // chairmanNote:o_letter > 既有 chairmanNote > coreProblem-derived fallback > generic fallback
+    const chairmanNote = oLetter || report?.chairmanNote || (
       report?.coreProblem?.title
         ? `根據你今天說的情況，我建議你優先處理「${report.coreProblem.title}」。這種問題我們看過很多次、通常 6-12 週可以見效。我想跟你聊 30 分鐘、把方向確認清楚。`
         : '我看到你的狀況、有幾個地方想跟你深入聊。我們約 30 分鐘、不打包賣方案、先確認方向。'
     );
-    const topIssue = report?.coreProblem?.title || '你提到的核心問題';
+    const chairmanLabel = oLetter ? 'O 的話' : 'Chairman 親筆';
+    const topIssue = report?.coreProblem?.title || cs?.title || '你提到的核心問題';
 
     return (
       <div className="locked-content">
+        {/* T-REPORT-RENDER-FIX-001 v2 sections START — 排在所有 v1 sections 前 */}
+
+        {/* 診斷層級 (v2 diagnosis_level) */}
+        {dx?.label && (
+          <section className="r-section r-diagnosis">
+            <div className="r-diagnosis-badge">
+              {dx.icon && <span className="r-diagnosis-icon">{dx.icon}</span>}
+              <span className="r-diagnosis-label">{dx.label}</span>
+            </div>
+            {dx.next_step && <div className="r-diagnosis-next">{dx.next_step}</div>}
+            {dx.one_sentence && (
+              <p className="r-paragraph r-diagnosis-desc">{dx.one_sentence}</p>
+            )}
+          </section>
+        )}
+
+        {/* 現況 (v2 current_state) */}
+        {csBullets.length > 0 && (
+          <section className="r-section">
+            <h2 className="r-section-title">{cs?.title || '現在的你'}</h2>
+            <ul className="r-bullet-list">
+              {csBullets.map((b, i) => <li key={i}>{b}</li>)}
+            </ul>
+            {cs?.closing_line && (
+              <p className="r-paragraph r-state-closing">{cs.closing_line}</p>
+            )}
+          </section>
+        )}
+
+        {/* 未來 (v2 future_state) */}
+        {fsBullets.length > 0 && (
+          <section className="r-section r-future-state">
+            <h2 className="r-section-title">{fs?.title || '6 個月後的你'}</h2>
+            <ul className="r-bullet-list">
+              {fsBullets.map((b, i) => <li key={i}>{b}</li>)}
+            </ul>
+            {fs?.closing_line && (
+              <p className="r-paragraph r-state-closing">{fs.closing_line}</p>
+            )}
+          </section>
+        )}
+
+        {/* 核心邏輯 (v2 core_logic) */}
+        {report?.core_logic && (
+          <section className="r-section">
+            <h2 className="r-section-title">核心邏輯</h2>
+            <p className="r-paragraph r-core-logic">{report.core_logic}</p>
+          </section>
+        )}
+
+        {/* 三步路徑 (v2 three_steps) */}
+        {threeSteps.length > 0 && (
+          <section className="r-section">
+            <h2 className="r-section-title">三步路徑</h2>
+            <div className="r-timeline">
+              {threeSteps.map((s, i) => (
+                <div key={i} className="r-timeline-row">
+                  <div className="r-timeline-phase">{s.when || `第 ${s.step || i + 1} 步`}</div>
+                  <div className="r-timeline-body">
+                    <div className="r-timeline-desc">{s.what}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* 不行動的代價 (v2 cost_of_inaction) — 只在 show=true 且 content 存在時顯示 */}
+        {showCoi && (
+          <section className="r-section">
+            <h2 className="r-section-title">不行動的代價</h2>
+            <div className="r-action-box r-coi-callout">{coi.content}</div>
+          </section>
+        )}
+
+        {/* ROI 估算 (v2 roi_estimate) */}
+        {hasRoi && (
+          <section className="r-section">
+            <h2 className="r-section-title">ROI 估算</h2>
+            <div className="r-metrics">
+              {roi.time_saved_per_month && (
+                <>
+                  <div className="r-metric">
+                    <div className="r-metric-value">{roi.time_saved_per_month}</div>
+                    <div className="r-metric-label">月時間節省</div>
+                  </div>
+                  {(roi.money_saved_per_month || roi.money_saved_per_year) && <div className="r-metric-divider" />}
+                </>
+              )}
+              {roi.money_saved_per_month && (
+                <>
+                  <div className="r-metric">
+                    <div className="r-metric-value">{roi.money_saved_per_month}</div>
+                    <div className="r-metric-label">月金額節省</div>
+                  </div>
+                  {roi.money_saved_per_year && <div className="r-metric-divider" />}
+                </>
+              )}
+              {roi.money_saved_per_year && (
+                <div className="r-metric">
+                  <div className="r-metric-value">{roi.money_saved_per_year}</div>
+                  <div className="r-metric-label">年金額節省</div>
+                </div>
+              )}
+            </div>
+            {roi.basis && (
+              <p className="r-paragraph r-roi-basis">算法：{roi.basis}</p>
+            )}
+          </section>
+        )}
+
+        {/* T-REPORT-RENDER-FIX-001 v2 sections END */}
+
         {/* 機會點 — 卡片 grid */}
         {opportunities.length > 0 && (
           <section className="r-section">
@@ -742,9 +910,9 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
           </section>
         )}
 
-        {/* Chairman 簽名 + 大 CTA */}
+        {/* Chairman 簽名 + 大 CTA(o_letter 存在時 label 改成「O 的話」、內容用 o_letter) */}
         <section className="r-chairman">
-          <div className="r-chairman-label">Chairman 親筆</div>
+          <div className="r-chairman-label">{chairmanLabel}</div>
           <blockquote className="r-chairman-quote">
             <span className="r-chairman-mark">「</span>
             {chairmanNote.split(/「[^」]*」/).reduce<React.ReactNode[]>((acc, part, i, arr) => {
@@ -2384,6 +2552,95 @@ const CSS_STYLES = `
   @media (max-width: 480px) {
     .r-modal { padding: 28px 22px 20px; }
     .r-modal-option { padding: 14px 14px; }
+  }
+
+  /* ────────────────────────────────────────────────
+     T-REPORT-RENDER-FIX-001:v2 schema render styles
+     沿用既有 .r-section / .r-bullet-list / .r-timeline /
+     .r-metrics / .r-action-box / .r-paragraph 黑金樣式,
+     只加 v2 specific 修飾 class。
+     ──────────────────────────────────────────────── */
+
+  /* 診斷層級 — 大 chip badge + 行動指令 */
+  .r-diagnosis {
+    text-align: center;
+    padding: 24px 24px 28px;
+  }
+  .r-diagnosis-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px;
+    background: rgba(245,166,35,0.06);
+    border: 1px solid rgba(245,166,35,0.32);
+    border-radius: 999px;
+    margin-bottom: 14px;
+  }
+  .r-diagnosis-icon {
+    font-size: 26px;
+    line-height: 1;
+  }
+  .r-diagnosis-label {
+    font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #FFD369;
+    letter-spacing: 0.04em;
+  }
+  .r-diagnosis-next {
+    font-size: 16px;
+    color: #F5F5F5;
+    font-weight: 500;
+    margin-top: 8px;
+    letter-spacing: 0.02em;
+  }
+  .r-diagnosis-desc {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  /* current_state / future_state — 共用 .r-section + .r-bullet-list、加 closing line */
+  .r-state-closing {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px dashed rgba(245,166,35,0.18);
+    font-style: italic;
+    color: rgba(255,255,255,0.7);
+    font-size: 15px;
+  }
+  .r-future-state {
+    background: rgba(245,166,35,0.03);
+    border-left: 2px solid rgba(245,166,35,0.32);
+    padding-left: 22px;
+  }
+
+  /* core_logic — 中間那句話、引號感 */
+  .r-core-logic {
+    font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+    font-size: 18px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.85);
+    padding: 18px 22px;
+    background: rgba(245,166,35,0.04);
+    border-left: 3px solid rgba(245,166,35,0.4);
+    border-radius: 4px;
+  }
+
+  /* cost_of_inaction — 警告色 callout(沿用 .r-action-box 但加紅金提醒) */
+  .r-coi-callout {
+    border-color: rgba(244, 63, 94, 0.32);
+    background: rgba(244, 63, 94, 0.05);
+    color: #F5F5F5;
+  }
+
+  /* roi basis 字 — 算法說明小字 */
+  .r-roi-basis {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 14px;
+    font-style: italic;
   }
 
 `;
