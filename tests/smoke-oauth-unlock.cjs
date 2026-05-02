@@ -40,16 +40,28 @@ check('handleOAuthLogin function defined', () => {
     'handleOAuthLogin must be a useCallback');
 });
 
-check('Google button rendered with correct provider', () => {
-  assert.ok(/handleOAuthLogin\(['"]google['"]\)/.test(tsx),
-    'click handler must call handleOAuthLogin(\'google\')');
-  assert.ok(/使用 Google 繼續/.test(tsx), 'button label "使用 Google 繼續" must be present');
+check('Google OAuth anchor rendered with correct provider', () => {
+  // T-OAUTH-BUTTON-HOTFIX (PR-1.6):<button onClick={handleOAuthLogin}> 改 <a href>
+  // 因 React state race (見 PR-1.6 spec)、native <a> nav 不被取消。
+  // handleOAuthLogin function 仍存在 (死碼、後續 cleanup PR 移除)。
+  // 用 [\s\S]*? lazy match 跨行 + 容忍 ${DIAG_URL} 內嵌 { } 字元。
+  assert.ok(/href=\{[\s\S]*?\/auth\/google\?state=/.test(tsx),
+    'Google OAuth anchor must have href containing /auth/google?state=');
+  assert.ok(/使用 Google 繼續/.test(tsx), 'label "使用 Google 繼續" must be present');
 });
 
-check('Facebook button rendered with correct provider', () => {
-  assert.ok(/handleOAuthLogin\(['"]facebook['"]\)/.test(tsx),
-    'click handler must call handleOAuthLogin(\'facebook\')');
-  assert.ok(/使用 Facebook 繼續/.test(tsx), 'button label "使用 Facebook 繼續" must be present');
+check('Facebook OAuth anchor rendered with correct provider', () => {
+  assert.ok(/href=\{[\s\S]*?\/auth\/facebook\?state=/.test(tsx),
+    'Facebook OAuth anchor must have href containing /auth/facebook?state=');
+  assert.ok(/使用 Facebook 繼續/.test(tsx), 'label "使用 Facebook 繼續" must be present');
+});
+
+check('OAuth elements use anchor tags (not button) — avoids React nav race', () => {
+  // 確保 PR-1.5 的 <button onClick> 已換成 <a href>
+  assert.ok(!/<button[\s\S]{0,200}className=['"]oauth-btn/.test(tsx),
+    '<button className="oauth-btn ..."> must NOT exist (replaced by <a>)');
+  assert.ok(/<a[\s\S]{0,200}className=['"]oauth-btn/.test(tsx),
+    '<a className="oauth-btn ..."> must exist (anchor replaces button)');
 });
 
 check('OAuth click handler uses DIAG_URL (not API_BASE)', () => {
