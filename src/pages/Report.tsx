@@ -495,11 +495,18 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
         <div className="unlock-checking">確認登入狀態...</div>
       ) : (
         <>
+          {/* T-OAUTH-BUTTON-HOTFIX (PR-1.6):<a href> 取代 <button onClick>。
+              Cowork 診斷:React state race(/api/auth/me re-render 同 tick)取消
+              window.location.href navigation。改用瀏覽器原生 <a> nav,免 React handler、
+              免 race。 styling 沿用 .oauth-btn(display:flex 等對 <a> 同樣有效)。
+              href 在 render 時組好 — typeof window check 是 SSR-safe(prerender 時 window 不存在)。
+              handleOAuthLogin function 留為死碼、cleanup 在後續 PR 處理。 */}
           <div className="unlock-oauth-buttons">
-            <button
-              type="button"
+            <a
               className="oauth-btn oauth-google"
-              onClick={() => handleOAuthLogin('google')}
+              href={`${DIAG_URL}/auth/google?state=${encodeURIComponent(
+                typeof window !== 'undefined' ? window.location.href : ''
+              )}`}
               aria-label="使用 Google 帳號繼續"
             >
               <svg className="oauth-icon" viewBox="0 0 18 18" aria-hidden="true">
@@ -509,19 +516,20 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
                 <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.964L3.964 7.296C4.672 5.169 6.656 3.58 9 3.58z"/>
               </svg>
               <span>使用 Google 繼續</span>
-            </button>
+            </a>
 
-            <button
-              type="button"
+            <a
               className="oauth-btn oauth-facebook"
-              onClick={() => handleOAuthLogin('facebook')}
+              href={`${DIAG_URL}/auth/facebook?state=${encodeURIComponent(
+                typeof window !== 'undefined' ? window.location.href : ''
+              )}`}
               aria-label="使用 Facebook 帳號繼續"
             >
               <svg className="oauth-icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path fill="#1877F2" d="M24 12c0-6.627-5.373-12-12-12S0 5.373 0 12c0 5.99 4.388 10.954 10.125 11.854V15.469H7.078V12h3.047V9.356c0-3.007 1.792-4.668 4.533-4.668 1.312 0 2.686.234 2.686.234v2.953H15.83c-1.491 0-1.956.925-1.956 1.875V12h3.328l-.532 3.469h-2.796v8.385C19.612 22.954 24 17.99 24 12z"/>
               </svg>
               <span>使用 Facebook 繼續</span>
-            </button>
+            </a>
           </div>
 
           <p className="unlock-oauth-note">登入後、O 會幫你解鎖完整報告、永久記住你</p>
