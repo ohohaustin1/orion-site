@@ -176,6 +176,7 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ reportId: 'web-view' }),
+      credentials: 'include',
     }).catch(() => { /* 靜默 */ });
   }, [sessionId, isPreview]);
 
@@ -213,6 +214,7 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ method, clientInfo }),
+          credentials: 'include',
         }
       );
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -276,11 +278,15 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
         return;
       }
       try {
-        const statusRes = await fetch(`${API_BASE}/api/reports/${sessionId}/status`);
+        const statusRes = await fetch(`${API_BASE}/api/reports/${sessionId}/status`, {
+          credentials: 'include',
+        });
         const statusData = await statusRes.json();
         if (statusData.status === 'ready') {
           // ready：拿完整 cache
-          const fullRes = await fetch(`${API_BASE}/api/report/${sessionId}`);
+          const fullRes = await fetch(`${API_BASE}/api/report/${sessionId}`, {
+            credentials: 'include',
+          });
           if (!fullRes.ok) throw new Error(`HTTP ${fullRes.status}`);
           const fullData = await fullRes.json();
           if (fullData.success && fullData.report) {
@@ -408,6 +414,7 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ session_id: sessionId, extra_input: trimmed }),
         signal: controller.signal,
+        credentials: 'include',
       });
       clearTimeout(timeout);
 
@@ -566,6 +573,7 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sessionId, email, lang: 'zh-TW' }),
+        credentials: 'include',
       });
       const data = await res.json();
       if (data.ok) alert(data.message || '已寄出！請查收信箱');
