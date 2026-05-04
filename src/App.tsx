@@ -24,6 +24,8 @@ import InsightsPage from "./pages/InsightsPage";
 import AboutPage from "./pages/AboutPage";
 import ResourcesPage from "./pages/ResourcesPage";
 import TeamPage from './pages/TeamPage';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
 
 // Pages that show sidebar
 const SIDEBAR_ROUTES = ['/home', '/cases', '/insights', '/about', '/team', '/resources'];
@@ -65,6 +67,10 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       <Route path="/forgot-password" component={ForgotPassword} />
+
+      {/* Legal pages — required for OAuth App Review (T-OAUTH-APPREVIEW-PREP) */}
+      <Route path="/privacy" component={Privacy} />
+      <Route path="/terms" component={Terms} />
 
       {/* / → HomePage（主要入口） */}
       <Route path="/">
