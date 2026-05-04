@@ -448,7 +448,7 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
     const charColor = charCount >= 15 ? '#4ade80' : '#f59e0b';
     return (
       <div className="refine-section">
-        <div className="refine-title">補充您的需求，獲得更精準的策略</div>
+        <div className="refine-title">補充你的需求，獲得更精準的策略</div>
         <div className="refine-textarea-wrapper">
           <textarea
             className="refine-textarea"

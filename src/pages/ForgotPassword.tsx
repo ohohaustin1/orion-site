@@ -50,7 +50,7 @@ export default function ForgotPassword() {
               <CheckCircle2 className="w-14 h-14 text-[#c9a84c] mx-auto mb-4" />
               <h2 className="text-white text-lg font-bold mb-2">重設連結已發送</h2>
               <p className="text-gray-400 text-sm mb-6">
-                請檢查您的信箱 <span className="text-[#c9a84c]">{email}</span>，
+                請檢查你的信箱 <span className="text-[#c9a84c]">{email}</span>，
                 依照信件中的連結重設密碼。
               </p>
               <Button
@@ -71,7 +71,7 @@ export default function ForgotPassword() {
 
               <h2 className="text-white text-lg font-semibold mb-2">忘記密碼</h2>
               <p className="text-gray-400 text-sm mb-6">
-                輸入您的電子郵件，我們將發送密碼重設連結。
+                輸入你的電子郵件，我們將發送密碼重設連結。
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-5">

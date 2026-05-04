@@ -69,7 +69,7 @@ export default function Register() {
             <CheckCircle2 className="w-16 h-16 text-[#c9a84c] mx-auto mb-4" />
             <h2 className="text-white text-xl font-bold mb-2">申請已送出</h2>
             <p className="text-gray-400 text-sm mb-6">
-              您的帳號申請已收到，管理員審核後將通知您。
+              你的帳號申請已收到，管理員審核後將通知你。
             </p>
             <Button
               onClick={() => navigate("/login")}
@@ -131,7 +131,7 @@ export default function Register() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="您的姓名"
+                placeholder="你的姓名"
                 required
                 className="bg-[#1a1f2e] border-[#c9a84c]/20 text-white placeholder:text-gray-500 focus:border-[#c9a84c]/60 h-11"
               />
