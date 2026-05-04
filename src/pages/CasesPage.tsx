@@ -185,6 +185,9 @@ export default function CasesPage() {
         </section>
       )}
 
+      {/* T-CASES-H2-HIERARCHY (5/2 audit P1):semantic h2 always present 在 grid 前面、
+          確保 h1 → h2 → h3 不跳級。Tailwind sr-only:視覺隱藏、a11y / SEO 仍讀得到 */}
+      <h2 className="sr-only">案例清單</h2>
       <div className="orion-cases-grid full">
         {loading
           ? Array.from({ length: 12 }).map((_, i) => (
