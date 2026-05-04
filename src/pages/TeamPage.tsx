@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Crown, Cpu, Lightbulb, BrainCircuit, Heart, BarChart3, Link2, Users } from 'lucide-react';
 import PageSEO from '../components/PageSEO';
 import { API_BASE } from '../lib/api-base';
 
-// 2026-04-26 Chairman 修正 F：拿回 DB-driven、條件渲染
-// 有 image_url → 真人照片卡 / 無 image_url → role icon 招募中卡
-// 後台 admin 改 image_url 即可切換、不需動 code
-
-type RoleIcon = React.ComponentType<{ size?: number; strokeWidth?: number }>;
+// 2026-05-02 T-PRODUCTION-HARDENING-PHASE-3-A:
+//   暫時切到 image-less initial-circle 設計、避開 Cloudinary 404
+//   (5/2 audit P0-9:7 張團隊照片仍未拍、image_url 失效)
+//
+// 設計:每張卡渲染 initial-circle(姓名首字)、深色底 + 金色描邊 + 金色字
+//      未來照片就位後、把 <div className="team-avatar-initial"> 換回 <img>
+//      其餘 layout 不動、是個 1-line swap 的設計
+//
+// 歷史:之前 hasPhoto ? <img> : <Icon> 的 role-icon 招募中卡同樣保留
+//      機制(role icon 仍在 lucide 套件中、本 PR 不刪 import 鏈、避免動到
+//      別的 component);未來如果 admin 想用 photo,這個 PR 不是 blocker。
 
 interface Member {
   id: number;
@@ -18,17 +23,15 @@ interface Member {
   linkedin?: string | null;
 }
 
-// title 關鍵字 → role icon（image_url 缺時顯示）
-function pickIcon(title: string): RoleIcon {
-  const t = (title || '').toLowerCase();
-  if (/chairman|創辦|founder/i.test(title)) return Crown;
-  if (/cto|技術長|架構/i.test(title)) return Cpu;
-  if (/ai 策略|策略官|strategy/i.test(t)) return Lightbulb;
-  if (/ai 架構|architect|機器學習/i.test(title)) return BrainCircuit;
-  if (/體驗|ux|customer|客戶/i.test(title)) return Heart;
-  if (/數據|分析|analyst|data/i.test(title)) return BarChart3;
-  if (/整合|integration|系統/i.test(title)) return Link2;
-  return Users;
+// 從 name 取首字當 avatar initial。
+// 規則:有英文字 → 取第一個英文字大寫(e.g. "許燿宸 Austin" → "A")
+//      純中文 → 取第一個字(e.g. "許燿宸" → "許")
+//      空 → "?"
+function getInitial(name: string): string {
+  if (!name) return '?';
+  const match = name.match(/[A-Za-z]/);
+  if (match) return match[0].toUpperCase();
+  return name.charAt(0);
 }
 
 // CN-PROXY-VERCEL-EDGE-001: API_BASE 統一從 src/lib/api-base.ts import
@@ -136,7 +139,7 @@ const TEAM_CSS = `
 .team-card:hover .team-avatar {
   filter: drop-shadow(0 0 16px rgba(197,160,89,0.7)) drop-shadow(0 0 32px rgba(197,160,89,0.3));
 }
-/* Task F：角色卡 — icon 取代 AI 生圖頭像 */
+/* Task F：角色卡 — icon 取代 AI 生圖頭像（保留以利未來不同模式 fallback） */
 .team-avatar-icon {
   background: radial-gradient(circle at center, rgba(197,160,89,0.18) 0%, rgba(10,10,10,0.92) 70%);
   color: #C5A059;
@@ -159,6 +162,31 @@ const TEAM_CSS = `
   background: rgba(197,160,89,0.10);
   border: 1px solid rgba(197,160,89,0.35);
   border-radius: 4px;
+}
+
+/* T-PRODUCTION-HARDENING-PHASE-3-A:initial-circle 頭像、暫替代真人照片 */
+.team-avatar-initial {
+  background: radial-gradient(circle at center, rgba(197,160,89,0.22) 0%, rgba(10,10,10,0.96) 75%);
+}
+.team-avatar-initial-letter {
+  color: #C5A059;
+  font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
+  font-size: 52px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-shadow:
+    0 0 12px rgba(197,160,89,0.55),
+    0 0 24px rgba(197,160,89,0.25);
+  user-select: none;
+}
+.team-card:hover .team-avatar-initial-letter {
+  text-shadow:
+    0 0 16px rgba(197,160,89,0.85),
+    0 0 32px rgba(197,160,89,0.45);
+}
+@media (max-width: 600px) {
+  .team-avatar-initial-letter { font-size: 44px; }
 }
 
 .team-name {
@@ -288,24 +316,17 @@ export default function TeamPage() {
       {!loading && !err && (
       <div className="team-grid">
         {team.map((m) => {
-          const Icon = pickIcon(m.title);
-          const hasPhoto = !!(m.image_url && m.image_url.trim().length > 0);
+          // T-PRODUCTION-HARDENING-PHASE-3-A:
+          //   暫不渲染 <img>;統一用 initial-circle 直到照片拍好
+          //   未來想恢復照片渲染:把這個 div 換回 hasPhoto ? <img> : <initial>
+          const initial = getInitial(m.name);
           return (
-            <article key={m.id} className={`team-card ${hasPhoto ? '' : 'team-card-recruiting'}`}>
-              {hasPhoto ? (
-                <div className="team-avatar">
-                  <img src={m.image_url as string} alt={m.name} loading="lazy" />
-                </div>
-              ) : (
-                <div className="team-avatar team-avatar-icon">
-                  <Icon size={48} strokeWidth={1.4} />
-                </div>
-              )}
-              <h3 className="team-name">{hasPhoto ? m.name : '招募中'}</h3>
+            <article key={m.id} className="team-card">
+              <div className="team-avatar team-avatar-initial">
+                <span className="team-avatar-initial-letter">{initial}</span>
+              </div>
+              <h3 className="team-name">{m.name}</h3>
               <div className="team-title">{m.title}</div>
-              {!hasPhoto && (
-                <div className="team-recruiting-badge">RECRUITING</div>
-              )}
 
               <div className="team-section">
                 <span className="team-section-label">擅長領域</span>
