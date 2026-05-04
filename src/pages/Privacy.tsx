@@ -96,7 +96,7 @@ export default function Privacy() {
 
           <h3 className="legal-h3">7. 資料安全</h3>
           <p className="legal-paragraph">
-            我們使用 HTTPS 加密所有傳輸、cookie 設 httpOnly + Secure + SameSite=Lax、
+            我們使用 HTTPS 加密所有傳輸、cookie 設 httpOnly + Secure + SameSite=None、
             OAuth tokens 加密存儲。但無 100% 安全的網際網路傳輸,合理風險仍須由用戶
             知悉。
           </p>
@@ -202,7 +202,7 @@ export default function Privacy() {
 
           <h3 className="legal-h3">7. Data Security</h3>
           <p className="legal-paragraph">
-            All transmission uses HTTPS. Cookies are set with httpOnly + Secure + SameSite=Lax.
+            All transmission uses HTTPS. Cookies are set with httpOnly + Secure + SameSite=None.
             OAuth tokens are encrypted at rest. No internet transmission is 100% secure;
             users should be aware of inherent risk.
           </p>
