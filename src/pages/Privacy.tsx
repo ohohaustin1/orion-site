@@ -7,12 +7,18 @@
  */
 
 import React from 'react';
+import PageSEO from '../components/PageSEO';
 
 const LAST_UPDATED = '2026-05-04';
 
 export default function Privacy() {
   return (
     <div className="legal-page">
+      <PageSEO
+        title="隱私權政策 / Privacy Policy | Orion AI"
+        description="Orion AI Group 隱私權政策。說明我們如何收集、使用、保護你的個人資料，以及你享有的權利。"
+        url="/privacy"
+      />
       <style>{LEGAL_CSS}</style>
       <div className="legal-container">
         <header className="legal-header">

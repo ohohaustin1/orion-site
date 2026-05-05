@@ -137,7 +137,7 @@ function App() {
 
   useEffect(() => {
     const path = window.location.pathname;
-    const skipSplash = ['/report', '/war-room', '/home', '/cases', '/insights', '/about', '/team', '/resources'];
+    const skipSplash = ['/report', '/war-room', '/home', '/cases', '/insights', '/about', '/team', '/resources', '/privacy', '/terms'];
     if (skipSplash.some(r => path.startsWith(r))) {
       setShowSplash(false);
     } else {

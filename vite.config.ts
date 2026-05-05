@@ -13,6 +13,8 @@ const PRERENDER_ROUTES = [
   '/about',
   '/team',
   '/resources',
+  '/privacy',
+  '/terms',
 ];
 
 export default defineConfig({
