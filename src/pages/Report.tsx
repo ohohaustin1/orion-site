@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { getFixture, FIXTURE_LIST, isPreviewAllowed } from '../data/fixtures';
 import { API_BASE, DIAG_URL } from '../lib/api-base';
 
@@ -133,6 +133,11 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
   const [authChecking, setAuthChecking] = useState(!isPreview);  // mount 時 fetch /api/auth/me
   // T-OAUTH-RETURN-URL-001:OAuth callback 帶 ?login_error= 回來時、顯示 inline 錯誤
   const [authError, setAuthError] = useState<string | null>(null);
+  // CC TASK 10:404 / timeout 走的細分原因，render 時挑對應 fallback UI（不存在/需登入/通用）
+  const [errorReason, setErrorReason] = useState<'not_found_authed' | 'not_found_anon' | 'generic' | null>(null);
+  // 同上：polling 內讀最新 authUser、不需把 authUser 加 effect dep（會重啟 poll）
+  const authUserRef = useRef<AuthUser>(null);
+  useEffect(() => { authUserRef.current = authUser; }, [authUser]);
 
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get('session');
@@ -261,19 +266,26 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
   // 2026-04-27 David bug 修復：poll-based loading（替代 single fetch 200s 阻塞）
   // - 每 3s GET /api/reports/:sessionId/status（輕量 cache check）
   // - status=ready → fetch 完整 /api/report/:sessionId（cache 命中、ms 級）
-  // - 失敗 5s retry、240s 後 timeout
+  // - 失敗 5s retry
+  // CC TASK 10：補 404 fallback + 硬性 60s/20-poll 上限（PR #26 只處理 401、404 仍 infinite-loop 到 240s timeout）
   useEffect(() => {
     if (isPreview || !sessionId) return;
     let aborted = false;
     let pollTimer: ReturnType<typeof setTimeout> | undefined;
     const startTime = Date.now();
-    const MAX_WAIT_MS = 240000;
+    const MAX_WAIT_MS = 60000;          // CC TASK 10：240s → 60s 硬上限（rate-limit 救我們之前先停）
+    const MAX_POLLS = 20;               // CC TASK 10：~20 polls × 3s = 60s 上限（避免 timing 漂移）
+    const MAX_404_RETRIES = 3;          // CC TASK 10：404 連續 3 次 = session 不存在、進 fallback
+    let pollCount = 0;
+    let consecutive404 = 0;
 
     async function poll() {
       if (aborted) return;
+      pollCount++;
       const elapsed = Date.now() - startTime;
-      if (elapsed > MAX_WAIT_MS) {
-        setError('報告生成超過 4 分鐘、請重新載入頁面再試');
+      if (elapsed > MAX_WAIT_MS || pollCount > MAX_POLLS) {
+        setError('報告生成超過 60 秒、請重新載入頁面再試');
+        setErrorReason('generic');
         setState('error');
         return;
       }
@@ -290,6 +302,28 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
           window.location.href = `${DIAG_URL}/auth/google?state=${returnUrl}`;
           return;
         }
+        // CC TASK 10：404 = session 不存在或過期。可能 (a) 真的沒這 session、(b) session 還在建立中。
+        // 連續 3 次 404 才放棄，給後端 ~9s 建立時間；再多就是真的不存在、進 fallback UI。
+        if (statusRes.status === 404) {
+          consecutive404++;
+          if (consecutive404 >= MAX_404_RETRIES) {
+            if (aborted) return;
+            // authUserRef.current 在 mount 時 /api/auth/me effect 結束後已 set；
+            // poll 第 3 輪 (~6s) 時 auth 檢查通常已完成
+            if (authUserRef.current) {
+              setError('找不到這份報告、可能已過期或不屬於你的帳號');
+              setErrorReason('not_found_authed');
+            } else {
+              setError('請先登入查看你的診斷報告');
+              setErrorReason('not_found_anon');
+            }
+            setState('error');
+            return;
+          }
+          pollTimer = setTimeout(poll, 3000);
+          return;
+        }
+        consecutive404 = 0; // 拿到非-404 就 reset
         const statusData = await statusRes.json();
         if (statusData.status === 'ready') {
           // ready：拿完整 cache
@@ -981,14 +1015,60 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
 
   // ── 主渲染 ──
   if (state === 'error') {
+    // CC TASK 10：依 errorReason 切換 fallback。
+    // - not_found_authed：authed 用戶看到不存在的 session → 引導重新對話
+    // - not_found_anon：anon 用戶 → 引導 OAuth login（session 可能屬於別人）
+    // - 其他（generic / 沒設）：回首頁
+    const returnUrl = encodeURIComponent(window.location.href);
     return (
       <div className="report-container error-state">
+        <style>{CSS_STYLES}</style>
         <div className="error-box">
-          <div className="error-icon">⚠️</div>
-          <div className="error-title">{error}</div>
-          <button onClick={() => window.location.href = '/'} className="error-button">
-            返回首頁
-          </button>
+          {errorReason === 'not_found_anon' ? (
+            <>
+              <div className="error-icon">🔒</div>
+              <div className="error-title">{error || '請先登入查看你的診斷報告'}</div>
+              <a
+                className="error-button"
+                href={`${DIAG_URL}/auth/google?state=${returnUrl}`}
+              >
+                使用 Google 登入
+              </a>
+              <a
+                className="error-button"
+                href={`${DIAG_URL}/auth/facebook?state=${returnUrl}`}
+                style={{ marginTop: 8 }}
+              >
+                使用 Facebook 登入
+              </a>
+            </>
+          ) : errorReason === 'not_found_authed' ? (
+            <>
+              <div className="error-icon">🔍</div>
+              <div className="error-title">{error || '找不到這份報告、可能已過期或不屬於你的帳號'}</div>
+              <a
+                className="error-button"
+                href={`${DIAG_URL}/capture`}
+              >
+                重新開始對話
+              </a>
+              <button
+                onClick={() => window.location.href = '/'}
+                className="error-button"
+                style={{ marginTop: 8, opacity: 0.7 }}
+              >
+                返回首頁
+              </button>
+            </>
+          ) : (
+            <>
+              <div className="error-icon">⚠️</div>
+              <div className="error-title">{error}</div>
+              <button onClick={() => window.location.href = '/'} className="error-button">
+                返回首頁
+              </button>
+            </>
+          )}
         </div>
       </div>
     );
