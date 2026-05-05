@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
+import { useLocation, Link } from 'wouter';
 import { Trophy, BarChart3, Building2, BookOpen, Zap, Home, Menu, X, Shield, Users, Activity, LayoutDashboard, Briefcase } from 'lucide-react';
 import { DIAG_URL } from '../lib/api-base';
 
@@ -73,13 +73,19 @@ export default function Sidebar() {
     <>
       {/* Desktop Sidebar */}
       <aside className="orion-sidebar-desktop">
-        <div className="orion-sidebar-logo" onClick={() => setLocation('/home')}>
+        {/* CC TASK 11：logo 包成 <Link> → 標準 web UX「點 logo 回首頁」、保留原 .orion-sidebar-logo 樣式 */}
+        <Link
+          href="/"
+          className="orion-sidebar-logo"
+          aria-label="ORION AI 首頁"
+          style={{ textDecoration: 'none', color: 'inherit' }}
+        >
           <img src={ORION_LOGO} alt="ORION" style={{ width: 48, height: 48, objectFit: 'contain', filter: 'drop-shadow(0 0 12px rgba(201,168,76,0.7))', animation: 'logoGlow 2.5s ease-in-out infinite' }} />
           <div>
             <div className="brand-text" style={{ fontSize: '0.75rem' }}>ORION AI</div>
             <div style={{ fontSize: '0.55rem', letterSpacing: '0.08em', color: 'var(--orion-text-tertiary)' }}>獵戶座智囊</div>
           </div>
-        </div>
+        </Link>
 
         <nav className="orion-sidebar-nav">
           {navItems.map(item => {
@@ -140,10 +146,17 @@ export default function Sidebar() {
 
       {/* Mobile Header + Hamburger (Task 3 / 2026-04-25) */}
       <header className="orion-mobile-header">
-        <div className="orion-mobile-header-logo" onClick={() => goTo('/home')}>
+        {/* CC TASK 11：mobile header logo 同步包 <Link>，點完關 drawer */}
+        <Link
+          href="/"
+          className="orion-mobile-header-logo"
+          aria-label="ORION AI 首頁"
+          onClick={() => setMobileOpen(false)}
+          style={{ textDecoration: 'none', color: 'inherit' }}
+        >
           <img src={ORION_LOGO} alt="ORION" />
           <span>ORION AI</span>
-        </div>
+        </Link>
         <button
           className="orion-mobile-hamburger"
           onClick={() => setMobileOpen(true)}
