@@ -281,12 +281,28 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
         const statusRes = await fetch(`${API_BASE}/api/reports/${sessionId}/status`, {
           credentials: 'include',
         });
+        // T-F1 fix:401 = anon / cookie 過期、要去 OAuth、不要在 loading 卡死
+        // (原本只 .json() 不檢 status,401 body 是 {error:'login_required'},
+        //  status 不是 'ready' → fall-through 走 3s retry 無限迴圈、240s 才觸 timeout)
+        if (statusRes.status === 401) {
+          if (aborted) return;
+          const returnUrl = encodeURIComponent(window.location.href);
+          window.location.href = `${DIAG_URL}/auth/google?state=${returnUrl}`;
+          return;
+        }
         const statusData = await statusRes.json();
         if (statusData.status === 'ready') {
           // ready：拿完整 cache
           const fullRes = await fetch(`${API_BASE}/api/report/${sessionId}`, {
             credentials: 'include',
           });
+          // T-F1 fix:同上、401 要 redirect、不能塞進 catch 5s retry
+          if (fullRes.status === 401) {
+            if (aborted) return;
+            const returnUrl = encodeURIComponent(window.location.href);
+            window.location.href = `${DIAG_URL}/auth/google?state=${returnUrl}`;
+            return;
+          }
           if (!fullRes.ok) throw new Error(`HTTP ${fullRes.status}`);
           const fullData = await fullRes.json();
           if (fullData.success && fullData.report) {
