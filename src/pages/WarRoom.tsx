@@ -435,7 +435,7 @@ const ProbingPanel = memo(({
             rows={2}
             className="orion-input"
             style={{ resize: 'none', fontSize: '0.875rem' }}
-            placeholder="請輸入您的回答..."
+            placeholder="請輸入你的回答..."
           />
         </div>
       ))}
@@ -521,7 +521,7 @@ const LeftPanel = memo(({
             </div>
             <p style={{ color: 'var(--orion-text-primary)', fontWeight: 600, marginBottom: 6, fontSize: '0.9375rem' }}>輸入業務需求</p>
             <p style={{ color: 'var(--orion-text-secondary)', fontSize: '0.8125rem', marginBottom: 16, lineHeight: 1.6 }}>
-              ORION 將為您進行深度解構分析<br />識別痛點、矛盾與 AI 切入機會
+              ORION 將為你進行深度解構分析<br />識別痛點、矛盾與 AI 切入機會
             </p>
             {quickOptionsHint && (
               <p style={{ color: 'var(--orion-text-tertiary)', fontSize: '0.75rem', marginBottom: 4, fontFamily: 'var(--orion-font-mono)', letterSpacing: '0.04em' }}>{quickOptionsHint}</p>
@@ -610,7 +610,7 @@ const LeftPanel = memo(({
               value={inputValue}
               onChange={e => onInputChange(e.target.value)}
               onKeyDown={onKeyDown}
-              placeholder="描述您的業務需求（Enter 發送，Shift+Enter 換行）"
+              placeholder="描述你的業務需求（Enter 發送，Shift+Enter 換行）"
               disabled={isAnalyzing}
               rows={3}
               className="orion-input"
@@ -1069,7 +1069,7 @@ const CopyPromptButton = ({ analysisResult }: { analysisResult: AnalysisResult |
 
 // PART 4-4: Loading messages (module-level to avoid scope issues)
 const LOADING_MESSAGES = [
-  '正在深層共感您的業務壓力...',
+  '正在深層共感你的業務壓力...',
   '決策單點故障檢測中...',
   '熵增模型建構中...',
   '識別槓桿結構...',

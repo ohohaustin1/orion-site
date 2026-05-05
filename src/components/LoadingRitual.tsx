@@ -5,7 +5,7 @@ const ritualLines = [
   '正在分析市場路徑...',
   '正在計算 ROI 缺口...',
   '正在生成策略方案...',
-  '即將揭露您的成交卡點...',
+  '即將揭露你的成交卡點...',
 ];
 
 interface LoadingRitualProps {

@@ -174,7 +174,7 @@ export function ContactFormModal({ sessionId, demandSummary, onSuccess, onClose 
                 type="text"
                 value={name}
                 onChange={e => setName(e.target.value)}
-                placeholder="您的姓名"
+                placeholder="你的姓名"
                 style={{ ...inputStyle, borderColor: errors.name ? '#ef4444' : undefined }}
               />
               {errors.name && <p style={errorStyle}>{errors.name}</p>}

@@ -102,7 +102,7 @@ const steps = [
     icon: Target,
     title: '免費 AI 診斷（War Room）',
     desc: '智能問診系統，5 分鐘精準定位企業痛點，零成本零風險',
-    detail: '透過 AI 深度對話，自動生成您的企業健檢報告',
+    detail: '透過 AI 深度對話，自動生成你的企業健檢報告',
   },
   {
     num: '02',

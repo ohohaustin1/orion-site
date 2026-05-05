@@ -25,7 +25,7 @@ export function DiscussionBoard() {
     {
       id: '2',
       type: 'business',
-      content: '我們可以為您設計一個可擴展的微服務架構，支援高並發處理',
+      content: '我們可以為你設計一個可擴展的微服務架構，支援高並發處理',
       timestamp: new Date(Date.now() - 1800000),
       author: '業務 - 李經理',
     },
@@ -56,7 +56,7 @@ export function DiscussionBoard() {
         type: 'business',
         content: inputValue,
         timestamp: new Date(),
-        author: '業務 - 您',
+        author: '業務 - 你',
       };
       setMessages([...messages, newMessage]);
       setInputValue('');
