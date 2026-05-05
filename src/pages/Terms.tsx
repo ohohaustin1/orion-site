@@ -10,12 +10,18 @@
  */
 
 import React from 'react';
+import PageSEO from '../components/PageSEO';
 
 const LAST_UPDATED = '2026-05-04';
 
 export default function Terms() {
   return (
     <div className="legal-page">
+      <PageSEO
+        title="服務條款 / Terms of Service | Orion AI"
+        description="Orion AI Group 服務條款。使用 Orion AI 顧問服務的權利義務、責任限制與爭議解決方式。"
+        url="/terms"
+      />
       <style>{LEGAL_CSS}</style>
       <div className="legal-container">
         <header className="legal-header">
