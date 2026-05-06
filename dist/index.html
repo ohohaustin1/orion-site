@@ -6,6 +6,18 @@
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <!-- PR 1 / 2026-05-06: Google Tag Manager (container GTM-TG3PRS2P).
+         Loaded as early as possible so dataLayer is initialised before
+         any pushEvent() call from src/lib/analytics.ts. The async loader
+         below initialises window.dataLayer synchronously, so analytics.ts
+         can push events even if the GTM script itself is still in flight. -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-TG3PRS2P');</script>
+    <!-- End Google Tag Manager -->
+
     <title>Orion 獵戶座智鑑 | 企業級 AI 成交引擎</title>
     <meta name="description" content="做一次系統、一輩子的顧問。Orion AI 用 X 光的角度看清你的事業問題、交付能落地的系統、不是空泛的 AI 諮詢。">
     <meta property="og:title" content="Orion AI — 做一次系統、一輩子的顧問">
@@ -54,6 +66,12 @@
   </head>
 
   <body>
+    <!-- Google Tag Manager (noscript) — for users with JS disabled.
+         Must be the first child of <body>. PR 1 / 2026-05-06. -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TG3PRS2P"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
     <div id="root"></div>
   </body>
 
