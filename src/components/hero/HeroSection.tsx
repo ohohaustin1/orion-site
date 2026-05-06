@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { DIAG_URL } from '../../lib/api-base';
+// PR 2: chat_initiated event before redirect to capture page
+import { pushEvent } from '../../lib/analytics';
 
 /**
  * HeroSection v16 — Cinematic v1
@@ -223,6 +225,15 @@ export default function HeroSection() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = q.trim();
+    // PR 2: chat_initiated event — fired here, BEFORE the cross-origin
+    // navigation. The capture page itself lives on orion-hub (no GTM),
+    // so this is the last chance to record the intent in dataLayer.
+    pushEvent('chat_initiated', {
+      flow_name: 'o',
+      entry_point: 'hero',
+      has_query: trimmed.length > 0,
+      query_length: trimmed.length,
+    });
     // Chairman 2026-04-24：Hero CTA 直達捕獲室（Zeabur），不再停在 orion01.com 自家首頁
     // CN-PROXY-VERCEL-EDGE-001: page nav 用 DIAG_URL（永遠直連、不走 proxy、HTML 不透傳）
     const base = DIAG_URL;

@@ -1,11 +1,14 @@
 import React from 'react';
 import { Zap } from 'lucide-react';
 import { DIAG_URL } from '../lib/api-base';
+// PR 2: chat_initiated event before nav
+import { pushEvent } from '../lib/analytics';
 
 export default function CTAFloat() {
   return (
     <a
       href={DIAG_URL}
+      onClick={() => pushEvent('chat_initiated', { flow_name: 'o', entry_point: 'sticky_cta' })}
       className="orion-fixed-cta magnetic-link gold-sweep"
       style={{
         position: 'fixed',

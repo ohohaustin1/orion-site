@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Route, Switch, useLocation } from "wouter";
+// PR 2: page_view event on every SPA route change
+import { pushPageView } from "./lib/analytics";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
@@ -41,9 +43,35 @@ function SidebarLayout({ children }: { children: React.ReactNode }) {
   );
 }
 
+// PR 2: classify a route into a page_type. Used by the page_view tracker.
+// Keeping this here (not in analytics.ts) since the routing model is
+// owned by App.tsx — adding a route requires updating this map alongside
+// the <Route> registrations below.
+function classifyRoute(loc: string): string {
+  if (loc === '/' || loc === '/home') return 'landing';
+  if (loc === '/cases') return 'cases_index';
+  if (loc === '/about' || loc === '/team') return 'about';
+  if (loc === '/insights') return 'insights_index';
+  if (loc === '/resources') return 'resources_index';
+  if (loc === '/privacy' || loc === '/terms') return 'legal';
+  if (loc.startsWith('/report')) return 'report';
+  if (loc === '/war-room') return 'war_room';
+  if (loc === '/login' || loc === '/register' || loc === '/forgot-password') return 'auth';
+  if (loc === '/projects' || loc === '/clients') return 'admin';
+  if (loc === '/404') return 'not_found';
+  return 'other';
+}
+
 function Router() {
   const [location] = useLocation();
   const showSidebar = SIDEBAR_ROUTES.some(r => location === r || location.startsWith(r + '/'));
+
+  // PR 2: emit page_view on every route change. Wouter's useLocation
+  // returns the current path; this useEffect re-runs whenever it changes
+  // (initial mount + every setLocation call). Non-blocking, never throws.
+  useEffect(() => {
+    pushPageView(location, classifyRoute(location));
+  }, [location]);
 
   if (showSidebar) {
     return (

@@ -4,6 +4,8 @@ import { LoadingRitual } from '../components/LoadingRitual';
 import HeroSection from '../components/hero/HeroSection';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { API_BASE, DIAG_URL } from '../lib/api-base';
+// PR 2: chat_initiated event before nav to capture page
+import { pushEvent } from '../lib/analytics';
 
 // Cinematic v1 共用組件（shared/ barrel → 指向 effects/ 實作）
 import {
@@ -93,7 +95,10 @@ export default function HomePage() {
         description="說出你的問題，Orion AI 幫你找出失去的錢。企業級 AI 成交引擎，3 個月打造 10 個賺錢系統。"
         url="/home"
       />
-      <LoadingRitual active={showRitual} onComplete={() => { window.location.href = `${DIAG_URL}/`; }} />
+      <LoadingRitual active={showRitual} onComplete={() => {
+        pushEvent('chat_initiated', { flow_name: 'o', entry_point: 'home_loading_ritual' });
+        window.location.href = `${DIAG_URL}/`;
+      }} />
 
       {/* 頂部滾動進度條 */}
       <div className="orion-scroll-progress" style={{ transform: `scaleX(${scrollPct})` }} />
@@ -288,7 +293,10 @@ export default function HomePage() {
           <h2>你的下一個系統，從這裡開始</h2>
         </ScrollReveal>
         <ScrollReveal delay={0.2} className="co-final-cta-btn-wrap">
-          <BreathingButton onClick={() => { window.location.href = `${DIAG_URL}/`; }}>
+          <BreathingButton onClick={() => {
+            pushEvent('chat_initiated', { flow_name: 'o', entry_point: 'home_final_cta' });
+            window.location.href = `${DIAG_URL}/`;
+          }}>
             現在對話 →
           </BreathingButton>
         </ScrollReveal>

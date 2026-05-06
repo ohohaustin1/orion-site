@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { getFixture, FIXTURE_LIST, isPreviewAllowed } from '../data/fixtures';
 import { API_BASE, DIAG_URL } from '../lib/api-base';
+// PR 2: chat_completed mirror + report_unlocked emit
+import { pushEvent } from '../lib/analytics';
 
 /*
  ═══════════════════════════════════════════════════
@@ -138,6 +140,11 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
   // 同上：polling 內讀最新 authUser、不需把 authUser 加 effect dep（會重啟 poll）
   const authUserRef = useRef<AuthUser>(null);
   useEffect(() => { authUserRef.current = authUser; }, [authUser]);
+  // PR 2: once-only guards for chat_completed (mirrored from server flag)
+  // and report_unlocked (fired on data-loaded + authed). Both useRef to
+  // survive re-renders without triggering useEffect deps.
+  const chatCompletedFiredRef = useRef(false);
+  const reportUnlockedFiredRef = useRef(false);
 
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get('session');
@@ -325,6 +332,17 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
         }
         consecutive404 = 0; // 拿到非-404 就 reset
         const statusData = await statusRes.json();
+        // PR 2: mirror server-detected chat_completed to dataLayer (once).
+        // Server set leads.has_complete_marker=1 when [CONVERSATION_COMPLETE]
+        // was detected during chat — surfaces on every status poll until
+        // we push it. useRef guard prevents repeat pushes across polls.
+        if (statusData && statusData.chat_completed && !chatCompletedFiredRef.current) {
+          chatCompletedFiredRef.current = true;
+          pushEvent('chat_completed', {
+            flow_name: 'o',          // /report client side has no is_austin_mode flag; default 'o'
+            completion_reason: 'marker',  // chat_completed=true ⇒ server saw [CONVERSATION_COMPLETE]
+          }, { lead_id: sessionId || undefined });
+        }
         if (statusData.status === 'ready') {
           // ready：拿完整 cache
           const fullRes = await fetch(`${API_BASE}/api/report/${sessionId}`, {
@@ -364,6 +382,23 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
       if (pollTimer) clearTimeout(pollTimer);
     };
   }, [sessionId, isPreview]);
+
+  // PR 2: report_unlocked event — fires exactly once when the report is
+  // both rendered (state==='ready' && report) AND the user is authed.
+  // useRef guard means re-renders / re-checks don't re-emit. Preview
+  // mode skipped (Chairman / fixture viewing, not a real lead unlock).
+  useEffect(() => {
+    if (isPreview) return;
+    if (state !== 'ready') return;
+    if (!report) return;
+    if (!authUser) return;
+    if (reportUnlockedFiredRef.current) return;
+    reportUnlockedFiredRef.current = true;
+    pushEvent('report_unlocked', {
+      lead_stage: 'qualified',  // anyone authed + viewing a ready report is qualified
+      report_type: 'v2',         // current schema version; future PR can branch on austin/o
+    }, { lead_id: sessionId || undefined });
+  }, [state, report, authUser, isPreview, sessionId]);
 
   // ── T-OAUTH-FOUNDATION-001:OAuth 統一身份解鎖 ──
   // 取代既有 handleEmailUnlock (POST /api/unlock) + handleAccountLogin (POST /api/auth/login)。

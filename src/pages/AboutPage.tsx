@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Cpu, Workflow, Cloud, Zap, ArrowRight, Users, MessageSquare, Video, FileText, ShoppingCart, UserCheck, Server, BarChart3, Lightbulb, Clock, Target, CheckCircle2, Shield } from 'lucide-react';
 import PageSEO from '../components/PageSEO';
 import { DIAG_URL } from '../lib/api-base';
+// PR 2: chat_initiated event
+import { pushEvent } from '../lib/analytics';
 
 const capabilities = [
   {
@@ -352,6 +354,7 @@ export default function AboutPage() {
         <p>3 分鐘說出你的想法，我們告訴你怎麼做</p>
         <a
           href={DIAG_URL}
+          onClick={() => pushEvent('chat_initiated', { flow_name: 'o', entry_point: 'about_cta' })}
           className="orion-btn-fill large magnetic-link gold-sweep"
           style={{ textDecoration: 'none' }}
         >
