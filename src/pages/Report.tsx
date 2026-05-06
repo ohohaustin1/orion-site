@@ -2,7 +2,21 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { getFixture, FIXTURE_LIST, isPreviewAllowed } from '../data/fixtures';
 import { API_BASE, DIAG_URL } from '../lib/api-base';
 // PR 2: chat_completed mirror + report_unlocked emit
+// PR 3: refine_clicked + contact_engineer events
 import { pushEvent } from '../lib/analytics';
+
+// PR 3: collapse the modal option keys (line / line_id / phone / email /
+// video / wechat / etc.) into the 4 contact_channel values the dashboard
+// + GA4 funnels expect. Anything we don't recognise is 'other' rather
+// than passing the raw key through (keeps the contract surface narrow).
+function normalizeContactChannel(method: string): string {
+  const m = String(method || '').toLowerCase();
+  if (m.includes('line') || m.includes('wechat') || m.includes('whatsapp') || m.includes('telegram')) return 'im';
+  if (m.includes('phone') || m.includes('tel') || m.includes('call')) return 'phone';
+  if (m.includes('email') || m.includes('mail')) return 'email';
+  if (m.includes('video') || m.includes('zoom') || m.includes('meet')) return 'video';
+  return 'other';
+}
 
 /*
  ═══════════════════════════════════════════════════
@@ -234,6 +248,22 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
       if (data.ok) {
         setConsultationState('success');
         setContactModalOpen(false);
+        // PR 3: contact_engineer event — fired on the client AFTER the
+        // POST succeeds. Authoritative server-side write happens in the
+        // /api/leads/:sid/request-consultation handler (api/report-track.js)
+        // so dataLayer (GA4/Meta) and event_log stay in sync.
+        // contact_channel is the modal option the user picked
+        // (line / phone / email / video / wechat), normalized to the
+        // contract values. lead_stage / score_bucket are best-effort
+        // client-side defaults; the server emit has the authoritative
+        // values from leads.score.
+        pushEvent('contact_engineer', {
+          contact_channel: normalizeContactChannel(method),
+          lead_stage: 'qualified',  // user authed + clicked submit
+          score_bucket: 'unknown',  // client doesn't have lead.score
+          method_raw: method,
+          has_client_info: !!(clientInfo && String(clientInfo).trim()),
+        }, { lead_id: sessionId || undefined });
       } else setConsultationState('error');
     } catch {
       setConsultationState('error');
@@ -473,6 +503,16 @@ export default function Report({ previewTemplate }: ReportProps = {}) {
 
   // ── 補充需求重新生成 ──
   const handleRefine = async () => {
+    // PR 3: refine_clicked event — fires regardless of validation outcome
+    // (the click happened; subsequent validation is for the request, not
+    // the user's intent). Single emit per click; the contract validates
+    // surface + cta_name + report_type are non-empty strings.
+    pushEvent('refine_clicked', {
+      surface: 'report',
+      cta_name: '重新生成分析',
+      report_type: 'v2',
+      input_length: refineInput.trim().length,
+    }, { lead_id: sessionId || undefined });
     const trimmed = refineInput.trim();
     if (trimmed.length < 15) {
       // 顯示閃爍提醒但不阻擋
