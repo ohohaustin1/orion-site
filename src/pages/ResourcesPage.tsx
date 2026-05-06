@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { BookOpen, Zap, ChevronDown, ChevronUp, ExternalLink, AlertTriangle, ArrowRight } from 'lucide-react';
 import PageSEO from '../components/PageSEO';
 import { DIAG_URL } from '../lib/api-base';
+// PR 2: chat_initiated event
+import { pushEvent } from '../lib/analytics';
 
 const articles = [
   {
@@ -120,6 +122,7 @@ export default function ResourcesPage() {
               {/* 每篇文章底部 CTA */}
               <a
                 href={DIAG_URL}
+                onClick={() => pushEvent('chat_initiated', { flow_name: 'o', entry_point: 'resources_article_cta' })}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -176,6 +179,7 @@ export default function ResourcesPage() {
         <p>3 分鐘說出你的想法，我們告訴你怎麼做</p>
         <a
           href={DIAG_URL}
+          onClick={() => pushEvent('chat_initiated', { flow_name: 'o', entry_point: 'resources_bottom_cta' })}
           className="orion-btn-fill large magnetic-link gold-sweep"
           style={{ textDecoration: 'none' }}
         >

@@ -4,6 +4,8 @@ import { allCases, type CaseStudy as BaseCase } from '../data/cases';
 import { fetchIndustries, FALLBACK_INDUSTRIES, type Industry } from '../lib/industries';
 import PageSEO from '../components/PageSEO';
 import { API_BASE, DIAG_URL } from '../lib/api-base';
+// PR 2: chat_initiated event
+import { pushEvent } from '../lib/analytics';
 
 // CN-PROXY-VERCEL-EDGE-001: API_BASE 走 proxy（CN）/ 直連（其他）；DIAG_URL 永遠直連（page nav）
 const API_URL = `${API_BASE}/api/public/cases`;
@@ -304,7 +306,11 @@ function CaseCardV2({ caseData: c, industryQa, isOpen, onToggle }: CaseCardV2Pro
           <section className="case-cta">
             <h4>跟你的情況像嗎？</h4>
             <p>3 分鐘免費診斷、我們幫你看看還能怎麼做</p>
-            <a href={DIAG_URL} className="iqa-cta-btn">免費診斷 →</a>
+            <a
+              href={DIAG_URL}
+              onClick={() => pushEvent('chat_initiated', { flow_name: 'o', entry_point: 'cases_iqa' })}
+              className="iqa-cta-btn"
+            >免費診斷 →</a>
           </section>
         </div>
       </div>
