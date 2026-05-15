@@ -129,6 +129,29 @@ const steps = [
   },
 ];
 
+const automationModules = [
+  { name: 'O AI 捕獲器', desc: '把陌生訪客轉成結構化需求，不靠表單硬問。' },
+  { name: '需求診斷問答', desc: '依產業、痛點、規模追問，避免工程師二次訪談重工。' },
+  { name: '線索評分', desc: '用信心分、輪數、聯絡資訊、公司資訊判斷優先級。' },
+  { name: '工程師派工佇列', desc: '高分線索進派工佇列，Chairman 可人工指派，日後可改演算法。' },
+  { name: 'TG 接手通知', desc: '新線索、報告開啟、CTA 點擊時主動推送，不等人巡後台。' },
+  { name: '工程師入口頁', desc: '工程師一頁看懂背景、痛點、MVP、地雷與里程碑。' },
+  { name: '首封聯絡生成', desc: '依客戶痛點產生第一句話與補問清單，避免自由發揮跑偏。' },
+  { name: 'CRM 對話紀錄', desc: 'Email、LINE、電話摘要集中回寫，不留在私人通訊軟體。' },
+  { name: '報價草稿產生', desc: '依 MVP 範圍、工時、風險產出可審核報價草稿。' },
+  { name: '合約簽署銜接', desc: '讓報價、合約、付款狀態串成同一條線。' },
+  { name: '付款與月費追蹤', desc: '支援轉帳、信用卡、月費續約狀態，避免成交後斷資料。' },
+  { name: '客戶進度室', desc: '客戶看得到確認需求、配對工程師、開始交付的進度。' },
+  { name: 'Chairman 總控台', desc: '所有案子狀態、等待天數、跟進風險集中視覺化。' },
+  { name: '工程進度里程碑', desc: 'Day 1-3、Day 4-7、Week 2、Week 3-4 的交付物可追蹤。' },
+  { name: 'EDM Day 0/3/7', desc: '報告產出後自動 nurturing，讓客戶不會看完就冷掉。' },
+  { name: 'AI 客服分流', desc: 'FAQ 交給 AI，價格、合約、客訴升級給人類處理。' },
+  { name: 'LINE / Email 工單', desc: '簽約後問題形成 ticket，不散落在聊天紀錄。' },
+  { name: 'UTM 分銷追蹤', desc: '來源、活動、分銷商寫入 Lead，知道哪條渠道帶來成交。' },
+  { name: 'ROI / COI 估算', desc: '把不做的成本與導入回本週期量化，降低決策摩擦。' },
+  { name: '每日 AI 巡邏', desc: '自動檢查首頁、報告、後台、Webhook，異常即時通知。' },
+];
+
 export default function AboutPage() {
   const [visible, setVisible] = useState(false);
   const [expandedService, setExpandedService] = useState<number | null>(null);
@@ -276,6 +299,28 @@ export default function AboutPage() {
       {/* Chairman 2026-04-24：核心團隊區塊拿掉（舊資料），保留 /team 獨立頁面 */}
 
       {/* 服務流程 4 步驟（強化視覺） */}
+      <section className="orion-about-section orion-automation-chain" data-section="automation-chain" style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.6s 0.25s' }}>
+        <div className="orion-automation-head">
+          <div>
+            <div className="about-section-title">自動化鏈條</div>
+            <h2 className="orion-automation-title">20 個可自動化模組，補齊從線索到交付的斷層</h2>
+            <p className="orion-automation-sub">
+              ORION 不只產生診斷報告，而是把工程師接手、聯絡客戶、報價簽約、進度追蹤、售後客服都變成能被後台追蹤的流程。
+            </p>
+          </div>
+          <div className="orion-automation-pill">線索 → 工程師 → 簽約 → 交付 → 客服</div>
+        </div>
+        <div className="orion-automation-grid">
+          {automationModules.map((item, index) => (
+            <article className="orion-auto-card" key={item.name}>
+              <div className="orion-auto-num">{String(index + 1).padStart(2, '0')}</div>
+              <h3>{item.name}</h3>
+              <p>{item.desc}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="orion-about-section" style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.6s 0.5s' }}>
         <h2 className="about-section-title">服務流程</h2>
         <div style={{
