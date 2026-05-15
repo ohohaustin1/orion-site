@@ -3,6 +3,9 @@
   "installCommand": "",
   "outputDirectory": "dist",
   "framework": null,
+  "redirects": [
+    { "source": "/", "destination": "/home", "permanent": false }
+  ],
   "rewrites": [
     { "source": "/api/proxy/:path*", "destination": "/api/proxy?upstream=:path*" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
