@@ -1442,6 +1442,119 @@ body {
   color: var(--orion-text-primary);
 }
 
+.orion-automation-chain {
+  border: 1px solid rgba(201,168,76,0.16);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(20,20,20,0.92), rgba(8,8,8,0.98));
+  padding: 24px;
+}
+
+.orion-automation-head {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 18px;
+  align-items: end;
+  margin-bottom: 20px;
+}
+
+.orion-automation-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.75rem, 3.6vw, 3.1rem);
+  line-height: 1.05;
+  color: var(--orion-text-primary);
+  margin: 0;
+}
+
+.orion-automation-sub {
+  color: var(--orion-text-secondary);
+  line-height: 1.8;
+  margin: 12px 0 0;
+  max-width: 760px;
+}
+
+.orion-automation-pill {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--orion-gold);
+  border: 1px solid rgba(201,168,76,0.24);
+  border-radius: 999px;
+  padding: 9px 12px;
+  white-space: nowrap;
+}
+
+.orion-automation-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.orion-auto-card {
+  min-height: 148px;
+  border: 1px solid rgba(201,168,76,0.13);
+  border-radius: 12px;
+  background: #0b0b0b;
+  padding: 15px;
+  position: relative;
+  overflow: hidden;
+}
+
+.orion-auto-card::after {
+  content: '';
+  position: absolute;
+  right: -32px;
+  bottom: -34px;
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  border: 1px solid rgba(201,168,76,0.12);
+}
+
+.orion-auto-num {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  color: rgba(201,168,76,0.72);
+  font-weight: 800;
+}
+
+.orion-auto-card h3 {
+  font-size: 1rem;
+  color: var(--orion-text-primary);
+  font-weight: 800;
+  line-height: 1.35;
+  margin: 10px 0 8px;
+}
+
+.orion-auto-card p {
+  font-size: 0.82rem;
+  line-height: 1.65;
+  color: var(--orion-text-secondary);
+  margin: 0;
+}
+
+@media (max-width: 1100px) {
+  .orion-automation-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .orion-automation-chain {
+    padding: 18px;
+  }
+
+  .orion-automation-head {
+    grid-template-columns: 1fr;
+  }
+
+  .orion-automation-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .orion-auto-card {
+    min-height: auto;
+  }
+}
+
 /* ================================================
    RESOURCES / FAQ
    ================================================ */

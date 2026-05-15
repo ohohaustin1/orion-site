@@ -112,7 +112,9 @@ function Router() {
       <Route path="/war-room" component={WarRoom} />
 
       {/* /report → AI Diagnostic Report */}
-      <Route path="/report" component={Report} />
+      <Route path="/report">
+        {() => <Report />}
+      </Route>
 
       {/* T7：staging 預覽路由（用 fixture、不打 LLM） */}
       <Route path="/report/preview/:templateName">
