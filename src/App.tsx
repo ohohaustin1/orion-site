@@ -168,7 +168,9 @@ function App() {
   useEffect(() => {
     const path = window.location.pathname;
     const skipSplash = ['/report', '/war-room', '/home', '/cases', '/insights', '/about', '/team', '/resources', '/privacy', '/terms'];
-    if (skipSplash.some(r => path.startsWith(r))) {
+    // The acquisition root must show value and CTA immediately.  If the splash
+    // renders first, the existing "/" -> "/home" redirect is delayed by 6s.
+    if (path === '/' || skipSplash.some(r => path.startsWith(r))) {
       setShowSplash(false);
     } else {
       const hasSeenSplash = sessionStorage.getItem('hasSeenSplash');
