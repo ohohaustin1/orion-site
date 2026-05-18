@@ -138,7 +138,7 @@ const DeliveryPathMap = memo(({ humanInTheLoopPoints, automationNodes }: {
       return [
         { id: 'input',    label: '輸入',     icon: MessageSquare, type: 'normal' as const },
         { id: 'analysis', label: '需求分析', icon: Brain,         type: 'normal' as const },
-        { id: 'agent',    label: 'Agent 執行', icon: Zap,           type: 'normal' as const },
+        { id: 'agent',    label: '代理執行', icon: Zap,           type: 'normal' as const },
         { id: 'human',    label: '人工介入點', icon: Users,         type: 'human' as const },
         { id: 'output',   label: '交付輸出', icon: GitBranch,    type: 'normal' as const },
       ];
@@ -171,7 +171,7 @@ const DeliveryPathMap = memo(({ humanInTheLoopPoints, automationNodes }: {
     }}>
       <div className="orion-panel-header">
         <GitBranch style={{ width: 12, height: 12, color: 'var(--orion-gold)' }} />
-        <span className="orion-panel-title">DELIVERY PATH MAP</span>
+        <span className="orion-panel-title">交付路徑圖</span>
         <span style={{ marginLeft: 'auto', fontFamily: 'var(--orion-font-mono)', fontSize: '0.5625rem', color: 'var(--orion-text-tertiary)' }}>
           {!isAnalyzed ? '等待分析' : hasIntervention ? `${humanInTheLoopPoints.length} 個人工介入點` : '全自動流程'}
         </span>
@@ -248,7 +248,7 @@ const DeliveryPathMap = memo(({ humanInTheLoopPoints, automationNodes }: {
                       padding: '1px 4px',
                       borderRadius: 2,
                       letterSpacing: '0.04em',
-                    }}>⚡ AUTO</span>
+                    }}>⚡ 自動化</span>
                   )}
                   {/* Human badge */}
                   {isHumanNode && isAnalyzed && hasIntervention && (
@@ -409,7 +409,7 @@ const ProbingPanel = memo(({
       <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
         <AlertTriangle style={{ width: 13, height: 13, color: 'var(--orion-status-warn)' }} />
         <span style={{ fontFamily: 'var(--orion-font-mono)', fontSize: '0.6875rem', fontWeight: 700, color: 'var(--orion-status-warn)', letterSpacing: '0.1em' }}>
-          INFORMATION GAP DETECTED
+          資訊缺口偵測
         </span>
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
@@ -500,7 +500,7 @@ const LeftPanel = memo(({
     <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', border: '1px solid var(--orion-border-gold)', borderTop: '2px solid var(--orion-gold)', borderRadius: 'var(--orion-radius-md)', background: 'var(--orion-bg-panel)' }}>
       <div className="orion-panel-header">
         <Brain style={{ width: 13, height: 13, color: 'var(--orion-gold)' }} />
-        <span className="orion-panel-title">LOGIC SANDBOX</span>
+        <span className="orion-panel-title">需求解構室</span>
         <span style={{ marginLeft: 'auto', fontFamily: 'var(--orion-font-mono)', fontSize: '0.625rem', color: 'var(--orion-text-tertiary)' }}>需求輸入 · 深度解構</span>
         {messages.length > 0 && (
           <button
@@ -669,7 +669,7 @@ const RightPanel = memo(({
     <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', border: '1px solid var(--orion-border-gold)', borderTop: '2px solid var(--orion-gold)', borderRadius: 'var(--orion-radius-md)', background: 'var(--orion-bg-panel)' }}>
       <div className="orion-panel-header">
         <BarChart3 style={{ width: 13, height: 13, color: 'var(--orion-gold)' }} />
-        <span className="orion-panel-title">STRATEGY CANVAS</span>
+        <span className="orion-panel-title">策略畫布</span>
         <span style={{ marginLeft: 'auto', fontFamily: 'var(--orion-font-mono)', fontSize: '0.625rem', color: 'var(--orion-text-tertiary)' }}>結構化分析輸出</span>
       </div>
       {analysisResult ? (
@@ -903,7 +903,7 @@ const RightPanel = memo(({
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
                   <div style={panelBlock}>
-                    <span style={monoLabel}>Agent 列表</span>
+                    <span style={monoLabel}>代理列表</span>
                     <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
                       {analysisResult.agent_blueprint.agents.map((agent, i) => (
                         <li key={i}>
@@ -965,7 +965,7 @@ const RightPanel = memo(({
         // G1: Show partial_analysis during probing
         <div style={{ flex: 1, overflowY: 'auto', padding: '12px' }}>
           <div style={{ marginBottom: 10, padding: '8px 12px', background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.25)', borderRadius: 'var(--orion-radius-md)' }}>
-            <span style={{ fontFamily: 'var(--orion-font-mono)', fontSize: '0.5625rem', color: 'var(--orion-status-warn)', letterSpacing: '0.1em' }}>PARTIAL ANALYSIS · 補充資訊後完整輸出</span>
+              <span style={{ fontFamily: 'var(--orion-font-mono)', fontSize: '0.5625rem', color: 'var(--orion-status-warn)', letterSpacing: '0.1em' }}>初步分析 · 補充資訊後完整輸出</span>
           </div>
           {probingPartial.demand_summary && (
             <div style={panelBlock}><span style={monoLabel}>初步需求摘要</span><p style={bodyText}>{probingPartial.demand_summary}</p></div>
@@ -1036,7 +1036,7 @@ const CopyPromptButton = ({ analysisResult }: { analysisResult: AnalysisResult |
       const prompt = generateEngineeringPrompt(analysisResult as any);
       await navigator.clipboard.writeText(prompt);
       setCopied(true);
-      toast.success('工程 Prompt 已複製，可直接貼入 n8n / AI Agent');
+      toast.success('工程交接稿已複製，可直接貼入 n8n / AI 代理');
       setTimeout(() => setCopied(false), 1500);
     } catch {
       toast.error('複製失敗，請重試');
@@ -1060,7 +1060,7 @@ const CopyPromptButton = ({ analysisResult }: { analysisResult: AnalysisResult |
       }}
     >
       <Terminal style={{ width: 12, height: 12 }} />
-      {copied ? '✓ 已複製' : '複製工程 Prompt'}
+      {copied ? '✓ 已複製' : '複製工程交接稿'}
     </button>
   );
 };
@@ -1488,7 +1488,7 @@ export default function WarRoom() {
               </div>
               <div>
                 <div style={{ fontFamily: 'var(--orion-font-display)', fontWeight: 700, color: 'var(--orion-gold)', fontSize: '0.9375rem', letterSpacing: '0.06em' }}>獵戶座智鑑</div>
-                <div style={{ fontFamily: 'var(--orion-font-mono)', fontSize: '0.5625rem', color: 'var(--orion-text-tertiary)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>WAR ROOM · DEMAND ANALYSIS ENGINE</div>
+                <div style={{ fontFamily: 'var(--orion-font-mono)', fontSize: '0.5625rem', color: 'var(--orion-text-tertiary)', letterSpacing: '0.1em' }}>戰情室 · 需求分析引擎</div>
               </div>
             </button>
           </div>
@@ -1506,7 +1506,7 @@ export default function WarRoom() {
               {!isUnlocked && analysisResult ? '🔒' : <Download style={{ width: 12, height: 12 }} />}
               下載報告
             </button>
-            {/* 複製工程 Prompt — 鎖定直到解鎖 */}
+            {/* 複製工程交接稿 — 鎖定直到解鎖 */}
             {isUnlocked ? (
               <CopyPromptButton analysisResult={analysisResult} />
             ) : (
@@ -1516,7 +1516,7 @@ export default function WarRoom() {
                 className="orion-btn-ghost"
                 style={{ padding: '5px 11px', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: 5, opacity: analysisResult ? 0.5 : 1 }}
               >
-                🔒 工程 Prompt
+                🔒 工程交接稿
               </button>
             )}
             <button
@@ -1586,7 +1586,7 @@ export default function WarRoom() {
           letterSpacing: '0.08em',
           pointerEvents: 'none',
         }}>
-          TOKENS · IN: {tokenUsage.prompt.toLocaleString()} · OUT: {tokenUsage.completion.toLocaleString()}
+          Token 用量 · 輸入：{tokenUsage.prompt.toLocaleString()} · 輸出：{tokenUsage.completion.toLocaleString()}
         </div>
       )}
 
