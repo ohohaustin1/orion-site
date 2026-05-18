@@ -145,7 +145,7 @@ export function ContactFormModal({ sessionId, demandSummary, onSuccess, onClose 
             </h2>
           </div>
           <p style={{ fontSize: '0.8125rem', color: 'var(--orion-text-secondary)', lineHeight: 1.6 }}>
-            填寫聯絡資訊後，即可立即解鎖完整架構分析、矛盾偵測報告及工程 Prompt。
+            填寫聯絡資訊後，即可立即解鎖完整架構分析、矛盾偵測報告及工程交接稿。
           </p>
         </div>
 
