@@ -1,0 +1,520 @@
+[
+  {
+    "viewport": "desktop",
+    "route": "/home/",
+    "url": "http://127.0.0.1:4180/home/",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\screenshots\\orion01-redesign-2026-06-18\\desktop-home.png",
+    "sectionScreenshots": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "title": "ORION AI 獵戶座智鑑｜企業級 AI 決策基礎建設",
+    "h1": "把模糊想法變成會執行的企業系統",
+    "videoCount": 6,
+    "videos": [
+      {
+        "src": "http://127.0.0.1:4180/videos/runway-orion-executive-01.mp4",
+        "readyState": 4,
+        "paused": false,
+        "muted": true,
+        "width": 1440,
+        "height": 1000
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/runway-orion-executive-02.mp4",
+        "readyState": 4,
+        "paused": false,
+        "muted": true,
+        "width": 617,
+        "height": 558
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/mixkit-collaborative-digital-display.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 686,
+        "height": 258
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-bg-02-toolflow-network.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 1318,
+        "height": 758
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-bg-03-systems-city.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 561,
+        "height": 258
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-bg-04-memory-nightcity.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 1318,
+        "height": 904
+      }
+    ],
+    "hasGarbled": false,
+    "bodyChars": 2018,
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "overflowX": false,
+    "ctaCount": 4
+  },
+  {
+    "viewport": "desktop",
+    "route": "/cases/",
+    "url": "http://127.0.0.1:4180/cases/",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\screenshots\\orion01-redesign-2026-06-18\\desktop-cases.png",
+    "sectionScreenshots": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "title": "ORION AI 實戰案例｜企業 AI 系統如何落地",
+    "h1": "不是展示功能，是把企業問題變成可執行系統。",
+    "videoCount": 2,
+    "videos": [
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-systems-city-card-loop.mp4",
+        "readyState": 4,
+        "paused": false,
+        "muted": true,
+        "width": 655,
+        "height": 473
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-core-devices-card-loop.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 1318,
+        "height": 765
+      }
+    ],
+    "hasGarbled": false,
+    "bodyChars": 1118,
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "overflowX": false,
+    "ctaCount": 4
+  },
+  {
+    "viewport": "desktop",
+    "route": "/insights/",
+    "url": "http://127.0.0.1:4180/insights/",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\screenshots\\orion01-redesign-2026-06-18\\desktop-insights.png",
+    "sectionScreenshots": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "title": "ORION AI 數據洞察｜企業為什麼需要 AI 決策基礎建設",
+    "h1": "AI 的價值不在回答速度，而在企業能不能形成決策複利。",
+    "videoCount": 2,
+    "videos": [
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-memory-city-card-loop.mp4",
+        "readyState": 4,
+        "paused": false,
+        "muted": true,
+        "width": 655,
+        "height": 448
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-executive-board-pan.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 686,
+        "height": 695
+      }
+    ],
+    "hasGarbled": false,
+    "bodyChars": 728,
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "overflowX": false,
+    "ctaCount": 3
+  },
+  {
+    "viewport": "desktop",
+    "route": "/about/",
+    "url": "http://127.0.0.1:4180/about/",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\screenshots\\orion01-redesign-2026-06-18\\desktop-about.png",
+    "sectionScreenshots": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "title": "ORION AI 服務介紹｜從想法到企業級 AI 系統",
+    "h1": "ORION 不是賣一次專案，而是幫企業建立會長大的 AI 系統。",
+    "videoCount": 3,
+    "videos": [
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-bg-00-command.mp4",
+        "readyState": 4,
+        "paused": false,
+        "muted": true,
+        "width": 655,
+        "height": 532
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-toolflow-card-loop.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 592,
+        "height": 258
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-bg-01-core-devices.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 1318,
+        "height": 842
+      }
+    ],
+    "hasGarbled": false,
+    "bodyChars": 717,
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "overflowX": false,
+    "ctaCount": 4
+  },
+  {
+    "viewport": "desktop",
+    "route": "/team/",
+    "url": "http://127.0.0.1:4180/team/",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\screenshots\\orion01-redesign-2026-06-18\\desktop-team.png",
+    "sectionScreenshots": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "title": "ORION AI 核心團隊｜策略、工程、驗證與 AI 作業層",
+    "h1": "ORION 的團隊不是職稱集合，而是一條可驗證的作戰鏈。",
+    "videoCount": 2,
+    "videos": [
+      {
+        "src": "http://127.0.0.1:4180/videos/runway-orion-executive-03.mp4",
+        "readyState": 4,
+        "paused": false,
+        "muted": true,
+        "width": 655,
+        "height": 515
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-executive-team-pan.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 1318,
+        "height": 765
+      }
+    ],
+    "hasGarbled": false,
+    "bodyChars": 709,
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "overflowX": false,
+    "ctaCount": 3
+  },
+  {
+    "viewport": "desktop",
+    "route": "/resources/",
+    "url": "http://127.0.0.1:4180/resources/",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\screenshots\\orion01-redesign-2026-06-18\\desktop-resources.png",
+    "sectionScreenshots": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "title": "ORION AI 資源中心｜AI 系統化筆記與導入 FAQ",
+    "h1": "把 AI 導入想清楚，比急著做功能更重要。",
+    "videoCount": 2,
+    "videos": [
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-executive-hero-dolly.mp4",
+        "readyState": 4,
+        "paused": false,
+        "muted": true,
+        "width": 655,
+        "height": 438
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-trust-host-stage-loop.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 561,
+        "height": 418
+      }
+    ],
+    "hasGarbled": false,
+    "bodyChars": 893,
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "overflowX": false,
+    "ctaCount": 3
+  },
+  {
+    "viewport": "mobile",
+    "route": "/home/",
+    "url": "http://127.0.0.1:4180/home/",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\screenshots\\orion01-redesign-2026-06-18\\mobile-home.png",
+    "sectionScreenshots": [
+      "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\screenshots\\orion01-redesign-2026-06-18\\mobile-home-intro.png",
+      "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\screenshots\\orion01-redesign-2026-06-18\\mobile-home-workflow.png",
+      "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\screenshots\\orion01-redesign-2026-06-18\\mobile-home-modules.png",
+      "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\screenshots\\orion01-redesign-2026-06-18\\mobile-home-method.png",
+      "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\screenshots\\orion01-redesign-2026-06-18\\mobile-home-final-command.png"
+    ],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "title": "ORION AI 獵戶座智鑑｜企業級 AI 決策基礎建設",
+    "h1": "把模糊想法變成會執行的企業系統",
+    "videoCount": 6,
+    "videos": [
+      {
+        "src": "http://127.0.0.1:4180/videos/runway-orion-executive-01.mp4",
+        "readyState": 4,
+        "paused": false,
+        "muted": true,
+        "width": 390,
+        "height": 1302
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/runway-orion-executive-02.mp4",
+        "readyState": 4,
+        "paused": false,
+        "muted": true,
+        "width": 330,
+        "height": 298
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/mixkit-collaborative-digital-display.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 360,
+        "height": 258
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-bg-02-toolflow-network.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 360,
+        "height": 1354
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-bg-03-systems-city.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 360,
+        "height": 258
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-bg-04-memory-nightcity.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 360,
+        "height": 625
+      }
+    ],
+    "hasGarbled": false,
+    "bodyChars": 1951,
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "overflowX": false,
+    "ctaCount": 4
+  },
+  {
+    "viewport": "mobile",
+    "route": "/cases/",
+    "url": "http://127.0.0.1:4180/cases/",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\screenshots\\orion01-redesign-2026-06-18\\mobile-cases.png",
+    "sectionScreenshots": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "title": "ORION AI 實戰案例｜企業 AI 系統如何落地",
+    "h1": "不是展示功能，是把企業問題變成可執行系統。",
+    "videoCount": 2,
+    "videos": [
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-systems-city-card-loop.mp4",
+        "readyState": 4,
+        "paused": false,
+        "muted": true,
+        "width": 360,
+        "height": 278
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-core-devices-card-loop.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 360,
+        "height": 558
+      }
+    ],
+    "hasGarbled": false,
+    "bodyChars": 1066,
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "overflowX": false,
+    "ctaCount": 4
+  },
+  {
+    "viewport": "mobile",
+    "route": "/insights/",
+    "url": "http://127.0.0.1:4180/insights/",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\screenshots\\orion01-redesign-2026-06-18\\mobile-insights.png",
+    "sectionScreenshots": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "title": "ORION AI 數據洞察｜企業為什麼需要 AI 決策基礎建設",
+    "h1": "AI 的價值不在回答速度，而在企業能不能形成決策複利。",
+    "videoCount": 2,
+    "videos": [
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-memory-city-card-loop.mp4",
+        "readyState": 4,
+        "paused": false,
+        "muted": true,
+        "width": 360,
+        "height": 278
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-executive-board-pan.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 360,
+        "height": 298
+      }
+    ],
+    "hasGarbled": false,
+    "bodyChars": 676,
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "overflowX": false,
+    "ctaCount": 3
+  },
+  {
+    "viewport": "mobile",
+    "route": "/about/",
+    "url": "http://127.0.0.1:4180/about/",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\screenshots\\orion01-redesign-2026-06-18\\mobile-about.png",
+    "sectionScreenshots": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "title": "ORION AI 服務介紹｜從想法到企業級 AI 系統",
+    "h1": "ORION 不是賣一次專案，而是幫企業建立會長大的 AI 系統。",
+    "videoCount": 3,
+    "videos": [
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-bg-00-command.mp4",
+        "readyState": 4,
+        "paused": false,
+        "muted": true,
+        "width": 360,
+        "height": 278
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-toolflow-card-loop.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 360,
+        "height": 258
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-bg-01-core-devices.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 360,
+        "height": 582
+      }
+    ],
+    "hasGarbled": false,
+    "bodyChars": 665,
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "overflowX": false,
+    "ctaCount": 4
+  },
+  {
+    "viewport": "mobile",
+    "route": "/team/",
+    "url": "http://127.0.0.1:4180/team/",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\screenshots\\orion01-redesign-2026-06-18\\mobile-team.png",
+    "sectionScreenshots": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "title": "ORION AI 核心團隊｜策略、工程、驗證與 AI 作業層",
+    "h1": "ORION 的團隊不是職稱集合，而是一條可驗證的作戰鏈。",
+    "videoCount": 2,
+    "videos": [
+      {
+        "src": "http://127.0.0.1:4180/videos/runway-orion-executive-03.mp4",
+        "readyState": 4,
+        "paused": false,
+        "muted": true,
+        "width": 360,
+        "height": 278
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-executive-team-pan.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 360,
+        "height": 558
+      }
+    ],
+    "hasGarbled": false,
+    "bodyChars": 657,
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "overflowX": false,
+    "ctaCount": 3
+  },
+  {
+    "viewport": "mobile",
+    "route": "/resources/",
+    "url": "http://127.0.0.1:4180/resources/",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\screenshots\\orion01-redesign-2026-06-18\\mobile-resources.png",
+    "sectionScreenshots": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "title": "ORION AI 資源中心｜AI 系統化筆記與導入 FAQ",
+    "h1": "把 AI 導入想清楚，比急著做功能更重要。",
+    "videoCount": 2,
+    "videos": [
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-executive-hero-dolly.mp4",
+        "readyState": 4,
+        "paused": false,
+        "muted": true,
+        "width": 360,
+        "height": 278
+      },
+      {
+        "src": "http://127.0.0.1:4180/videos/orion-trust-host-stage-loop.mp4",
+        "readyState": 4,
+        "paused": true,
+        "muted": true,
+        "width": 360,
+        "height": 298
+      }
+    ],
+    "hasGarbled": false,
+    "bodyChars": 841,
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "overflowX": false,
+    "ctaCount": 3
+  }
+]

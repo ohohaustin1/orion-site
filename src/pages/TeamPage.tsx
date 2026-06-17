@@ -1,347 +1,189 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { ArrowRight, Bot, BrainCircuit, Code2, Eye, Megaphone, ShieldCheck, Users } from 'lucide-react';
 import PageSEO from '../components/PageSEO';
-import { API_BASE } from '../lib/api-base';
-
-// 2026-05-02 T-PRODUCTION-HARDENING-PHASE-3-A:
-//   暫時切到 image-less initial-circle 設計、避開 Cloudinary 404
-//   (5/2 audit P0-9:7 張團隊照片仍未拍、image_url 失效)
-//
-// 設計:每張卡渲染 initial-circle(姓名首字)、深色底 + 金色描邊 + 金色字
-//      未來照片就位後、把 <div className="team-avatar-initial"> 換回 <img>
-//      其餘 layout 不動、是個 1-line swap 的設計
-//
-// 歷史:之前 hasPhoto ? <img> : <Icon> 的 role-icon 招募中卡同樣保留
-//      機制(role icon 仍在 lucide 套件中、本 PR 不刪 import 鏈、避免動到
-//      別的 component);未來如果 admin 想用 photo,這個 PR 不是 blocker。
+import CinematicVideo from '../components/shared/CinematicVideo';
+import { API_BASE, DIAG_URL } from '../lib/api-base';
+import { pushEvent } from '../lib/analytics';
 
 interface Member {
   id: number;
   name: string;
   title: string;
   bio?: string | null;
-  image_url: string | null;
+  image_url?: string | null;
   linkedin?: string | null;
 }
 
-// 從 name 取首字當 avatar initial。
-// 規則:有英文字 → 取第一個英文字大寫(e.g. "許燿宸 Austin" → "A")
-//      純中文 → 取第一個字(e.g. "許燿宸" → "許")
-//      空 → "?"
-function getInitial(name: string): string {
-  if (!name) return '?';
+interface TeamUnit {
+  id: number;
+  name: string;
+  title: string;
+  bio: string;
+  icon: typeof Users;
+}
+
+const GARBLED_RE = /[�]|銝|嚗|瘙|蝟|鞈|撠|摰|憭|隤|雿|蝯|蝺|蝑|閬|頝/;
+
+const fallbackTeam: TeamUnit[] = [
+  {
+    id: 1,
+    name: 'Austin 許耀宸',
+    title: '創辦人與策略總指揮',
+    bio: '負責 ORION 的長期方向、產品判斷、商業模式與資源配置，確保每一次建置都能沉澱成複利資產。',
+    icon: ShieldCheck,
+  },
+  {
+    id: 2,
+    name: '戰略部',
+    title: '商業模型與任務總控',
+    bio: '把市場、漏斗、風險與 Chairman 決策整理成清楚派工，讓每個 AI 節點知道要完成什麼、驗證到哪一層。',
+    icon: BrainCircuit,
+  },
+  {
+    id: 3,
+    name: 'Codex 工程節點',
+    title: '系統建置與自動化交付',
+    bio: '負責程式碼、測試、部署、驗證報告與工程紀律，把想法落成可跑、可驗、可維護的系統。',
+    icon: Code2,
+  },
+  {
+    id: 4,
+    name: 'Cowork 瀏覽器驗收',
+    title: '真實使用者視角 QA',
+    bio: '用真實瀏覽器、截圖、DOM 與 production flow 驗收，不讓 server-side 檢查假裝等於客戶體驗。',
+    icon: Eye,
+  },
+  {
+    id: 5,
+    name: '內容與成長節點',
+    title: '品牌、漏斗與資料回收',
+    bio: '把品牌敘事、廣告素材、CTA、UTM 與回訪任務接成漏斗，讓每次曝光都能回收資料。',
+    icon: Megaphone,
+  },
+  {
+    id: 6,
+    name: 'AI Agent 作業層',
+    title: '工具調用、報告生成與任務派發',
+    bio: '負責把診斷、工具調用、報告、通知、任務與資料記憶串起來，讓 ORION 不是聊天，而是中樞。',
+    icon: Bot,
+  },
+];
+
+function getInitial(name: string) {
   const match = name.match(/[A-Za-z]/);
-  if (match) return match[0].toUpperCase();
-  return name.charAt(0);
+  return match ? match[0].toUpperCase() : name.charAt(0);
 }
 
-// CN-PROXY-VERCEL-EDGE-001: API_BASE 統一從 src/lib/api-base.ts import
-//                            原 env-aware logic 已合進 api-base.ts、保留 VITE_API_BASE_URL override
-
-const TEAM_CSS = `
-.team-page {
-  min-height: 100vh;
-  padding: 96px 24px 80px;
-  font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
-  letter-spacing: 0.03em;
+function startDiagnosis() {
+  pushEvent('chat_initiated', { flow_name: 'o', entry_point: 'team_cta' });
+  window.location.href = `${DIAG_URL}/`;
 }
-.team-header {
-  max-width: 900px;
-  margin: 0 auto 64px;
-  text-align: center;
-}
-.team-header h1 {
-  color: #C5A059;
-  font-size: clamp(32px, 5vw, 48px);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  line-height: 1.3;
-  margin: 0 0 16px;
-}
-.team-header p {
-  color: rgba(255,255,255,0.65);
-  font-size: clamp(14px, 1.8vw, 17px);
-  letter-spacing: 0.05em;
-  line-height: 1.7;
-  margin: 0;
-}
-
-.team-grid {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
-}
-@media (max-width: 900px) {
-  .team-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
-}
-@media (max-width: 600px) {
-  .team-grid { grid-template-columns: 1fr; gap: 20px; }
-  .team-page { padding: 56px 16px 64px; }
-}
-
-.team-card {
-  position: relative;
-  background: rgba(10,10,10,0.6);
-  border: 1px solid rgba(197,160,89,0.25);
-  border-radius: 0;                   /* 方角 */
-  padding: 32px 24px 28px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.35s ease, background 0.3s ease;
-  overflow: hidden;
-}
-.team-card::before,
-.team-card::after {
-  content: '';
-  position: absolute;
-  width: 22px;
-  height: 22px;
-  border: 1px solid rgba(197,160,89,0.45);
-  pointer-events: none;
-  transition: border-color 0.3s ease;
-}
-.team-card::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
-.team-card::after  { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
-
-.team-card:hover {
-  border-color: rgba(197,160,89,0.6);
-  background: rgba(16,14,10,0.8);
-  box-shadow:
-    0 8px 32px rgba(197,160,89,0.22),
-    0 0 0 1px rgba(197,160,89,0.18);
-  transform: translateY(-2px);
-}
-.team-card:hover::before,
-.team-card:hover::after { border-color: rgba(197,160,89,0.85); }
-
-.team-avatar {
-  width: 120px;
-  height: 120px;
-  margin-bottom: 20px;
-  position: relative;
-  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-  background: linear-gradient(135deg, rgba(197,160,89,0.15) 0%, rgba(10,10,10,0.7) 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  filter: drop-shadow(0 0 8px rgba(197,160,89,0.3));
-  transition: filter 0.4s ease;
-}
-.team-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-}
-.team-card:hover .team-avatar {
-  filter: drop-shadow(0 0 16px rgba(197,160,89,0.7)) drop-shadow(0 0 32px rgba(197,160,89,0.3));
-}
-/* Task F：角色卡 — icon 取代 AI 生圖頭像（保留以利未來不同模式 fallback） */
-.team-avatar-icon {
-  background: radial-gradient(circle at center, rgba(197,160,89,0.18) 0%, rgba(10,10,10,0.92) 70%);
-  color: #C5A059;
-}
-.team-avatar-icon svg {
-  filter: drop-shadow(0 0 8px rgba(197,160,89,0.55));
-}
-.team-card-recruiting .team-name {
-  color: rgba(255,255,255,0.45);
-  font-style: italic;
-}
-.team-recruiting-badge {
-  display: inline-block;
-  margin-bottom: 14px;
-  padding: 3px 10px;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  color: #C5A059;
-  background: rgba(197,160,89,0.10);
-  border: 1px solid rgba(197,160,89,0.35);
-  border-radius: 4px;
-}
-
-/* T-PRODUCTION-HARDENING-PHASE-3-A:initial-circle 頭像、暫替代真人照片 */
-.team-avatar-initial {
-  background: radial-gradient(circle at center, rgba(197,160,89,0.22) 0%, rgba(10,10,10,0.96) 75%);
-}
-.team-avatar-initial-letter {
-  color: #C5A059;
-  font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
-  font-size: 52px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  line-height: 1;
-  text-shadow:
-    0 0 12px rgba(197,160,89,0.55),
-    0 0 24px rgba(197,160,89,0.25);
-  user-select: none;
-}
-.team-card:hover .team-avatar-initial-letter {
-  text-shadow:
-    0 0 16px rgba(197,160,89,0.85),
-    0 0 32px rgba(197,160,89,0.45);
-}
-@media (max-width: 600px) {
-  .team-avatar-initial-letter { font-size: 44px; }
-}
-
-.team-name {
-  color: #ffffff;
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  margin: 0 0 6px;
-}
-.team-title {
-  color: #C5A059;
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  margin-bottom: 20px;
-}
-
-.team-section {
-  width: 100%;
-  margin-top: 12px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(197,160,89,0.12);
-  text-align: left;
-}
-.team-section-label {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 10px;
-  color: rgba(197,160,89,0.55);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-  display: block;
-}
-.team-specialties {
-  color: rgba(255,255,255,0.78);
-  font-size: 13px;
-  line-height: 1.6;
-  letter-spacing: 0.03em;
-}
-.team-intro {
-  color: rgba(255,255,255,0.7);
-  font-size: 13.5px;
-  line-height: 1.7;
-  letter-spacing: 0.03em;
-  margin: 0;
-}
-.team-experience {
-  color: rgba(255,255,255,0.55);
-  font-size: 12.5px;
-  line-height: 1.6;
-  letter-spacing: 0.02em;
-}
-/* 2026-04-26 loading skeleton */
-@keyframes teamSkPulse { 0%,100% { opacity: 0.45 } 50% { opacity: 0.85 } }
-.team-card-skeleton { pointer-events: none; }
-.team-avatar-skeleton {
-  background: linear-gradient(135deg, rgba(197,160,89,0.10), rgba(10,10,10,0.7));
-  animation: teamSkPulse 1.6s ease-in-out infinite;
-}
-.team-card-skeleton .sk-line {
-  height: 12px;
-  background: rgba(197,160,89,0.12);
-  border-radius: 4px;
-  margin: 8px 0;
-  animation: teamSkPulse 1.6s ease-in-out infinite;
-}
-.team-card-skeleton .sk-line-1 { width: 70%; }
-.team-card-skeleton .sk-line-2 { width: 45%; }
-`;
 
 export default function TeamPage() {
-  const [team, setTeam] = useState<Member[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState<string | null>(null);
+  const [members, setMembers] = useState<Member[] | null>(null);
+  const [source, setSource] = useState<'api' | 'fallback' | 'loading'>('loading');
 
   useEffect(() => {
+    if (typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname)) {
+      setMembers(null);
+      setSource('fallback');
+      return;
+    }
+
     let cancelled = false;
     fetch(`${API_BASE}/api/public/team`)
-      .then((r) => r.json())
-      .then((j) => {
+      .then((response) => (response.ok ? response.json() : Promise.reject(new Error(`HTTP ${response.status}`))))
+      .then((payload) => {
         if (cancelled) return;
-        if (j && Array.isArray(j.team)) setTeam(j.team);
-        else setErr('team list empty');
-        setLoading(false);
+        const list = Array.isArray(payload?.team) ? payload.team as Member[] : [];
+        const text = list.map((item) => `${item.name} ${item.title} ${item.bio || ''}`).join(' ');
+        if (list.length && !GARBLED_RE.test(text)) {
+          setMembers(list);
+          setSource('api');
+        } else {
+          setMembers(null);
+          setSource('fallback');
+        }
       })
-      .catch((e) => {
-        if (cancelled) return;
-        setErr(e.message || 'fetch failed');
-        setLoading(false);
+      .catch(() => {
+        if (!cancelled) {
+          setMembers(null);
+          setSource('fallback');
+        }
       });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
+  const useApiMembers = source === 'api' && members;
+
   return (
-    <div className="team-page">
+    <div className="orion-cinematic-site site-page">
       <PageSEO
-        title="核心團隊 | Orion 獵戶座智鑑"
-        description="認識 Orion 的人 — 我們不是顧問公司，是你事業的長期戰友。AI 系統設計、技術架構、商業策略多領域戰士。"
+        title="ORION AI 核心團隊｜策略、工程、驗證與 AI 作業層"
+        description="ORION AI 團隊由策略總控、工程節點、瀏覽器驗收、內容成長與 AI Agent 作業層組成，負責把企業想法做成可驗證系統。"
         url="/team"
       />
-      <style dangerouslySetInnerHTML={{ __html: TEAM_CSS }} />
 
-      <header className="team-header">
-        <h1>認識 Orion 的人</h1>
-        <p>我們不是顧問公司，我們是你事業的長期戰友</p>
-      </header>
-
-      {loading && (
-        <div className="team-grid">
-          {Array.from({ length: 7 }).map((_, i) => (
-            <article key={`sk-${i}`} className="team-card team-card-skeleton" aria-hidden="true">
-              <div className="team-avatar team-avatar-skeleton" />
-              <div className="sk-line sk-line-1" />
-              <div className="sk-line sk-line-2" />
-            </article>
-          ))}
+      <section className="site-page-hero split">
+        <div>
+          <span className="site-eyebrow">核心團隊</span>
+          <h1>ORION 的團隊不是職稱集合，而是一條可驗證的作戰鏈。</h1>
+          <p>
+            策略負責取捨，工程負責落地，瀏覽器驗收負責真實體驗，內容與成長負責把流量變成資料，AI Agent 負責把流程持續運轉。
+          </p>
+          <div className="source-pill">
+            <Users size={16} />
+            {source === 'api' ? '使用 production 團隊資料' : source === 'loading' ? '正在讀取 production 團隊資料' : 'API 未回應或資料異常，使用本地團隊架構'}
+          </div>
         </div>
-      )}
+        <CinematicVideo src="/videos/runway-orion-executive-03.mp4" label="企業 AI 團隊在未來辦公室協作的影片" />
+      </section>
 
-      {err && !loading && (
-        <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.5)', padding: '32px 16px' }}>
-          團隊資料暫時無法載入、請稍後再試
+      <section className="site-section team-system-section">
+        {useApiMembers ? (
+          <div className="team-card-grid">
+            {members.map((member) => (
+              <article className="team-unit-card" key={member.id}>
+                <div className="team-avatar-letter">{getInitial(member.name)}</div>
+                <h2>{member.name}</h2>
+                <span>{member.title}</span>
+                <p>{member.bio || 'ORION AI 核心成員，負責把商業問題轉成可執行系統。'}</p>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="team-card-grid">
+            {fallbackTeam.map((unit) => {
+              const Icon = unit.icon;
+              return (
+                <article className="team-unit-card" key={unit.id}>
+                  <div className="team-icon-ring">
+                    <Icon size={28} />
+                  </div>
+                  <h2>{unit.name}</h2>
+                  <span>{unit.title}</span>
+                  <p>{unit.bio}</p>
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      <section className="site-section site-final-command compact">
+        <CinematicVideo src="/videos/orion-executive-team-pan.mp4" label="ORION 團隊協作與企業辦公室影片" />
+        <div className="final-command-content">
+          <span className="site-eyebrow">合作方式</span>
+          <h2>你不需要先懂 AI 技術，你需要先把企業問題講清楚。</h2>
+          <p>ORION 會把你的問題轉成策略假設、工具調用、工程規格、驗收證據與後續回收節點。</p>
+          <button className="orion-primary-btn" onClick={startDiagnosis}>
+            和 ORION 開始診斷
+            <ArrowRight size={18} />
+          </button>
         </div>
-      )}
-
-      {!loading && !err && (
-      <div className="team-grid">
-        {team.map((m) => {
-          // T-PRODUCTION-HARDENING-PHASE-3-A:
-          //   暫不渲染 <img>;統一用 initial-circle 直到照片拍好
-          //   未來想恢復照片渲染:把這個 div 換回 hasPhoto ? <img> : <initial>
-          const initial = getInitial(m.name);
-          return (
-            <article key={m.id} className="team-card">
-              <div className="team-avatar team-avatar-initial">
-                <span className="team-avatar-initial-letter">{initial}</span>
-              </div>
-              <h3 className="team-name">{m.name}</h3>
-              <div className="team-title">{m.title}</div>
-
-              <div className="team-section">
-                <span className="team-section-label">擅長領域</span>
-                <div className="team-specialties">{(m.bio || '').split('\n')[0] || '—'}</div>
-              </div>
-
-              <div className="team-section">
-                <span className="team-section-label">核心責任</span>
-                <p className="team-intro">{(m.bio || '').split('\n').slice(1).join(' ').trim() || (m.bio || '—')}</p>
-              </div>
-            </article>
-          );
-        })}
-      </div>
-      )}
+      </section>
     </div>
   );
 }

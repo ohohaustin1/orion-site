@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import fs from 'fs';
 import path from 'path';
 // @ts-ignore — no types shipped
 import prerender from '@prerenderer/rollup-plugin';
@@ -17,6 +18,21 @@ const PRERENDER_ROUTES = [
   '/terms',
 ];
 
+const localChromeCandidates = [
+  process.env.PUPPETEER_EXECUTABLE_PATH,
+  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+  process.env.LOCALAPPDATA
+    ? path.join(process.env.LOCALAPPDATA, 'Google\\Chrome\\Application\\chrome.exe')
+    : '',
+].filter(Boolean) as string[];
+
+const localChromePath = localChromeCandidates.find((candidate) => fs.existsSync(candidate));
+const puppeteerLaunchOptions = {
+  args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  ...(localChromePath ? { executablePath: localChromePath } : {}),
+};
+
 export default defineConfig({
   plugins: [
     react(),
@@ -26,6 +42,7 @@ export default defineConfig({
         renderAfterTime: 4500, // 給 React + Helmet + 字型 4.5 秒 settle
         maxConcurrentRoutes: 1, // 序列跑、避免 Helmet 全域 state race
         headless: true,
+        launchOptions: puppeteerLaunchOptions,
       }),
       postProcess(renderedRoute: any) {
         // 防止 prerender 後 script 阻塞 first paint

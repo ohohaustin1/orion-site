@@ -1,411 +1,183 @@
-import React, { useState, useEffect } from 'react';
-import { Cpu, Workflow, Cloud, Zap, ArrowRight, Users, MessageSquare, Video, FileText, ShoppingCart, UserCheck, Server, BarChart3, Lightbulb, Clock, Target, CheckCircle2, Shield } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowRight, BrainCircuit, CheckCircle2, Database, FileText, Network, ShieldCheck, Workflow, Zap } from 'lucide-react';
 import PageSEO from '../components/PageSEO';
+import CinematicVideo from '../components/shared/CinematicVideo';
 import { DIAG_URL } from '../lib/api-base';
-// PR 2: chat_initiated event
 import { pushEvent } from '../lib/analytics';
 
-const capabilities = [
+const services = [
   {
-    icon: Cpu,
-    label: 'AI 需求診斷系統',
-    price: '內洽：先理清你想解決什麼、再算錢',
-    audience: '想導入 AI 但不知從何開始的企業主',
-    timeline: '1–2 週',
-    outcome: '精準定位 3 大核心痛點，產出可執行的 AI 導入路線圖',
-    desc: '5 分鐘精準定位企業痛點，生成專屬分析報告',
+    icon: BrainCircuit,
+    title: 'AI 策略診斷',
+    desc: '先判斷你的商業痛點是否值得做成系統，避免把低槓桿工作硬做成 AI。',
+    output: '產業痛點地圖、ROI 假設、第一版系統藍圖',
   },
   {
-    icon: MessageSquare,
-    label: '智能客服自動化',
-    price: '內洽：依交付範圍給你最公道的數字',
-    audience: '客服量大、重複問題多、回覆速度慢的企業',
-    timeline: '2–3 週',
-    outcome: '客服成本降低 40%+，回覆時間從小時級縮短至秒級',
-    desc: '7×24 全天候 AI 客服，處理 80% 常見問題',
+    icon: Workflow,
+    title: '工具調用工作流',
+    desc: '把分析、試算、任務、通知、工程 prompt 與驗證節點串成一條可執行流程。',
+    output: '工作流節點、工具清單、觸發條件',
   },
   {
-    icon: Video,
-    label: '影片內容自動生成',
-    price: '內洽：依你的資料量和複雜度報價',
-    audience: '需要大量短影音行銷但人力有限的品牌',
-    timeline: '2–3 週',
-    outcome: '內容產能提升 10 倍，單支影片成本降低 70%',
-    desc: 'AI 腳本撰寫 + 素材生成，產能提升 10 倍',
+    icon: Network,
+    title: 'CRM 與任務系統',
+    desc: '讓每個 lead、客戶、任務與回訪都有狀態，不再靠人腦記住下一步。',
+    output: '客戶狀態、任務分派、跟進規則',
   },
   {
     icon: FileText,
-    label: '帳務報表自動化',
-    price: '內洽：先做需求拆解、再算實際成本',
-    audience: '每月花大量時間在對帳、報表的財務團隊',
-    timeline: '1–2 週',
-    outcome: '報表產出時間降低 80%，人工錯誤率趨近 0',
-    desc: '自動生成財務報表、對帳、異常偵測',
+    title: '報告與決策簡報',
+    desc: '把診斷結果變成老闆看得懂、團隊能執行、工程能接手的交付文件。',
+    output: 'AI 報告、工程規格、決策摘要',
   },
   {
-    icon: ShoppingCart,
-    label: '電商系統開發',
-    price: '內洽：規模不同、價格不同、聊一下知道',
-    audience: '想建立自有電商平台、脫離平台抽成的品牌',
-    timeline: '6–10 週',
-    outcome: '轉換率提升 25%+，會員終生價值成長 2 倍',
-    desc: '高轉換率電商平台，整合金流物流 CRM',
+    icon: Database,
+    title: '資料回收與記憶',
+    desc: '把每一次診斷、成交、回訪、驗收沉澱成資料，讓系統越用越準。',
+    output: '資料欄位、回收節點、儀表板',
   },
   {
-    icon: UserCheck,
-    label: 'CRM 客戶管理系統',
-    price: '內洽：每家公司流程不同、要看了才知道',
-    audience: '客戶數據散落各處、跟進靠記憶的業務團隊',
-    timeline: '3–5 週',
-    outcome: '成交率提升 30%+，客戶流失率降低 40%',
-    desc: '客戶分群、成交預測、自動化跟進流程',
-  },
-  {
-    icon: Server,
-    label: 'ERP 企業資源管理',
-    price: '內洽：方向對了、價格我們會替你想',
-    audience: '進銷存管理混亂、部門資訊斷層的中大型企業',
-    timeline: '8–14 週',
-    outcome: '庫存周轉率提升 35%，營運效率提升 50%+',
-    desc: '進銷存、生產排程、供應鏈一站式管理',
-  },
-  {
-    icon: Cloud,
-    label: '雲端架構規劃（AWS/GCP）',
-    price: '內洽：跨產業有差異、我們聊完報你',
-    audience: '系統效能瓶頸、伺服器成本過高的技術團隊',
-    timeline: '3–6 週',
-    outcome: '基礎設施成本降低 40%，系統可用率達 99.9%',
-    desc: '高可用、自動擴展、成本最佳化架構設計',
-  },
-  {
-    icon: BarChart3,
-    label: '數據分析儀表板',
-    price: '內洽：你說明白、我們報得明白',
-    audience: '決策靠直覺、數據散落在 Excel 的管理層',
-    timeline: '2–4 週',
-    outcome: '決策速度提升 5 倍，數據驅動取代經驗猜測',
-    desc: '即時營運數據視覺化，AI 驅動決策建議',
-  },
-  {
-    icon: Lightbulb,
-    label: 'AI 導入全程顧問',
-    price: '內洽：我們不喊高、不喊低、看實際工作量',
-    audience: '規模較大、需要全面 AI 轉型規劃的企業',
-    timeline: '4–12 週',
-    outcome: '從零到一完成 AI 轉型，ROI 平均 3–8 倍',
-    desc: '從策略到落地，全程陪跑的 AI 轉型顧問',
+    icon: ShieldCheck,
+    title: '驗證與風險控管',
+    desc: '把 AI 輸出、工程交付、production 狀態與客戶流程分層驗證。',
+    output: '測試清單、驗收證據、風險紀錄',
   },
 ];
 
-const steps = [
-  {
-    num: '01',
-    icon: Target,
-    title: '免費 AI 診斷（War Room）',
-    desc: '智能問診系統，5 分鐘精準定位企業痛點，零成本零風險',
-    detail: '透過 AI 深度對話，自動生成你的企業健檢報告',
-  },
-  {
-    num: '02',
-    icon: Workflow,
-    title: '問題拆解與策略設計',
-    desc: '專家團隊深入分析，設計落地可行的 AI 方案',
-    detail: '明確 ROI、時程、資源需求，確認再動工',
-  },
-  {
-    num: '03',
-    icon: Cpu,
-    title: '系統導入與測試',
-    desc: '敏捷開發，最快 2 週見效',
-    detail: '每週交付可測試版本，邊做邊優化',
-  },
-  {
-    num: '04',
-    icon: Shield,
-    title: '優化與持續成長',
-    desc: '30 天優化保證，數據驅動持續迭代',
-    detail: '效果未達標？免費持續優化到滿意',
-  },
+const phases = [
+  '釐清商業目標',
+  '拆解流程與資料',
+  '設計工具調用',
+  '交付 MVP 系統',
+  '接上追蹤與回饋',
+  '長期優化與擴張',
 ];
 
-const automationModules = [
-  { name: 'O AI 捕獲器', desc: '把陌生訪客轉成結構化需求，不靠表單硬問。' },
-  { name: '需求診斷問答', desc: '依產業、痛點、規模追問，避免工程師二次訪談重工。' },
-  { name: '線索評分', desc: '用信心分、輪數、聯絡資訊、公司資訊判斷優先級。' },
-  { name: '工程師派工佇列', desc: '高分線索進派工佇列，Chairman 可人工指派，日後可改演算法。' },
-  { name: 'TG 接手通知', desc: '新線索、報告開啟、CTA 點擊時主動推送，不等人巡後台。' },
-  { name: '工程師入口頁', desc: '工程師一頁看懂背景、痛點、MVP、地雷與里程碑。' },
-  { name: '首封聯絡生成', desc: '依客戶痛點產生第一句話與補問清單，避免自由發揮跑偏。' },
-  { name: 'CRM 對話紀錄', desc: 'Email、LINE、電話摘要集中回寫，不留在私人通訊軟體。' },
-  { name: '報價草稿產生', desc: '依 MVP 範圍、工時、風險產出可審核報價草稿。' },
-  { name: '合約簽署銜接', desc: '讓報價、合約、付款狀態串成同一條線。' },
-  { name: '付款與月費追蹤', desc: '支援轉帳、信用卡、月費續約狀態，避免成交後斷資料。' },
-  { name: '客戶進度室', desc: '客戶看得到確認需求、配對工程師、開始交付的進度。' },
-  { name: 'Chairman 總控台', desc: '所有案子狀態、等待天數、跟進風險集中視覺化。' },
-  { name: '工程進度里程碑', desc: 'Day 1-3、Day 4-7、Week 2、Week 3-4 的交付物可追蹤。' },
-  { name: 'EDM Day 0/3/7', desc: '報告產出後自動 nurturing，讓客戶不會看完就冷掉。' },
-  { name: 'AI 客服分流', desc: 'FAQ 交給 AI，價格、合約、客訴升級給人類處理。' },
-  { name: 'LINE / Email 工單', desc: '簽約後問題形成 ticket，不散落在聊天紀錄。' },
-  { name: 'UTM 分銷追蹤', desc: '來源、活動、分銷商寫入 Lead，知道哪條渠道帶來成交。' },
-  { name: 'ROI / COI 估算', desc: '把不做的成本與導入回本週期量化，降低決策摩擦。' },
-  { name: '每日 AI 巡邏', desc: '自動檢查首頁、報告、後台、Webhook，異常即時通知。' },
+const automationBlocks = [
+  'AI 診斷入口',
+  'Lead 分級',
+  '報告生成',
+  'CRM 任務',
+  'Telegram 通知',
+  '工程派工稿',
+  '驗收證據',
+  '數據儀表板',
+  '回訪節奏',
+  '風險提醒',
+  '內容產線',
+  '長期記憶',
 ];
+
+function startDiagnosis(entryPoint: string) {
+  pushEvent('chat_initiated', { flow_name: 'o', entry_point: entryPoint });
+  window.location.href = `${DIAG_URL}/`;
+}
 
 export default function AboutPage() {
-  const [visible, setVisible] = useState(false);
-  const [expandedService, setExpandedService] = useState<number | null>(null);
-
-  useEffect(() => {
-    setTimeout(() => setVisible(true), 100);
-  }, []);
+  const [active, setActive] = useState(0);
+  const ActiveIcon = services[active].icon;
 
   return (
-    <div className="orion-page">
+    <div className="orion-cinematic-site site-page">
       <PageSEO
-        title="服務介紹 | Orion 獵戶座智鑑"
-        description="AI 導入顧問、系統開發、自動化流程，先顧問後開發的高端服務。"
+        title="ORION AI 服務介紹｜從想法到企業級 AI 系統"
+        description="ORION AI 提供 AI 策略診斷、工具調用工作流、CRM 任務系統、報告生成、資料回收與工程交付，幫企業把模糊想法做成可複製系統。"
         url="/about"
       />
-      {/* 反向篩選文案 */}
-      <div style={{
-        textAlign: 'center',
-        padding: '48px 20px 12px',
-        opacity: visible ? 1 : 0,
-        transition: 'opacity 0.8s',
-      }}>
-        <div style={{
-          fontSize: 'clamp(1.1rem, 3vw, 1.5rem)',
-          fontWeight: 800,
-          color: 'var(--orion-text-primary)',
-          lineHeight: 1.8,
-          letterSpacing: '0.04em',
-        }}>
-          Orion 為有想法的人設計 AI 系統。
-        </div>
-        <div style={{
-          fontSize: 'clamp(1.1rem, 3vw, 1.5rem)',
-          fontWeight: 800,
-          color: 'var(--orion-gold)',
-          lineHeight: 1.8,
-          letterSpacing: '0.04em',
-        }}>
-          不管你是個人、團隊還是企業，只要你知道自己要什麼，我們就能幫你做出來。
-        </div>
-        <div style={{
-          fontSize: 'clamp(0.82rem, 2vw, 0.95rem)',
-          fontWeight: 600,
-          color: 'transparent', display: 'none',
-          lineHeight: 1.8,
-          marginTop: 8,
-        }}>
-          
-        </div>
-        <div style={{
-          width: 60,
-          height: 2,
-          background: 'linear-gradient(90deg, transparent, var(--orion-gold), transparent)',
-          margin: '20px auto 0',
-        }} />
-      </div>
 
-      <div className="orion-page-header" style={{ marginBottom: 32, paddingTop: 16 }}>
-        <h1>Orion AI Group 獵戶座智囊</h1>
-        <p>企業 AI 導入顧問 + 高端系統開發商</p>
-        <span className="orion-page-tag">先顧問、後開發</span>
-      </div>
+      <section className="site-page-hero split">
+        <div>
+          <span className="site-eyebrow">服務介紹</span>
+          <h1>ORION 不是賣一次專案，而是幫企業建立會長大的 AI 系統。</h1>
+          <p>
+            我們從商業問題開始，不急著堆功能。先找出真正有複利的流程，再決定要調用哪些工具、建立哪些任務、回收哪些資料、交付哪些工程模組。
+          </p>
+          <button className="orion-primary-btn" onClick={() => startDiagnosis('about_hero_cta')}>
+            讓 ORION 拆你的系統
+            <ArrowRight size={18} />
+          </button>
+        </div>
+        <CinematicVideo src="/videos/orion-bg-00-command.mp4" label="企業 AI 指揮中心資料牆影片" />
+      </section>
 
-      {/* 10 項服務（含定價、適合對象、導入時間、預期成效） */}
-      <section className="orion-about-section" style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.6s 0.1s' }}>
-        <h2 className="about-section-title">服務介紹</h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {capabilities.map((c, i) => {
-            const Icon = c.icon;
-            const isExpanded = expandedService === i;
+      <section className="site-section service-lab">
+        <div className="service-tabs" role="tablist" aria-label="ORION 服務模組">
+          {services.map((service, index) => {
+            const Icon = service.icon;
             return (
-              <div
-                key={i}
-                onClick={() => setExpandedService(isExpanded ? null : i)}
-                style={{
-                  background: isExpanded ? 'rgba(201,168,76,0.06)' : 'var(--orion-bg-raised)',
-                  border: `1px solid ${isExpanded ? 'var(--orion-gold)' : 'rgba(201,168,76,0.12)'}`,
-                  borderRadius: 12,
-                  padding: '18px 20px',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s',
-                }}
+              <button
+                key={service.title}
+                className={active === index ? 'active' : ''}
+                onClick={() => setActive(index)}
+                type="button"
               >
-                {/* Header row */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <Icon size={22} style={{ color: 'var(--orion-gold)', flexShrink: 0 }} />
-                    <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>{c.label}</span>
-                  </div>
-                  <span style={{
-                    fontSize: '0.82rem',
-                    fontWeight: 700,
-                    color: 'var(--orion-gold)',
-                    background: 'rgba(201,168,76,0.12)',
-                    padding: '4px 12px',
-                    borderRadius: 6,
-                    whiteSpace: 'nowrap',
-                  }}>
-                    {c.price}
-                  </span>
-                </div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--orion-text-secondary)', marginTop: 6 }}>
-                  {c.desc}
-                </div>
-
-                {/* Expanded details */}
-                {isExpanded && (
-                  <div style={{
-                    marginTop: 14,
-                    paddingTop: 14,
-                    borderTop: '1px solid rgba(201,168,76,0.15)',
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                    gap: 12,
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                      <Users size={14} style={{ color: 'var(--orion-gold)', marginTop: 2, flexShrink: 0 }} />
-                      <div>
-                        <div style={{ fontSize: '0.68rem', color: 'var(--orion-text-tertiary)', fontWeight: 600, marginBottom: 2 }}>適合對象</div>
-                        <div style={{ fontSize: '0.8rem', color: 'var(--orion-text-secondary)', lineHeight: 1.5 }}>{c.audience}</div>
-                      </div>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                      <Clock size={14} style={{ color: 'var(--orion-gold)', marginTop: 2, flexShrink: 0 }} />
-                      <div>
-                        <div style={{ fontSize: '0.68rem', color: 'var(--orion-text-tertiary)', fontWeight: 600, marginBottom: 2 }}>導入時間</div>
-                        <div style={{ fontSize: '0.8rem', color: 'var(--orion-text-secondary)', lineHeight: 1.5 }}>{c.timeline}</div>
-                      </div>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                      <CheckCircle2 size={14} style={{ color: 'var(--orion-gold)', marginTop: 2, flexShrink: 0 }} />
-                      <div>
-                        <div style={{ fontSize: '0.68rem', color: 'var(--orion-text-tertiary)', fontWeight: 600, marginBottom: 2 }}>預期成效</div>
-                        <div style={{ fontSize: '0.8rem', color: 'var(--orion-gold-pale, #f0d98a)', lineHeight: 1.5, fontWeight: 500 }}>{c.outcome}</div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
+                <Icon size={18} />
+                {service.title}
+              </button>
             );
           })}
         </div>
+
+        <div className="service-detail">
+          <span className="service-detail-icon">
+            <ActiveIcon size={28} />
+          </span>
+          <h2>{services[active].title}</h2>
+          <p>{services[active].desc}</p>
+          <div className="service-output">
+            <CheckCircle2 size={18} />
+            <span>{services[active].output}</span>
+          </div>
+        </div>
       </section>
 
-      {/* Chairman 2026-04-24：核心團隊區塊拿掉（舊資料），保留 /team 獨立頁面 */}
-
-      {/* 服務流程 4 步驟（強化視覺） */}
-      <section className="orion-about-section orion-automation-chain" data-section="automation-chain" style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.6s 0.25s' }}>
-        <div className="orion-automation-head">
-          <div>
-            <div className="about-section-title">自動化鏈條</div>
-            <h2 className="orion-automation-title">20 個可自動化模組，補齊從線索到交付的斷層</h2>
-            <p className="orion-automation-sub">
-              ORION 不只產生診斷報告，而是把工程師接手、聯絡客戶、報價簽約、進度追蹤、售後客服都變成能被後台追蹤的流程。
-            </p>
+      <section className="site-section site-method-section reversed">
+        <div className="method-copy">
+          <span className="site-eyebrow">交付方法</span>
+          <h2>從一個問題，到一套能被團隊使用的系統。</h2>
+          <div className="method-chain">
+            {phases.map((phase, index) => (
+              <div key={phase} className="method-step">
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <p>{phase}</p>
+              </div>
+            ))}
           </div>
-          <div className="orion-automation-pill">線索 → 工程師 → 簽約 → 交付 → 客服</div>
         </div>
-        <div className="orion-automation-grid">
-          {automationModules.map((item, index) => (
-            <article className="orion-auto-card" key={item.name}>
-              <div className="orion-auto-num">{String(index + 1).padStart(2, '0')}</div>
-              <h3>{item.name}</h3>
-              <p>{item.desc}</p>
-            </article>
+        <div className="method-video-panel">
+          <CinematicVideo src="/videos/orion-toolflow-card-loop.mp4" label="工具調用與流程連接動畫" />
+        </div>
+      </section>
+
+      <section className="site-section automation-map">
+        <div className="site-section-header narrow">
+          <span className="site-eyebrow">可擴張模組</span>
+          <h2>ORION 會把零散工作變成可串接的企業作業層。</h2>
+          <p>每個模組都可以獨立交付，也可以接在一起形成完整漏斗：從診斷、成交、任務、通知、工程到驗收。</p>
+        </div>
+        <div className="automation-grid">
+          {automationBlocks.map((block, index) => (
+            <div key={block}>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <strong>{block}</strong>
+            </div>
           ))}
         </div>
       </section>
 
-      <section className="orion-about-section" style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.6s 0.5s' }}>
-        <h2 className="about-section-title">服務流程</h2>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: 20,
-        }}>
-          {steps.map((s, i) => {
-            const StepIcon = s.icon;
-            return (
-              <div key={i} style={{
-                background: 'var(--orion-bg-raised)',
-                border: '1px solid rgba(201,168,76,0.12)',
-                borderRadius: 14,
-                padding: '28px 20px',
-                textAlign: 'center',
-                position: 'relative',
-                overflow: 'hidden',
-                transition: 'all 0.3s',
-              }}>
-                {/* Top gold accent line */}
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: 3,
-                  background: 'linear-gradient(90deg, transparent, var(--orion-gold), transparent)',
-                }} />
-
-                {/* Step number + icon */}
-                <div style={{
-                  fontSize: '2.2rem',
-                  fontWeight: 900,
-                  color: 'var(--orion-gold)',
-                  opacity: 0.2,
-                  marginBottom: 4,
-                }}>
-                  {s.num}
-                </div>
-                <StepIcon size={28} style={{ color: 'var(--orion-gold)', marginBottom: 12 }} />
-
-                <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--orion-text-primary)', marginBottom: 8 }}>
-                  {s.title}
-                </h4>
-                <p style={{ fontSize: '0.875rem', color: 'var(--orion-text-secondary)', lineHeight: 1.6, marginBottom: 8 }}>
-                  {s.desc}
-                </p>
-                <p style={{ fontSize: '0.8125rem', color: 'var(--orion-gold-dim, #8a6f2e)', fontWeight: 500 }}>
-                  {s.detail}
-                </p>
-
-                {/* Arrow connector (not on last) */}
-                {i < steps.length - 1 && (
-                  <div style={{
-                    position: 'absolute',
-                    right: -14,
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    color: 'var(--orion-gold)',
-                    fontSize: 18,
-                    zIndex: 2,
-                    display: 'none', // hidden on mobile
-                  }} className="step-connector">
-                    →
-                  </div>
-                )}
-              </div>
-            );
-          })}
+      <section className="site-section site-final-command compact">
+        <CinematicVideo src="/videos/orion-bg-01-core-devices.mp4" label="跨裝置企業 AI 系統影片" />
+        <div className="final-command-content">
+          <span className="site-eyebrow">適合誰</span>
+          <h2>適合有商業痛點、願意系統化、想把 AI 變成長期資產的企業主。</h2>
+          <p>
+            如果你只是想做一個好看的 demo，ORION 不是最便宜的選擇。如果你想把核心流程變成可複製的 AI 系統，這正是 ORION 的位置。
+          </p>
+          <button className="orion-primary-btn" onClick={() => startDiagnosis('about_bottom_cta')}>
+            啟動 AI 策略診斷
+            <Zap size={18} />
+          </button>
         </div>
-      </section>
-
-      <section className="orion-bottom-cta">
-        <h2>準備好讓 AI 幫你工作了嗎？</h2>
-        <p>3 分鐘說出你的想法，我們告訴你怎麼做</p>
-        <a
-          href={DIAG_URL}
-          onClick={() => pushEvent('chat_initiated', { flow_name: 'o', entry_point: 'about_cta' })}
-          className="orion-btn-fill large magnetic-link gold-sweep"
-          style={{ textDecoration: 'none' }}
-        >
-          <Zap size={18} />
-          <span>立即開始診斷 →</span>
-        </a>
       </section>
     </div>
   );

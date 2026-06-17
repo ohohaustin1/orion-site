@@ -1,78 +1,95 @@
 <!doctype html>
 <html lang="zh-TW">
-
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <!-- PR 1 / 2026-05-06: Google Tag Manager (container GTM-TG3PRS2P).
-         Loaded as early as possible so dataLayer is initialised before
-         any pushEvent() call from src/lib/analytics.ts. The async loader
-         below initialises window.dataLayer synchronously, so analytics.ts
-         can push events even if the GTM script itself is still in flight. -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-TG3PRS2P');</script>
-    <!-- End Google Tag Manager -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
 
-    <title>Orion 獵戶座智鑑 | 企業級 AI 成交引擎</title>
-    <meta name="description" content="做一次系統、一輩子的顧問。Orion AI 用 X 光的角度看清你的事業問題、交付能落地的系統、不是空泛的 AI 諮詢。">
-    <meta property="og:title" content="Orion AI — 做一次系統、一輩子的顧問">
-    <meta property="og:description" content="做一次系統、一輩子的顧問。Orion AI 用 X 光的角度看清你的事業問題、交付能落地的系統、不是空泛的 AI 諮詢。">
-    <meta property="og:image" content="https://orion01.com/brand/griffin-256.png">
-    <meta property="og:url" content="https://orion01.com">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="ORION 獵戶座智鑑">
-    <link rel="icon" type="image/png" sizes="32x32" href="/brand/griffin-32.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/brand/griffin-192.png">
-    <link rel="apple-touch-icon" href="/brand/griffin-192.png">
-    <!-- Industrial Protocol SplashScreen: preload griffin master for instant first paint -->
+    <script>
+      (function(w,d,s,l,i){
+        w[l]=w[l]||[];
+        if (/^(localhost|127\.0\.0\.1|\[::1\])$/.test(w.location.hostname)) return;
+        w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+        var f=d.getElementsByTagName(s)[0],
+          j=d.createElement(s),
+          dl=l!='dataLayer'?'&l='+l:'';
+        j.async=true;
+        j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+        f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-TG3PRS2P');
+    </script>
+
+    <title>ORION AI 獵戶座智鑑｜企業級 AI 決策基礎建設</title>
+    <meta
+      name="description"
+      content="ORION AI 幫企業把模糊想法系統化、產品化、商業化，從策略拆解、工具調用、工程交付到數據回收，打造會自己長大的 AI 系統。"
+    />
+    <meta property="og:title" content="ORION AI 獵戶座智鑑｜企業級 AI 決策基礎建設" />
+    <meta
+      property="og:description"
+      content="把商業痛點、流程設計、工具調用、資料回收與工程交付整合成一套可複製、可放大、可持續演化的企業級 AI 系統。"
+    />
+    <meta property="og:image" content="https://orion01.com/brand/griffin-256.png" />
+    <meta property="og:url" content="https://orion01.com" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ORION AI 獵戶座智鑑" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ORION AI 獵戶座智鑑｜企業級 AI 決策基礎建設" />
+    <meta
+      name="twitter:description"
+      content="ORION AI 將策略、流程、工具、資料與工程交付整合成企業級 AI Command Center。"
+    />
+    <meta name="twitter:image" content="https://orion01.com/brand/griffin-256.png" />
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/griffin-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/brand/griffin-192.png" />
+    <link rel="apple-touch-icon" href="/brand/griffin-192.png" />
     <link rel="preload" as="image" href="/brand/griffin-256.png" />
-    <!-- Google Fonts: Space Grotesk + Noto Sans TC + JetBrains Mono (DESIGN.md §2.2；Orbitron 已移除) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-    <!-- TD-007 / 2026-04-25：JSON-LD 結構化資料（Organization + WebSite） -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "Organization",
-          "@id": "https://orion01.com/#org",
-          "name": "ORION 獵戶座智鑑",
-          "alternateName": "Orion AI",
-          "url": "https://orion01.com",
-          "logo": "https://orion01.com/brand/griffin-256.png",
-          "description": "做一次系統、一輩子的顧問。Orion AI 用 X 光的角度看清你的事業問題、交付能落地的系統、不是空泛的 AI 諮詢。"
-        },
-        {
-          "@type": "WebSite",
-          "@id": "https://orion01.com/#site",
-          "url": "https://orion01.com",
-          "name": "ORION 獵戶座智鑑",
-          "publisher": { "@id": "https://orion01.com/#org" },
-          "inLanguage": "zh-TW"
-        }
-      ]
-    }
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://orion01.com/#org",
+            "name": "ORION AI 獵戶座智鑑",
+            "alternateName": "Orion AI",
+            "url": "https://orion01.com",
+            "logo": "https://orion01.com/brand/griffin-256.png",
+            "description": "ORION AI 是企業級 AI 決策基礎建設，協助企業把想法系統化、產品化、商業化。"
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://orion01.com/#site",
+            "url": "https://orion01.com",
+            "name": "ORION AI 獵戶座智鑑",
+            "publisher": { "@id": "https://orion01.com/#org" },
+            "inLanguage": "zh-TW"
+          }
+        ]
+      }
     </script>
-    <script type="module" crossorigin src="/assets/index-6EG9rhLZ.js"></script>
+    <script type="module" crossorigin src="/assets/index-D7ip-Dx-.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-2JJPdfPs.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-Dm_f_A3o.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-DCUzLTbB.css">
   </head>
 
   <body>
-    <!-- Google Tag Manager (noscript) — for users with JS disabled.
-         Must be the first child of <body>. PR 1 / 2026-05-06. -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TG3PRS2P"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-TG3PRS2P"
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"
+      ></iframe>
+    </noscript>
 
-    <div id="root"></div>
+    <div id="root"></div>
   </body>
-
 </html>

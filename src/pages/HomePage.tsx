@@ -1,416 +1,257 @@
-import { useState, useEffect, Suspense, lazy } from 'react';
+import {
+  ArrowRight,
+  BarChart3,
+  BrainCircuit,
+  Database,
+  FileCheck2,
+  Network,
+  ShieldCheck,
+  Workflow,
+} from 'lucide-react';
 import PageSEO from '../components/PageSEO';
-import { LoadingRitual } from '../components/LoadingRitual';
 import HeroSection from '../components/hero/HeroSection';
-import ErrorBoundary from '../components/ErrorBoundary';
-import { API_BASE, DIAG_URL } from '../lib/api-base';
-// PR 2: chat_initiated event before nav to capture page
+import CinematicVideo from '../components/shared/CinematicVideo';
+import { DIAG_URL } from '../lib/api-base';
 import { pushEvent } from '../lib/analytics';
 
-// Cinematic v1 共用組件（shared/ barrel → 指向 effects/ 實作）
-import {
-  GoldParticleDivider,
-  GlassCard,
-  ScrollReveal,
-  AuroraBackground,
-  BreathingButton,
-  TypewriterTitle,
-  AustinSignature,
-} from '../components/shared';
-import { PRODUCT_ICONS, INDUSTRY_ICONS } from '../components/icons';
-
-import './HomePage.css';
-
-// Three.js Earth — dynamic import 保持主 bundle lean
-const Earth3D = lazy(() => import('../components/Earth3D'));
-
-/* ==============================================================
-   HomePage — Cinematic Orion Experience v1
-   Chairman 2026-04-24 自主長任務包 Phase 2-6
-   ============================================================== */
-
-const STEPS = [
-  { num: '01', title: '說出你的問題',  desc: 'Orion AI 幫你把模糊想法變為清晰需求' },
-  { num: '02', title: '需求確認',      desc: '工程師接手，評估可行性與時程' },
-  { num: '03', title: '系統建置',      desc: '從 0 到上線，全程 ORION 負責' },
-  { num: '04', title: '永久陪跑',      desc: '3 個月後有新需求，Orion AI 還在' },
+const aiSystems = [
+  { name: '不動產決策 AI', pain: '案源、區域、客群與銷售節奏分散。', result: '把市場判斷變成可重複的成交流程。' },
+  { name: '股票策略 AI', pain: '資訊太多，決策缺乏紀律與回測。', result: '把策略假設變成可監控的風險框架。' },
+  { name: '電商成交 AI', pain: '流量、客服、回購與廣告資料斷裂。', result: '把每次互動轉成可追蹤的銷售任務。' },
+  { name: '餐飲排班 AI', pain: '尖離峰、缺工與人力成本難預測。', result: '把營運經驗變成排班與備料規則。' },
+  { name: '製造排程 AI', pain: '訂單、產線、庫存與交期互相拉扯。', result: '把產能限制變成可調度的排程系統。' },
+  { name: '客戶留存 AI', pain: '老客流失前沒有被辨識與照顧。', result: '把客戶記憶變成自動分眾與回訪。' },
+  { name: '法律風險 AI', pain: '合約、話術與文件風險靠人工記憶。', result: '把風險點變成提醒、審核與紀錄。' },
+  { name: '健康長壽 AI', pain: '健康資料零散，無法長期決策。', result: '把數據、習慣與目標變成陪跑系統。' },
+  { name: '品牌語感 AI', pain: '品牌聲音靠人感覺，難以複製。', result: '把語氣、標準與禁區變成內容引擎。' },
+  { name: '企業現金流 AI', pain: '收入、成本與風險沒有即時儀表板。', result: '把現金流變成預警與決策節奏。' },
+  { name: '教育傳承 AI', pain: '知識留在人身上，交接成本高。', result: '把經驗變成課程、SOP 與訓練資料。' },
+  { name: '命運機率 AI', pain: '重大選擇只能靠直覺與片段資訊。', result: '把不確定性拆成情境、機率與行動。' },
 ];
 
-const PRODUCTS = [
-  { num: '01', Icon: PRODUCT_ICONS[0],  title: '不動產決策 AI', sub: '每個月漏掉的機會成本，Orion AI 幫你抓回來',         key: '看懂市場，才不會錯過該進場的時機' },
-  { num: '02', Icon: PRODUCT_ICONS[1],  title: '股票策略 AI',   sub: '看不清的市場，Orion AI 幫你拆成可執行訊號',         key: '每一筆交易，都有根據' },
-  { num: '03', Icon: PRODUCT_ICONS[2],  title: '電商成交 AI',   sub: '流量不會轉換？Orion AI 幫你找到斷點',               key: '同樣流量，翻倍成交' },
-  { num: '04', Icon: PRODUCT_ICONS[3],  title: '餐飲排班 AI',   sub: '人力成本失控，Orion AI 幫你算出最省組合',           key: '1 秒排完，還符合勞基法' },
-  { num: '05', Icon: PRODUCT_ICONS[4],  title: '製造業排程 AI', sub: '訂單塞車、交期失控，Orion AI 幫你重新排序',         key: '產線不卡、客戶不跑' },
-  { num: '06', Icon: PRODUCT_ICONS[5],  title: '客戶留存 AI',   sub: '客人來一次就不見？Orion AI 幫你把他留下',           key: '老客戶才是真正的現金流' },
-  { num: '07', Icon: PRODUCT_ICONS[6],  title: '法律風險 AI',   sub: '合約陷阱逃不掉，Orion AI 幫你預演訴訟風險',         key: '簽字前先看到地雷' },
-  { num: '08', Icon: PRODUCT_ICONS[7],  title: '健康長壽 AI',   sub: '數據比你更懂身體，Orion AI 幫你計算最佳排程',       key: '老闆的身體，也是公司的資產' },
-  { num: '09', Icon: PRODUCT_ICONS[8],  title: '品牌語感 AI',   sub: '文案沒有靈魂？Orion AI 幫你植入 24 小時創意總監',   key: '品牌調性，一次對齊' },
-  { num: '10', Icon: PRODUCT_ICONS[9],  title: '企業現金流 AI', sub: '錢不該躺著睡覺，Orion AI 幫你預測資金缺口',         key: '現金流透明，決策才踏實' },
-  { num: '11', Icon: PRODUCT_ICONS[10], title: '教育傳承 AI',   sub: '經驗帶不走？Orion AI 幫你把大腦數位化',             key: '老員工的智慧，變成公司的資產' },
-  { num: '12', Icon: PRODUCT_ICONS[11], title: '命運機率 AI',   sub: '運勢不再是玄學，Orion AI 將天時地利拆解為可控機率', key: '把直覺，變成可驗證的決策' },
+const workflowSteps = [
+  { title: '輸入目標', desc: '使用者輸入產業需求、產品構想、營運痛點或商業問題。' },
+  { title: '理解分類', desc: 'AI 判斷產業、角色、資料來源、風險、變現模式與交付難度。' },
+  { title: '制定計畫', desc: '系統決定要調用哪些工具：商業分析、ROI 試算、流程設計、CRM 任務、工程規格。' },
+  { title: '調用工具', desc: '工具實際產出分析、藍圖、工作流、任務、通知與 Codex 派工稿。' },
+  { title: '驗證結果', desc: 'AI 檢查邏輯、數字、風險、可複製性與可放大性。' },
+  { title: '執行部署', desc: '交付 landing page、任務清單、工程 prompt、團隊通知與追蹤節點。' },
+  { title: '數據回饋', desc: '回收成交率、留存率、使用率與回訪率，讓系統越用越準。' },
 ];
 
-const COMPARE = [
-  { domain: '不動產', old: '靠業務員打電話、憑感覺出價',          neo: '24 小時自動監控，鎖定必賺缺口' },
-  { domain: '排班',   old: '店長拿筆算半天，還會吵架',              neo: '1 秒產出最省組合，符合法規' },
-  { domain: '決策',   old: '晚上失眠想破頭，還是怕選錯',            neo: '模擬 10,000 種結果，勝率最高' },
-  { domain: '維護',   old: '出問題才找工程師修（貴又慢）',          neo: '系統自我監測修復，停機趨近零' },
-  { domain: '客戶',   old: '客服被動回覆，問完就沒下文',            neo: '每次對話都在推進成交' },
+const methodSteps = [
+  '模糊想法',
+  'AI 深度拆解',
+  '工程可行性評估',
+  '系統建置',
+  '數據回饋',
+  '長期陪跑',
 ];
+
+const proofCards = [
+  {
+    icon: BrainCircuit,
+    title: '不是聊天，是決策中樞',
+    body: 'ORION 不只回答問題，而是把問題拆成資料、任務、流程、驗證與後續追蹤。',
+  },
+  {
+    icon: Workflow,
+    title: '不是單點工具，是工作流',
+    body: '每個工具都對應商業目的：分析痛點、計算 ROI、生成規格、建立任務、通知團隊。',
+  },
+  {
+    icon: Database,
+    title: '不是一次服務，是資料複利',
+    body: '每次診斷、成交、回訪與驗收都會留下可重用資料，讓下一次更快、更準。',
+  },
+];
+
+const clarityItems = [
+  {
+    icon: BrainCircuit,
+    title: 'ORION 是什麼',
+    body: '不是單一聊天工具，而是把老闆的想法、決策、流程與資料接成一套 AI 商業中樞。',
+  },
+  {
+    icon: Workflow,
+    title: '你會得到什麼',
+    body: '一份可執行藍圖、一套工具調用流程、可交給工程與團隊落地的系統規格。',
+  },
+  {
+    icon: Database,
+    title: '為什麼會複利',
+    body: '每次對話、任務、成交與回饋都會沉澱成資料，讓下一次判斷更快、更準、更可複製。',
+  },
+];
+
+function startDiagnosis(entryPoint: string) {
+  pushEvent('chat_initiated', { flow_name: 'o', entry_point: entryPoint });
+  window.location.href = `${DIAG_URL}/`;
+}
 
 export default function HomePage() {
-  const [loaded, setLoaded] = useState(false);
-  const [showRitual, setShowRitual] = useState(false);
-  const [scrollPct, setScrollPct] = useState(0);
-
-  useEffect(() => {
-    const t = setTimeout(() => setLoaded(true), 100);
-
-    const onScroll = () => {
-      const h = document.documentElement;
-      const total = h.scrollHeight - h.clientHeight;
-      setScrollPct(total > 0 ? h.scrollTop / total : 0);
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-    return () => {
-      clearTimeout(t);
-      window.removeEventListener('scroll', onScroll);
-    };
-  }, []);
-
   return (
-    <div
-      className="orion-home-page"
-      style={{
-        maxWidth: 'none',
-        padding: 0,
-        opacity: loaded ? 1 : 0,
-        transition: 'opacity 0.6s',
-      }}
-    >
+    <div className="orion-cinematic-site">
       <PageSEO
-        title="Orion 獵戶座智鑑 | 做一次系統，當你一輩子的 AI 顧問"
-        description="說出你的問題，Orion AI 幫你找出失去的錢。企業級 AI 成交引擎，3 個月打造 10 個賺錢系統。"
+        title="ORION AI 獵戶座智鑑｜企業級 AI 決策基礎建設"
+        description="ORION AI 幫企業把想法系統化、產品化、商業化，從策略拆解、工具調用、工程交付到數據回收，打造會自己長大的 AI 系統。"
         url="/home"
       />
-      <LoadingRitual active={showRitual} onComplete={() => {
-        pushEvent('chat_initiated', { flow_name: 'o', entry_point: 'home_loading_ritual' });
-        window.location.href = `${DIAG_URL}/`;
-      }} />
 
-      {/* 頂部滾動進度條 */}
-      <div className="orion-scroll-progress" style={{ transform: `scaleX(${scrollPct})` }} />
-
-      {/* 1. Hero（機器人 + 輸入欄 + 產業印記） */}
       <HeroSection />
 
-      <GoldParticleDivider />
-
-      {/* 2. 副標（Aurora 背景） */}
-      <section className="co-tagline">
-        <AuroraBackground style={{ position: 'absolute', inset: 0, zIndex: 0 } as React.CSSProperties} />
-        <ScrollReveal y={32}>
-          <p className="co-tagline-text">
-            成為你一輩子的 <strong>商業 AI 顧問</strong>
-          </p>
-        </ScrollReveal>
-      </section>
-
-      <GoldParticleDivider />
-
-      {/* 3. 4 步驟（GlassCard 4 欄） */}
-      <section className="co-steps-section" aria-label="Orion 服務流程">
-        <ScrollReveal className="co-steps-grid" stagger={0.1} y={24} amount={0.05}>
-          {STEPS.map((s) => (
-            <GlassCard key={s.num} className="co-step">
-              <div className="co-step-num">{s.num}</div>
-              <h3 className="co-step-title">{s.title}</h3>
-              <p className="co-step-desc">{s.desc}</p>
-            </GlassCard>
-          ))}
-        </ScrollReveal>
-      </section>
-
-      <GoldParticleDivider />
-
-      {/* 4. 三句標題 */}
-      <section className="co-section">
-        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-          <TypewriterTitle
-            lines={[
-              '所有想法，都能系統化',
-              '所有系統，都能產品化',
-              '所有產品，都能商業化',
-            ]}
-            lineGap={0.6}
-          />
-        </div>
-      </section>
-
-      <GoldParticleDivider />
-
-      {/* 5. 12 產品 Bento（Aurora 背景） */}
-      <AuroraBackground intensity={1}>
-        <section className="co-section">
-          <div className="co-section-header">
-            <ScrollReveal>
-              <>
-                <h2>12 個 AI 系統，涵蓋你每一個決策</h2>
-                <p>從不動產到命運機率，每一個都是真金白銀回報</p>
-              </>
-            </ScrollReveal>
-          </div>
-          <ScrollReveal className="co-bento" stagger={0.07} y={40} amount={0.05}>
-            {PRODUCTS.map((p) => (
-              <GlassCard key={p.num} className="co-product">
-                <div className="co-product-head">
-                  <span className="co-product-num">{p.num}</span>
-                  <span className="co-product-icon" aria-hidden="true">
-                    <p.Icon />
-                  </span>
-                </div>
-                <h3 className="co-product-title">{p.title}</h3>
-                <p className="co-product-sub">{p.sub}</p>
-                <div className="co-product-key">👉 {p.key}</div>
-              </GlassCard>
-            ))}
-          </ScrollReveal>
-        </section>
-      </AuroraBackground>
-
-      {/* 6. 「那，你的行業呢？」+ 跑馬燈 */}
-      <section className="co-industries">
-        <ScrollReveal>
-          <h2 className="co-industries-title">那，你的行業呢？</h2>
-        </ScrollReveal>
-        <div className="co-marquee">
-          <div className="co-marquee-track">
-            {[...INDUSTRY_ICONS, ...INDUSTRY_ICONS].map((ind, i) => (
-              <div key={i} className="co-marquee-item" title={ind.label} aria-label={ind.label}>
-                <ind.Icon />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <GoldParticleDivider />
-
-      {/* 7. 傳統 vs AI 對比 */}
-      <section className="co-section">
-        <div className="co-section-header co-compare-header">
-          <ScrollReveal>
-            <>
-              <h2>原來，還可以這樣</h2>
-              <p>很多老闆不是不想改變，是不知道現在可以這樣</p>
-            </>
-          </ScrollReveal>
-        </div>
-
-        <ScrollReveal className="co-compare" stagger={0.12} y={20} amount={0.05}>
-          {COMPARE.map((c, i) => (
-            <div key={i} className="co-compare-row">
-              <div className="co-compare-cell co-compare-old">❌ {c.domain}：{c.old}</div>
-              <div className="co-compare-arrow">→</div>
-              <div className="co-compare-cell co-compare-new">✓ {c.neo}</div>
-            </div>
-          ))}
-        </ScrollReveal>
-      </section>
-
-      <GoldParticleDivider />
-
-      {/* 7.5（2026-04-27）他們也這樣做了：精選 3 案例（被「原來」說服後的下一步） */}
-      <FeaturedCasesSection />
-
-      <GoldParticleDivider />
-
-      {/* 8. 3D 地球連線 */}
-      <section className="co-section">
-        <div className="co-section-header">
-          <ScrollReveal>
-            <>
-              <h2>全球想法，都在這裡實現</h2>
-              <p>從紐約到東京，世界各地的決策者都在用 Orion AI</p>
-            </>
-          </ScrollReveal>
-        </div>
-        <div className="co-earth-wrap">
-          <ErrorBoundary
-            fallback={
-              <div className="co-earth-fallback" role="img" aria-label="Orion 全球連線（靜態 fallback）">
-                <div style={{
-                  width: 280, height: 280, borderRadius: '50%',
-                  border: '1px dashed rgba(197,160,89,0.45)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: '#C5A059', letterSpacing: '0.18em', fontSize: 13,
-                  boxShadow: '0 0 48px rgba(197,160,89,0.18), inset 0 0 48px rgba(197,160,89,0.08)',
-                }}>
-                  ORBITAL LINK
-                </div>
-              </div>
-            }
-          >
-            <Suspense fallback={<div className="co-earth-fallback">LOADING ORBITAL LINK...</div>}>
-              <div className="co-earth-canvas-host">
-                <Earth3D />
-              </div>
-            </Suspense>
-          </ErrorBoundary>
-        </div>
-      </section>
-
-      <GoldParticleDivider />
-
-      {/* 9. 信任錨點（雙行 + Austin 簽名） */}
-      <section className="co-trust">
-        <ScrollReveal>
-          <p className="co-trust-line1">未來的企業只有兩種：</p>
-        </ScrollReveal>
-        <ScrollReveal delay={0.35}>
-          <p className="co-trust-line2">被 AI 取代的，與擁有 Orion 系統的。</p>
-        </ScrollReveal>
-
-        <ScrollReveal delay={0.9} className="co-trust-signature-wrap">
-          <AustinSignature width={240} delay={0.2} />
-        </ScrollReveal>
-
-        <ScrollReveal delay={1.1}>
-          <div className="co-trust-author">
-            <span className="co-trust-avatar">
-              <img src="/team/AUSTIN.png" alt="Austin 許燿宸" />
-            </span>
-            <span>— Austin，ORION 創辦人</span>
-          </div>
-        </ScrollReveal>
-      </section>
-
-      {/* 10. 最後 CTA */}
-      <section className="co-final-cta">
-        <ScrollReveal>
-          <h2>你的下一個系統，從這裡開始</h2>
-        </ScrollReveal>
-        <ScrollReveal delay={0.2} className="co-final-cta-btn-wrap">
-          <BreathingButton onClick={() => {
-            pushEvent('chat_initiated', { flow_name: 'o', entry_point: 'home_final_cta' });
-            window.location.href = `${DIAG_URL}/`;
-          }}>
-            現在對話 →
-          </BreathingButton>
-        </ScrollReveal>
-      </section>
-    </div>
-  );
-}
-
-// ── 2026-04-27 精選案例 v2（精緻化）：Chairman UI 統一指令 ──
-interface PreviewCase {
-  id: number;
-  industry: string;
-  company: string;
-  results: string;
-}
-
-// Chairman 指定優先序：餐飲（食材-38.4%）/ 房地產（成交+27.4%）/ 電商（退貨-21.8%）
-const PREFERRED_INDUSTRIES = ['餐飲連鎖', '房地產仲介', '電商零售'];
-
-function pickFeatured(allCases: PreviewCase[]): PreviewCase[] {
-  const picked: PreviewCase[] = [];
-  for (const ind of PREFERRED_INDUSTRIES) {
-    const c = allCases.find((x) => x.industry === ind);
-    if (c) picked.push(c);
-  }
-  for (const c of allCases) {
-    if (picked.length >= 3) break;
-    if (!picked.find((p) => p.id === c.id)) picked.push(c);
-  }
-  return picked.slice(0, 3);
-}
-
-// 拆「公司名（補充說明）」→ ['公司名', '補充說明']
-function splitCompanyName(s: string): { name: string; scale: string } {
-  const m = s.match(/^(.+?)[（(]([^）)]+)[）)]\s*$/);
-  if (m) return { name: m[1].trim(), scale: m[2].trim() };
-  return { name: s, scale: '' };
-}
-
-// 解析 results 字串為 {label, value} 列、最多 3 行
-//  範例：'食材浪費 -38.4%，缺貨率 -67.1%，月省 NT$33.6 萬'
-//   → [{label:'食材浪費',value:'-38.4%'}, {label:'缺貨率',value:'-67.1%'}, {label:'月省',value:'NT$33.6 萬'}]
-function parseMetrics(results: string): Array<{ label: string; value: string }> {
-  if (!results) return [];
-  const segments = results.split(/[，,]/).map((s) => s.trim()).filter(Boolean).slice(0, 4);
-  // 數字+單位 token：±-+ 數字逗點小數 + (% / 萬 / 倍 / 分 / hr / min / x / ×) 可帶尾字
-  const numTokenRe = /([+\-]?(?:NT\$\s*)?[\d,.]+\s*(?:%|萬|倍|分|hr|min|x|×)\S*)\s*$/;
-  return segments.map((seg) => {
-    const m = seg.match(numTokenRe);
-    if (m && m.index !== undefined) {
-      const value = m[1].trim();
-      const label = seg.slice(0, m.index).trim();
-      // label 過長代表解析不乾淨、回退單行
-      if (label && label.length <= 18) return { label, value };
-    }
-    return { label: '', value: seg };
-  });
-}
-
-function FeaturedCasesSection() {
-  const [featured, setFeatured] = useState<PreviewCase[]>([]);
-  useEffect(() => {
-    let aborted = false;
-    fetch(`${API_BASE}/api/public/cases`)
-      .then((r) => r.json())
-      .then((j) => {
-        if (aborted) return;
-        const list: PreviewCase[] = Array.isArray(j?.cases) ? j.cases : [];
-        setFeatured(pickFeatured(list));
-      })
-      .catch(() => { /* fail silent */ });
-    return () => { aborted = true; };
-  }, []);
-  if (!featured.length) return null;
-  return (
-    <section className="home-cases-preview home-section">
-      <ScrollReveal>
-        <>
-          <h2 className="home-cases-preview-title">他們也這樣做了</h2>
-          <p className="home-cases-preview-sub">不是只有你遇到這些問題、他們比你早一步</p>
-        </>
-      </ScrollReveal>
-      <div className="home-cases-grid stagger-children">
-        {featured.map((c) => {
-          const { name, scale } = splitCompanyName(c.company);
-          const metrics = parseMetrics(c.results);
+      <section className="site-section site-clarity-strip" aria-label="ORION AI 交付物摘要">
+        {clarityItems.map((item) => {
+          const Icon = item.icon;
           return (
-            <article key={c.id} className="case-preview-card">
-              <span className="industry-chip">{c.industry}</span>
-              <div className="card-company-name">{name}</div>
-              {scale && <div className="card-company-scale">{scale}</div>}
-              <div className="card-divider" />
-              <div className="card-metrics">
-                {metrics.map((m, i) => (
-                  <div key={i} className={`card-metric-row ${m.label ? '' : 'card-metric-row--single'}`}>
-                    {m.label && <span className="metric-label">{m.label}</span>}
-                    <span className="metric-value stat-number">{m.value}</span>
-                  </div>
-                ))}
+            <article key={item.title} className="clarity-card">
+              <Icon size={22} />
+              <div>
+                <h2>{item.title}</h2>
+                <p>{item.body}</p>
               </div>
-              <a
-                href={`/cases?industry=${encodeURIComponent(c.industry)}`}
-                className="card-cta"
-                aria-label={`看完整案例：${name}`}
-              >
-                看完整案例 →
-              </a>
             </article>
           );
         })}
-      </div>
-      <div style={{ textAlign: 'center' }}>
-        <a href="/cases" className="view-all-cases">看更多案例 →</a>
-      </div>
-    </section>
+      </section>
+
+      <section className="site-section site-section-intro">
+        <div className="site-section-copy">
+          <span className="site-eyebrow">企業 AI 指揮中心</span>
+          <h2>老闆不缺想法，缺的是把想法變成系統的能力。</h2>
+          <p>
+            ORION 的工作不是多做一個聊天機器人，而是把企業決策拆成可執行的工具鏈。策略會變成流程，流程會變成任務，任務會回收資料，資料會讓下一次判斷更準。
+          </p>
+        </div>
+        <div className="site-video-console">
+          <CinematicVideo src="/videos/mixkit-collaborative-digital-display.mp4" label="團隊在數位螢幕前討論企業資料的影片" />
+          <div className="site-console-caption">
+            <span>即時判斷</span>
+            <span>任務派工</span>
+            <span>資料回收</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="tool-calling-workflow" className="site-section site-workflow-section">
+        <div className="site-section-header">
+          <span className="site-eyebrow">AI Tool Calling Workflow</span>
+          <h2>不是聊天機器人，是會調用工具的 AI 商業中樞。</h2>
+          <p>ORION 會先理解你的商業目標，再選擇對應工具，完成分析、規劃、建置、追蹤與回饋。</p>
+        </div>
+
+        <div className="tool-calling-stage">
+          <CinematicVideo src="/videos/orion-bg-02-toolflow-network.mp4" className="tool-calling-video" label="工具調用網路與資料流動畫" />
+          <div className="workflow-node-grid">
+            {workflowSteps.map((step, index) => (
+              <article
+                key={step.title}
+                className="workflow-node"
+              >
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <h3>{step.title}</h3>
+                <p>{step.desc}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="modules" className="site-section site-modules-section">
+        <div className="site-section-header narrow">
+          <span className="site-eyebrow">12 個 AI 系統模組</span>
+          <h2>同一套決策底層，可以長出不同產業的 AI 系統。</h2>
+          <p>每個模組都不是單一功能，而是一個可以連接資料、流程、任務與回饋的商業系統。</p>
+        </div>
+
+        <div className="module-grid">
+          {aiSystems.map((system, index) => (
+            <article
+              key={system.name}
+              className="module-card"
+            >
+              <span className="module-number">{String(index + 1).padStart(2, '0')}</span>
+              <h3>{system.name}</h3>
+              <p>{system.pain}</p>
+              <strong>{system.result}</strong>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="site-section site-method-section">
+        <div className="method-video-panel">
+          <CinematicVideo src="/videos/orion-bg-03-systems-city.mp4" label="未來城市與系統中樞動畫" />
+        </div>
+        <div className="method-copy">
+          <span className="site-eyebrow">ORION 方法論</span>
+          <h2>一次建置，長期複利。</h2>
+          <div className="method-chain">
+            {methodSteps.map((step, index) => (
+              <div key={step} className="method-step">
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <p>{step}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="site-section site-proof-section">
+        {proofCards.map((card) => {
+          const Icon = card.icon;
+          return (
+            <article key={card.title} className="proof-card">
+              <Icon size={24} />
+              <h3>{card.title}</h3>
+              <p>{card.body}</p>
+            </article>
+          );
+        })}
+      </section>
+
+      <section className="site-section site-final-command">
+        <CinematicVideo src="/videos/orion-bg-04-memory-nightcity.mp4" label="夜間資料城市與企業記憶動畫" />
+        <div className="final-command-content">
+          <span className="site-eyebrow">品牌宣言</span>
+          <h2>未來的企業只有兩種：被 AI 取代的，與擁有 ORION 系統的。</h2>
+          <p>
+            如果你現在只有想法，ORION 會幫你拆成系統。如果你已經有流程，ORION 會幫你變成工具。如果你已經有工具，ORION 會幫你接上資料與複利。
+          </p>
+          <div className="final-command-actions">
+            <button className="orion-primary-btn" onClick={() => startDiagnosis('home_final_cta')}>
+              啟動你的 AI 系統
+              <ArrowRight size={18} />
+            </button>
+            <a className="orion-secondary-btn" href="/cases">
+              查看實戰案例
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section className="site-section site-scoreboard" aria-label="ORION 系統能力摘要">
+        <div>
+          <BarChart3 size={22} />
+          <strong>策略</strong>
+          <span>從商業痛點拆出可執行假設</span>
+        </div>
+        <div>
+          <Network size={22} />
+          <strong>工具</strong>
+          <span>把分析、任務、通知與工程串起來</span>
+        </div>
+        <div>
+          <FileCheck2 size={22} />
+          <strong>驗證</strong>
+          <span>每次交付都留下可追蹤證據</span>
+        </div>
+        <div>
+          <ShieldCheck size={22} />
+          <strong>信任</strong>
+          <span>用紀律、審計與資料降低決策風險</span>
+        </div>
+      </section>
+    </div>
   );
 }
