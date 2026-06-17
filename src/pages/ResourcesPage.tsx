@@ -1,191 +1,143 @@
-import React, { useState, useEffect } from 'react';
-import { BookOpen, Zap, ChevronDown, ChevronUp, ExternalLink, AlertTriangle, ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowRight, BookOpen, ChevronDown, FileText, HelpCircle, ShieldAlert, Zap } from 'lucide-react';
 import PageSEO from '../components/PageSEO';
+import CinematicVideo from '../components/shared/CinematicVideo';
 import { DIAG_URL } from '../lib/api-base';
-// PR 2: chat_initiated event
 import { pushEvent } from '../lib/analytics';
 
-const articles = [
+const resources = [
   {
-    title: '為什麼你一直成交不了？',
-    desc: '90% 企業的成交漏斗存在 3 個以上致命漏洞，而他們完全不知道自己每天在燒多少錢。本文揭露最常見的漏斗病灶，以及 AI 如何在 2 週內止血。',
-    type: '深度分析',
+    type: '策略筆記',
+    title: '不要先問能不能做 AI，先問這件事能不能複利。',
+    desc: 'AI 導入前，先判斷流程是否可複製、資料是否可回收、任務是否可驗證。否則只是把人工作業換成更貴的工具。',
   },
   {
-    title: '你正在浪費的 40% 客戶',
-    desc: '你以為買了 AI 工具就等於數位轉型？錯。我們拆解了 47 個失敗案例，歸納出導入失敗的 3 個致命原因——而這些錯誤，你現在可能正在犯。',
-    type: '案例拆解',
+    type: '工程筆記',
+    title: '一個 AI 系統至少要有入口、狀態、工具、紀錄與驗收。',
+    desc: '只有聊天視窗不算系統。真正的企業 AI 需要知道使用者是誰、現在進度在哪、調用了什麼工具、留下哪些證據。',
   },
   {
-    title: '你越努力營銷越虧的真正原因',
-    desc: '廣告費越投越多、轉換率越來越低？問題不在行銷，在你的客戶篩選系統根本不存在。AI 成交引擎如何讓你「少做」卻「多賺」。',
-    type: '策略洞察',
+    type: '漏斗筆記',
+    title: '成交不是一個按鈕，是一連串被追蹤的微行動。',
+    desc: '從第一次接觸、診斷、報告、登入、解鎖、回訪到任務派工，每一段都需要清楚的狀態與資料回收。',
   },
   {
-    title: 'AI 導入失敗的 3 個真實病灶',
-    desc: '你的商業策略是基於數據還是直覺？我們分析了 200+ 家企業的決策流程，發現 9 成的策略起點就已經偏離。AI 診斷如何幫你從根源修正。',
-    type: '數據報告',
+    type: '風險筆記',
+    title: 'AI 可以加速，但不能取代驗證紀律。',
+    desc: '高風險流程需要分層驗證：本地、瀏覽器、production、真實用戶驗收。沒有證據，就不能宣稱完成。',
   },
 ];
 
 const faqs = [
   {
-    q: '導入 AI 需要多少預算？',
-    a: '視規模而定，最小方案從 NT$30,000 起。我們會在 AI 診斷後提供精確報價，確保每分錢都花在刀口上。',
+    q: 'ORION 是聊天機器人嗎？',
+    a: '不是。聊天只是入口。ORION 的核心是把商業目標拆成工具調用、任務派工、資料回收與工程交付。',
   },
   {
-    q: '導入需要多久時間？',
-    a: '最快 2 週可見效，完整系統 4-8 週。我們採用敏捷開發，每週都有可見進度。',
+    q: '一定要先有完整資料庫才能開始嗎？',
+    a: '不一定。第一步通常是把現有流程、表格、客服紀錄、成交紀錄整理成可用欄位，再決定哪些資料值得長期回收。',
   },
   {
-    q: '我的行業適合嗎？',
-    a: '只要有重複性工作或客戶互動，就適合。我們已成功導入房仲、電商、製造、餐飲、顧問、醫療、法律等 14+ 個產業。',
+    q: 'ORION 適合小公司嗎？',
+    a: '適合有明確痛點、想把流程系統化的團隊。若只是一次性客製或純人工服務，通常不適合。',
   },
   {
-    q: '需要有技術背景嗎？',
-    a: '不需要，我們提供全程顧問服務。從需求分析到系統上線，你只需要告訴我們問題，我們負責解決。',
-  },
-  {
-    q: '效果沒達到怎麼辦？',
-    a: '我們提供 30 天優化保證。如果在保證期內未達預期效果，我們免費持續優化直到達標。',
+    q: '導入後誰負責維護？',
+    a: 'ORION 會把工程交付、資料欄位、任務規則與驗收方式整理清楚，讓後續可以由團隊、工程師或 AI agent 接手。',
   },
 ];
 
+function startDiagnosis(entryPoint: string) {
+  pushEvent('chat_initiated', { flow_name: 'o', entry_point: entryPoint });
+  window.location.href = `${DIAG_URL}/`;
+}
+
 export default function ResourcesPage() {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
-    <div className="orion-page">
+    <div className="orion-cinematic-site site-page">
       <PageSEO
-        title="為什麼你的成交漏斗正在失血 | Orion 資源中心"
-        description="揭露 AI 導入失敗的真實病灶，找回流失的成交機會。"
+        title="ORION AI 資源中心｜AI 系統化筆記與導入 FAQ"
+        description="ORION AI 資源中心提供企業 AI 系統化、工具調用、漏斗設計、工程驗證與風險控管相關筆記。"
         url="/resources"
       />
-      <div className="orion-page-header">
-        <h1>資源中心</h1>
-        <p>你不知道的真相，正在讓你的企業慢性失血</p>
-      </div>
 
-      {/* 文章列表 — 焦慮標題 + CTA */}
-      <section className="orion-resource-section">
-        <h2 className="resource-section-title">
-          <AlertTriangle size={20} style={{ color: '#e74c3c' }} /> 策略洞察
-        </h2>
-        <div className="orion-resource-cards" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
-          {articles.map((a, i) => (
-            <div
-              key={i}
-              className="orion-resource-card"
-              style={{
-                background: 'var(--orion-bg-raised)',
-                border: '1px solid rgba(201,168,76,0.12)',
-                borderRadius: 12,
-                padding: '24px 20px',
-                display: 'flex',
-                flexDirection: 'column',
-                transition: 'all 0.3s',
-                cursor: 'default',
-              }}
-            >
-              <div style={{
-                display: 'inline-block',
-                padding: '3px 10px',
-                background: 'rgba(231,76,60,0.12)',
-                color: '#e74c3c',
-                borderRadius: 4,
-                fontSize: '0.68rem',
-                fontWeight: 700,
-                marginBottom: 12,
-                alignSelf: 'flex-start',
-              }}>
-                {a.type}
-              </div>
-              <h3 style={{
-                fontSize: '1.05rem',
-                fontWeight: 700,
-                color: 'var(--orion-text-primary)',
-                marginBottom: 10,
-                lineHeight: 1.5,
-              }}>
-                {a.title}
-              </h3>
-              <p style={{
-                fontSize: '0.82rem',
-                color: 'var(--orion-text-secondary)',
-                lineHeight: 1.7,
-                flex: 1,
-                marginBottom: 16,
-              }}>
-                {a.desc}
-              </p>
-
-              {/* 每篇文章底部 CTA */}
-              <a
-                href={DIAG_URL}
-                onClick={() => pushEvent('chat_initiated', { flow_name: 'o', entry_point: 'resources_article_cta' })}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  padding: '10px 14px',
-                  background: 'rgba(201,168,76,0.08)',
-                  border: '1px solid rgba(201,168,76,0.2)',
-                  borderRadius: 8,
-                  color: 'var(--orion-gold)',
-                  fontSize: '0.76rem',
-                  fontWeight: 600,
-                  textDecoration: 'none',
-                  transition: 'all 0.2s',
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.background = 'rgba(201,168,76,0.15)';
-                  (e.currentTarget as HTMLElement).style.borderColor = 'var(--orion-gold)';
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.background = 'rgba(201,168,76,0.08)';
-                  (e.currentTarget as HTMLElement).style.borderColor = 'rgba(201,168,76,0.2)';
-                }}
-              >
-                立即啟動 AI 診斷，檢測你的策略漏洞
-                <ArrowRight size={14} />
-              </a>
-            </div>
-          ))}
+      <section className="site-page-hero split">
+        <div>
+          <span className="site-eyebrow">資源中心</span>
+          <h1>把 AI 導入想清楚，比急著做功能更重要。</h1>
+          <p>
+            這裡整理 ORION 對 AI 系統化、漏斗、工程驗證與風險控管的核心判斷。目標不是讓你看更多文章，而是降低決策成本。
+          </p>
         </div>
+        <CinematicVideo src="/videos/orion-executive-hero-dolly.mp4" label="科技型主管在透明螢幕前說明企業 AI 系統的影片" />
       </section>
 
-      {/* FAQ */}
-      <section className="orion-resource-section">
-        <h2 className="resource-section-title">常見問題 FAQ</h2>
-        <div className="orion-faq-list">
-          {faqs.map((faq, i) => (
-            <div key={i} className={`orion-faq-item ${openFaq === i ? 'open' : ''}`}>
-              <button className="faq-question" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
-                <span>Q：{faq.q}</span>
-                {openFaq === i ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+      <section className="site-section resource-grid-section">
+        <div className="site-section-header narrow">
+          <span className="site-eyebrow">精選筆記</span>
+          <h2>用 ORION 的標準，重新判斷 AI 值不值得做。</h2>
+        </div>
+        <div className="resource-card-grid">
+          {resources.map((item) => (
+            <article key={item.title} className="resource-card">
+              <span>{item.type}</span>
+              <h3>{item.title}</h3>
+              <p>{item.desc}</p>
+              <button onClick={() => startDiagnosis('resources_article_cta')}>
+                用我的公司情境檢查
+                <ArrowRight size={16} />
               </button>
-              {openFaq === i && (
-                <div className="faq-answer">
-                  <p>A：{faq.a}</p>
-                </div>
-              )}
-            </div>
+            </article>
           ))}
         </div>
       </section>
 
-      <section className="orion-bottom-cta">
-        <h2>準備好讓 AI 幫你工作了嗎？</h2>
-        <p>3 分鐘說出你的想法，我們告訴你怎麼做</p>
-        <a
-          href={DIAG_URL}
-          onClick={() => pushEvent('chat_initiated', { flow_name: 'o', entry_point: 'resources_bottom_cta' })}
-          className="orion-btn-fill large magnetic-link gold-sweep"
-          style={{ textDecoration: 'none' }}
-        >
-          <Zap size={18} />
-          <span>立即開始診斷 →</span>
-        </a>
+      <section className="site-section resource-feature">
+        <CinematicVideo src="/videos/orion-trust-host-stage-loop.mp4" label="AI 數位主持人與企業簡報舞台影片" />
+        <div>
+          <span className="site-eyebrow">下載前先想清楚</span>
+          <h2>AI 系統藍圖不是功能清單，而是決策、資料與驗證的結構。</h2>
+          <p>
+            如果你要交給工程師、設計師或 AI agent 執行，藍圖至少要說清楚：使用者入口、狀態來源、工具調用、資料去向、副作用與驗收方式。
+          </p>
+          <div className="resource-feature-list">
+            <span><BookOpen size={16} /> 商業痛點</span>
+            <span><FileText size={16} /> 工程規格</span>
+            <span><ShieldAlert size={16} /> 驗證風險</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="site-section faq-section">
+        <div className="site-section-header narrow">
+          <span className="site-eyebrow">常見問題</span>
+          <h2>先把邊界說清楚，AI 系統才不會越做越亂。</h2>
+        </div>
+        <div className="faq-list">
+          {faqs.map((faq, index) => (
+            <article key={faq.q} className={openFaq === index ? 'open' : ''}>
+              <button onClick={() => setOpenFaq(openFaq === index ? null : index)}>
+                <span><HelpCircle size={18} /> {faq.q}</span>
+                <ChevronDown size={18} />
+              </button>
+              {openFaq === index && <p>{faq.a}</p>}
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="site-section final-plain-cta">
+        <div className="final-command-content">
+          <span className="site-eyebrow">下一步</span>
+          <h2>把你的想法交給 ORION，先做一次系統化拆解。</h2>
+          <p>不用準備完整文件。說出產業、痛點、目前流程與想達成的結果，ORION 會幫你整理第一版可執行藍圖。</p>
+          <button className="orion-primary-btn" onClick={() => startDiagnosis('resources_bottom_cta')}>
+            啟動 AI 診斷
+            <Zap size={18} />
+          </button>
+        </div>
       </section>
     </div>
   );

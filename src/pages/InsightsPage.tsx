@@ -1,93 +1,119 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
-import { TrendingUp, Zap, AlertTriangle } from 'lucide-react';
+import { ArrowRight, AlertTriangle, LineChart, TrendingUp } from 'lucide-react';
 import PageSEO from '../components/PageSEO';
+import CinematicVideo from '../components/shared/CinematicVideo';
+import { DIAG_URL } from '../lib/api-base';
+import { pushEvent } from '../lib/analytics';
 
-const industryData = [
-  { industry: '房仲業', before: '成交率 8-12%', after: '成交率 18-28%', improvement: '+120%', color: '#e74c3c' },
-  { industry: '電商業', before: '客服回覆 6-12 小時', after: '客服回覆 3-5 分鐘', improvement: '-95%', color: '#3498db' },
-  { industry: '製造業', before: '報價週期 2-5 天', after: '報價週期 1-3 小時', improvement: '-90%', color: '#e67e22' },
-  { industry: '餐飲業', before: '毛利可視化 0%', after: '即時毛利監控 100%', improvement: '決策 +10倍', color: '#2ecc71' },
+const insightRows = [
+  { title: '沒有 AI 系統', before: '靠人追進度、靠會議補資訊、靠經驗做判斷。', after: '成本會隨規模上升，決策品質不穩定。' },
+  { title: '有單點 AI 工具', before: '可以加速局部任務，但資料、流程與團隊仍然斷裂。', after: '工具變多，整體系統不一定變強。' },
+  { title: '有 ORION 系統', before: '策略、工具、任務、資料與驗證被串成同一條工作流。', after: '每次執行都留下資料，讓下一次更快、更準。' },
 ];
 
+const signals = [
+  { label: '決策延遲', value: '下降', body: '主管不需要等週報才知道哪裡卡住。' },
+  { label: '任務漏接', value: '下降', body: '高意向 lead、客戶回訪、工程驗收都有明確狀態。' },
+  { label: '資料複利', value: '上升', body: '每次診斷和交付都變成下一次可用的知識資產。' },
+];
+
+function startDiagnosis() {
+  pushEvent('chat_initiated', { flow_name: 'o', entry_point: 'insights_cta' });
+  window.location.href = `${DIAG_URL}/`;
+}
+
 export default function InsightsPage() {
-  const [, setLocation] = useLocation();
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 100);
-    return () => clearTimeout(t);
-  }, []);
-
   return (
-    <div className="orion-page">
+    <div className="orion-cinematic-site site-page">
       <PageSEO
-        title="數據洞察 | Orion 獵戶座智鑑"
-        description="數據不說謊 — AI 導入前後的真實差距：成交率、客服回覆、報價週期、毛利可視化跨產業量化對比。"
+        title="ORION AI 數據洞察｜企業為什麼需要 AI 決策基礎建設"
+        description="ORION AI 數據洞察說明企業導入 AI 的真正價值：不是多一個聊天工具，而是讓決策、流程、任務與資料形成複利。"
         url="/insights"
       />
-      <div className="orion-page-header">
-        <h1>數據洞察</h1>
-        <p>數據不說謊，AI 導入前後的真實差距</p>
-        <span className="orion-page-tag">這不是廣告，這是市場數據</span>
-      </div>
 
-      {/* 市場趨勢 */}
-      <section className="orion-insight-section" style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(20px)', transition: 'all 0.6s 0.1s' }}>
-        <h2 className="insight-section-title">市場趨勢</h2>
-        <div className="orion-trend-cards">
-          <div className="orion-trend-card up">
-            <div className="trend-value">+23%</div>
-            <div className="trend-bar" style={{ width: '85%' }} />
-            <div className="trend-label">導入 AI 的企業<br />年均營收成長率</div>
-          </div>
-          <div className="orion-trend-card neutral">
-            <div className="trend-value">+4%</div>
-            <div className="trend-bar" style={{ width: '20%' }} />
-            <div className="trend-label">未導入 AI 的企業<br />年均營收成長率</div>
-          </div>
-          <div className="orion-trend-card alert">
-            <div className="trend-icon"><AlertTriangle size={24} /></div>
-            <div className="trend-value">僅 12%</div>
-            <div className="trend-label">台灣中小企業 AI 導入率</div>
-            <div className="trend-sub">代表 88% 還在等</div>
-          </div>
+      <section className="site-page-hero split">
+        <div>
+          <span className="site-eyebrow">數據洞察</span>
+          <h1>AI 的價值不在回答速度，而在企業能不能形成決策複利。</h1>
+          <p>
+            很多公司買了 AI 工具，卻沒有把資料、任務、回饋與驗證串起來。真正的差距不是模型，而是企業是否擁有自己的 AI 作業層。
+          </p>
         </div>
+        <CinematicVideo src="/videos/orion-memory-city-card-loop.mp4" label="企業資料記憶城市動畫" />
       </section>
 
-      {/* 產業效率對比 */}
-      <section className="orion-insight-section" style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(20px)', transition: 'all 0.6s 0.3s' }}>
-        <h2 className="insight-section-title">產業效率對比表</h2>
-        <div className="orion-compare-grid">
-          {industryData.map(d => (
-            <div key={d.industry} className="orion-compare-card">
-              <div className="compare-industry" style={{ borderLeftColor: d.color }}>{d.industry}</div>
-              <div className="compare-row before">
-                <span className="compare-badge before">未導入</span>
-                <span>{d.before}</span>
-              </div>
-              <div className="compare-row after">
-                <span className="compare-badge after">導入後</span>
-                <span>{d.after}</span>
-              </div>
-              <div className="compare-improvement" style={{ color: d.color }}>
-                <TrendingUp size={16} />
-                改善幅度：{d.improvement}
-              </div>
-            </div>
+      <section className="site-section insight-score-section">
+        <div className="site-section-header narrow">
+          <span className="site-eyebrow">三種企業狀態</span>
+          <h2>AI 導入的輸贏，取決於它有沒有進入你的工作流。</h2>
+        </div>
+        <div className="insight-comparison">
+          {insightRows.map((row, index) => (
+            <article key={row.title} className={index === 2 ? 'is-orion' : ''}>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <h3>{row.title}</h3>
+              <p>{row.before}</p>
+              <strong>{row.after}</strong>
+            </article>
           ))}
         </div>
       </section>
 
-      {/* 結語 */}
-      <section className="orion-insight-conclusion" style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.8s 0.5s' }}>
-        <blockquote>
-          「現在不導入 AI 的企業，<br />3 年後將面臨的不是競爭，而是淘汰。」
-        </blockquote>
-        <button className="orion-btn-fill large" onClick={() => setLocation('/war-room')}>
-          <Zap size={18} />
-          <span>立即啟動 AI 診斷</span>
-        </button>
+      <section className="site-section signal-section">
+        <CinematicVideo src="/videos/orion-executive-board-pan.mp4" label="企業主管會議與決策討論影片" />
+        <div className="signal-content">
+          <span className="site-eyebrow">ORION 觀察指標</span>
+          <h2>一套 AI 系統是否有價值，看三個訊號。</h2>
+          <div className="signal-grid">
+            {signals.map((signal) => (
+              <div key={signal.label}>
+                <LineChart size={20} />
+                <strong>{signal.label}</strong>
+                <span>{signal.value}</span>
+                <p>{signal.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="site-section risk-callout">
+        <AlertTriangle size={24} />
+        <div>
+          <h2>風險提醒：不要把 AI 導入做成新的人工負擔。</h2>
+          <p>
+            如果 AI 只是在旁邊聊天，員工還是要手動搬資料、整理結論、建立任務、通知團隊，那它沒有真正降低邊際成本。ORION 的判斷標準是：做完一次之後，下一次是不是更輕鬆。
+          </p>
+        </div>
+      </section>
+
+      <section className="site-section final-plain-cta">
+        <div className="final-command-content">
+          <span className="site-eyebrow">下一步</span>
+          <h2>用你的真實流程，測一次 ORION 是否能降低決策成本。</h2>
+          <p>最小可驗證行動不是做大平台，而是先把一個痛點拆成一條可以跑、可以驗、可以回收資料的工作流。</p>
+          <button className="orion-primary-btn" onClick={startDiagnosis}>
+            啟動 AI 診斷
+            <ArrowRight size={18} />
+          </button>
+        </div>
+      </section>
+
+      <section className="site-section site-scoreboard compact">
+        <div>
+          <TrendingUp size={22} />
+          <strong>複利判斷</strong>
+          <span>下次是否更快</span>
+        </div>
+        <div>
+          <LineChart size={22} />
+          <strong>資料判斷</strong>
+          <span>是否留下可用資料</span>
+        </div>
+        <div>
+          <AlertTriangle size={22} />
+          <strong>風險判斷</strong>
+          <span>是否能提前預警</span>
+        </div>
       </section>
     </div>
   );

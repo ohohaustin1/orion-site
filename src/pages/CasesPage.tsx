@@ -1,39 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Filter, Check, ChevronDown, User, X, Lightbulb, Wrench, BarChart3 } from 'lucide-react';
-import { allCases, type CaseStudy as BaseCase } from '../data/cases';
-import { fetchIndustries, FALLBACK_INDUSTRIES, type Industry } from '../lib/industries';
+import { useEffect, useMemo, useState } from 'react';
+import { ArrowRight, BarChart3, Filter, Lightbulb, ShieldCheck, Wrench } from 'lucide-react';
+import { allCases, type CaseStudy, type MetricItem } from '../data/cases';
 import PageSEO from '../components/PageSEO';
+import CinematicVideo from '../components/shared/CinematicVideo';
 import { API_BASE, DIAG_URL } from '../lib/api-base';
-// PR 2: chat_initiated event
 import { pushEvent } from '../lib/analytics';
 
-// CN-PROXY-VERCEL-EDGE-001: API_BASE 走 proxy（CN）/ 直連（其他）；DIAG_URL 永遠直連（page nav）
 const API_URL = `${API_BASE}/api/public/cases`;
-const IQA_URL = `${API_BASE}/api/public/industry-qa`;
+const ALL = '全部';
+const GARBLED_RE = /[�]|銝|嚗|瘙|蝟|鞈|撠|摰|憭|隤|雿|蝯|蝺|蝑|閬|頝/;
 
-// 2026-04-27 v6 案例故事化擴展（從 BaseCase 加 7 欄位 + metrics）
-interface MetricItem { label: string; value: string }
-interface CaseStudy extends BaseCase {
-  hero_number?: string;
-  hero_money?: string;
-  hook_question?: string;
-  story_empathy?: string;
-  story_failed_attempt?: string;
-  story_aha_moment?: string;
-  story_solution?: string;
-  metrics?: MetricItem[];
-}
-
-interface IndustryQA {
-  id: number;
-  industry: string;
-  resonance: string[];
-  q1: { title: string; answer: string };
-  q2: { title: string; answer: string };
-  q3: { title: string; answer: string };
-}
-
-// API response shape（orion-hub /api/public/cases 的 cms_cases 欄位）
 interface ApiCase {
   id: number;
   industry?: string;
@@ -45,7 +21,6 @@ interface ApiCase {
   results?: string;
   duration?: string;
   featured?: 0 | 1 | boolean;
-  // 2026-04-27 v6 故事化新欄位
   hero_number?: string | null;
   hero_money?: string | null;
   hook_question?: string | null;
@@ -56,299 +31,201 @@ interface ApiCase {
   metrics?: MetricItem[];
 }
 
-function apiToCaseStudy(c: ApiCase): CaseStudy {
+function apiToCaseStudy(item: ApiCase): CaseStudy {
   return {
-    id: c.id,
-    industry: c.industry || '',
-    company: c.company || '',
-    problem: c.pain || '',
-    wrongMove: c.wrong_move || '',
-    aiInsight: c.ai_insight || '',
-    strategy: c.solution || '',
-    results: c.results || '',
-    duration: c.duration || '',
-    featured: !!c.featured,
-    hero_number: c.hero_number || '',
-    hero_money: c.hero_money || '',
-    hook_question: c.hook_question || '',
-    story_empathy: c.story_empathy || c.pain || '',
-    story_failed_attempt: c.story_failed_attempt || c.wrong_move || '',
-    story_aha_moment: c.story_aha_moment || c.ai_insight || '',
-    story_solution: c.story_solution || c.solution || '',
-    metrics: Array.isArray(c.metrics) ? c.metrics : [],
+    id: item.id,
+    industry: item.industry || '',
+    company: item.company || '',
+    problem: item.pain || '',
+    wrongMove: item.wrong_move || '',
+    aiInsight: item.ai_insight || '',
+    strategy: item.solution || '',
+    results: item.results || '',
+    duration: item.duration || '',
+    featured: !!item.featured,
+    hero_number: item.hero_number || '',
+    hero_money: item.hero_money || '',
+    hook_question: item.hook_question || '',
+    story_empathy: item.story_empathy || item.pain || '',
+    story_failed_attempt: item.story_failed_attempt || item.wrong_move || '',
+    story_aha_moment: item.story_aha_moment || item.ai_insight || '',
+    story_solution: item.story_solution || item.solution || '',
+    metrics: Array.isArray(item.metrics) ? item.metrics : [],
   };
 }
 
-export default function CasesPage() {
-  // null = loading（尚未 fetch 回）；實陣列 = 已載入（API 或 fallback）
-  const [cases, setCases] = useState<CaseStudy[] | null>(null);
-  // 2026-04-27：讀 ?industry=XXX URL param、首頁精選卡跳過來自動選那個產業
-  const initialFilter = (() => {
-    if (typeof window === 'undefined') return '全部';
-    try { return new URLSearchParams(window.location.search).get('industry') || '全部'; }
-    catch { return '全部'; }
-  })();
-  const [filter, setFilter] = useState(initialFilter);
-  // TD-INDUSTRIES-sync：從 /api/public/industries 取單一來源、失敗 fallback
-  const [industriesSrc, setIndustriesSrc] = useState<Industry[]>(FALLBACK_INDUSTRIES);
+function hasBrokenText(cases: CaseStudy[]) {
+  const sample = cases
+    .slice(0, 6)
+    .map((item) => [item.industry, item.company, item.problem, item.results].join(' '))
+    .join(' ');
+  return GARBLED_RE.test(sample);
+}
 
-  // Task 2: fetch /api/public/cases, 失敗靜默 fallback 硬碼
+function startDiagnosis(entryPoint: string) {
+  pushEvent('chat_initiated', { flow_name: 'o', entry_point: entryPoint });
+  window.location.href = `${DIAG_URL}/`;
+}
+
+export default function CasesPage() {
+  const [cases, setCases] = useState<CaseStudy[]>(allCases);
+  const [source, setSource] = useState<'api' | 'fallback' | 'loading'>('loading');
+  const [openId, setOpenId] = useState<number | null>(allCases[0]?.id ?? null);
+  const [filter, setFilter] = useState(() => {
+    if (typeof window === 'undefined') return ALL;
+    return new URLSearchParams(window.location.search).get('industry') || ALL;
+  });
+
   useEffect(() => {
-    let aborted = false;
+    if (typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname)) {
+      setCases(allCases);
+      setSource('fallback');
+      return;
+    }
+
+    let cancelled = false;
     const ctrl = new AbortController();
-    const timeoutId = setTimeout(() => ctrl.abort(), 4000); // 4s timeout
+    const timeoutId = window.setTimeout(() => ctrl.abort(), 4000);
 
     fetch(API_URL, { signal: ctrl.signal })
-      .then(r => (r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status))))
-      .then(j => {
-        if (aborted) return;
-        const list: ApiCase[] = Array.isArray(j?.cases) ? j.cases : [];
-        const mapped = list.map(apiToCaseStudy);
-        setCases(mapped.length ? mapped : allCases); // 零筆也 fallback
+      .then((response) => (response.ok ? response.json() : Promise.reject(new Error(`HTTP ${response.status}`))))
+      .then((payload) => {
+        if (cancelled) return;
+        const mapped = Array.isArray(payload?.cases) ? payload.cases.map(apiToCaseStudy) : [];
+        if (mapped.length > 0 && !hasBrokenText(mapped)) {
+          setCases(mapped);
+          setSource('api');
+        } else {
+          setCases(allCases);
+          setSource('fallback');
+        }
       })
       .catch(() => {
-        if (!aborted) setCases(allCases); // 靜默 fallback
+        if (!cancelled) {
+          setCases(allCases);
+          setSource('fallback');
+        }
       })
-      .finally(() => clearTimeout(timeoutId));
-
-    // TD-INDUSTRIES-sync：fetch 產業清單（cache 命中即返、失敗 fallback）
-    fetchIndustries().then((list) => { if (!aborted) setIndustriesSrc(list); });
-
-    // 2026-04-27：一次拉全部 14 產業問答（用 Map 之後切產業即時切換、無需 re-fetch）
-    fetch(IQA_URL)
-      .then((r) => r.json())
-      .then((j) => { if (!aborted && j?.qa) setAllIqa(j.qa); })
-      .catch(() => { /* fail silent */ });
+      .finally(() => window.clearTimeout(timeoutId));
 
     return () => {
-      aborted = true;
+      cancelled = true;
       ctrl.abort();
+      window.clearTimeout(timeoutId);
     };
   }, []);
 
-  // 產業問答 state
-  const [allIqa, setAllIqa] = useState<IndustryQA[]>([]);
-  const currentIqa = filter !== '全部' ? allIqa.find((q) => q.industry === filter) : null;
-  // 2026-04-27 單開機制：同時只展開一張 case card
-  const [openCardId, setOpenCardId] = useState<number | null>(null);
-  // filter 切換時收合所有
-  useEffect(() => { setOpenCardId(null); }, [filter]);
-  const toggleCard = (id: number) => setOpenCardId((prev) => (prev === id ? null : id));
-
-  const loading = cases === null;
-  const effectiveCases = cases ?? allCases;
-  // 從 case data 抽取已用到的產業 + 補上 industriesSrc（單一來源）
-  const usedFromCases = new Set(effectiveCases.map(c => c.industry).filter(Boolean));
-  const allIndustryNames = new Set([
-    ...industriesSrc.map(i => i.name),
-    ...usedFromCases, // 容錯：case 用了 industriesSrc 沒列的產業也照樣顯示
-  ]);
-  const industries = ['全部', ...Array.from(allIndustryNames)];
-  const filtered = filter === '全部' ? effectiveCases : effectiveCases.filter(c => c.industry === filter);
+  const industries = useMemo(() => [ALL, ...Array.from(new Set(cases.map((item) => item.industry))).filter(Boolean)], [cases]);
+  const filtered = filter === ALL ? cases : cases.filter((item) => item.industry === filter);
 
   return (
-    <div className="orion-page">
+    <div className="orion-cinematic-site site-page">
       <PageSEO
-        title="實戰戰報資料庫 | Orion 獵戶座智鑑"
-        description="20 個真實企業 AI 導入案例，成交率提升、成本降低的量化成果。"
+        title="ORION AI 實戰案例｜企業 AI 系統如何落地"
+        description="查看 ORION AI 如何把不動產、電商、製造、餐飲、客戶留存與企業現金流問題，拆成可執行、可驗證、可放大的 AI 系統。"
         url="/cases"
       />
-      <div className="orion-page-header">
-        <h1>實戰戰報資料庫</h1>
-        <p>
-          跨 {new Set(effectiveCases.map(c => c.industry)).size} 個產業、{effectiveCases.length} 個 AI 導入實戰報告 — 每一筆數字都來自真實交付
-        </p>
-      </div>
 
-      <div className="orion-filter-bar">
-        <Filter size={16} style={{ color: 'var(--orion-gold)' }} />
-        {industries.map(ind => (
-          <button
-            key={ind}
-            className={`orion-filter-chip ${filter === ind ? 'active' : ''}`}
-            onClick={() => setFilter(ind)}
-          >
-            {ind}
-          </button>
-        ))}
-      </div>
-
-      {/* Layer 1：共鳴 — 只在選了特定產業時 */}
-      {currentIqa && (
-        <section className="iqa-resonance">
-          <h2 className="iqa-resonance-title">{filter}老闆、你是不是也遇到？</h2>
-          <ul className="iqa-resonance-list">
-            {currentIqa.resonance.map((r, i) => (
-              <li key={i} className="iqa-resonance-item">
-                <Check size={18} className="iqa-check" /> {r}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      <div className="orion-cases-grid full">
-        {loading
-          ? Array.from({ length: 12 }).map((_, i) => (
-              <div key={`sk-${i}`} className="orion-case-card-skeleton" style={{ animationDelay: `${i * 0.05}s` }}>
-                <div className="sk-bar short"></div>
-                <div className="sk-bar med"></div>
-                <div className="sk-bar long"></div>
-                <div className="sk-bar long"></div>
-                <div className="sk-bar med"></div>
-                <div className="sk-bar long"></div>
-                <div className="sk-bar short"></div>
-              </div>
-            ))
-          : filtered.map((c) => {
-              const iqa = allIqa.find((q) => q.industry === c.industry);
-              return (
-                <CaseCardV2
-                  key={c.id}
-                  caseData={c}
-                  industryQa={iqa}
-                  isOpen={openCardId === c.id}
-                  onToggle={() => toggleCard(c.id)}
-                />
-              );
-            })}
-      </div>
-
-      {!loading && filtered.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--orion-text-secondary)' }}>
-          目前此產業尚無案例
+      <section className="site-page-hero split">
+        <div>
+          <span className="site-eyebrow">實戰案例</span>
+          <h1>不是展示功能，是把企業問題變成可執行系統。</h1>
+          <p>
+            每個案例都從一個真實的營運斷點開始：線索沒有追蹤、排程靠人腦、現金流看太慢、品牌語感不可複製。ORION 的價值，是把斷點變成流程與資料。
+          </p>
+          <div className="source-pill">
+            <ShieldCheck size={16} />
+            {source === 'api' ? '使用 production 案例資料' : source === 'loading' ? '正在讀取 production 案例' : 'API 未回應或資料異常，使用本地乾淨案例'}
+          </div>
         </div>
-      )}
-    </div>
-  );
-}
+        <CinematicVideo src="/videos/orion-systems-city-card-loop.mp4" label="企業系統案例城市動畫" />
+      </section>
 
-// ── 2026-04-27 v6 CaseCardV2：可展開故事卡 ──
-interface CaseCardV2Props {
-  caseData: CaseStudy;
-  industryQa?: IndustryQA;
-  isOpen: boolean;
-  onToggle: () => void;
-}
-
-function CaseCardV2({ caseData: c, industryQa, isOpen, onToggle }: CaseCardV2Props) {
-  const heroNumber = c.hero_number || '';
-  const heroMoney = c.hero_money || '';
-  const hook = c.hook_question || '';
-  const metrics = (c.metrics && c.metrics.length > 0) ? c.metrics : [];
-
-  return (
-    <article className={`case-card-v2 ${isOpen ? 'is-open' : ''}`}>
-      <button
-        type="button"
-        className="case-card-summary"
-        onClick={onToggle}
-        aria-expanded={isOpen}
-      >
-        <span className="industry-chip industry-chip--outline">{c.industry}</span>
-        <h3 className="company-name">{c.company}</h3>
-
-        <div className="hero-metrics">
-          {heroNumber && (
-            <div className="hero-metric">
-              <span className="metric-value stat-number">{heroNumber}</span>
-            </div>
-          )}
-          {heroMoney && heroMoney !== heroNumber && (
-            <div className="hero-metric secondary">
-              <span className="metric-value stat-number">{heroMoney}</span>
-            </div>
-          )}
+      <section className="case-filter-section">
+        <div className="filter-label">
+          <Filter size={16} />
+          依產業篩選
         </div>
-
-        {hook && <p className="hook-line">{hook}</p>}
-
-        <span className="expand-btn">
-          {isOpen ? '收合 ▲' : '展開案例 ▼'}
-        </span>
-      </button>
-
-      <div className="case-expanded">
-        <div className="case-expanded-inner">
-          <StoryStep icon={<User size={18} />} label="他跟你一樣">{c.story_empathy}</StoryStep>
-          <StoryStep icon={<X size={18} />} label="他試過這些、都沒用">{c.story_failed_attempt}</StoryStep>
-          <StoryStep icon={<Lightbulb size={18} />} label="真正的問題在這裡">{c.story_aha_moment}</StoryStep>
-          <StoryStep icon={<Wrench size={18} />} label="我們只做了一件事">{c.story_solution}</StoryStep>
-
-          {metrics.length > 0 && (
-            <div className="story-results">
-              <div className="story-step-header">
-                <BarChart3 size={18} className="story-step-icon" />
-                <span className="story-step-label">然後發生了這些變化</span>
-              </div>
-              <div className="metrics-grid">
-                {metrics.map((m, i) => (
-                  <div key={i} className="metric-item">
-                    {m.label && <span className="metric-item-label">{m.label}</span>}
-                    <span className="metric-item-value stat-number">{m.value}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {industryQa && (
-            <section className="case-qa">
-              <h4>這個產業的老闆、通常問我們 3 個問題</h4>
-              <div className="iqa-accordion">
-                <IqaAccordionItem title={industryQa.q1.title} answer={industryQa.q1.answer} defaultOpen tag="Q1" />
-                <IqaAccordionItem title={industryQa.q2.title} answer={industryQa.q2.answer}             tag="Q2" />
-                <IqaAccordionItem title={industryQa.q3.title} answer={industryQa.q3.answer}             tag="Q3" />
-              </div>
-            </section>
-          )}
-
-          <section className="case-cta">
-            <h4>跟你的情況像嗎？</h4>
-            <p>3 分鐘免費診斷、我們幫你看看還能怎麼做</p>
-            <a
-              href={DIAG_URL}
-              onClick={() => pushEvent('chat_initiated', { flow_name: 'o', entry_point: 'cases_iqa' })}
-              className="iqa-cta-btn"
-            >免費診斷 →</a>
-          </section>
-        </div>
-      </div>
-    </article>
-  );
-}
-
-function StoryStep({ icon, label, children }: { icon: React.ReactNode; label: string; children?: React.ReactNode }) {
-  if (!children) return null;
-  return (
-    <div className="story-step">
-      <div className="story-step-header">
-        <span className="story-step-icon">{icon}</span>
-        <span className="story-step-label">{label}</span>
-      </div>
-      <p className="story-step-content">{children}</p>
-    </div>
-  );
-}
-
-// ── 2026-04-27 IqaAccordionItem 元件 ──
-function IqaAccordionItem({ title, answer, defaultOpen, tag }: { title: string; answer: string; defaultOpen?: boolean; tag: string }) {
-  const [open, setOpen] = useState(!!defaultOpen);
-  const onToggle = () => setOpen((v) => !v);
-  return (
-    <div className={`iqa-acc-item ${open ? 'iqa-acc-open' : ''}`}>
-      <button type="button" className="iqa-acc-header" onClick={onToggle} aria-expanded={open}>
-        <span className="iqa-acc-tag">{tag}</span>
-        <span className="iqa-acc-title">{title}</span>
-        <ChevronDown size={20} className="iqa-acc-chevron" />
-      </button>
-      {open && (
-        <div className="iqa-acc-body">
-          {answer.split(/\n\n+/).map((p, i) => (
-            <p key={i}>{p}</p>
+        <div className="case-filter-list">
+          {industries.map((industry) => (
+            <button
+              key={industry}
+              className={filter === industry ? 'active' : ''}
+              onClick={() => {
+                setFilter(industry);
+                setOpenId(null);
+              }}
+            >
+              {industry}
+            </button>
           ))}
         </div>
-      )}
+      </section>
+
+      <section className="case-study-list">
+        {filtered.map((caseData) => (
+          <article key={caseData.id} className={`case-study-row ${openId === caseData.id ? 'is-open' : ''}`}>
+            <button className="case-study-summary" onClick={() => setOpenId(openId === caseData.id ? null : caseData.id)}>
+              <span className="case-industry">{caseData.industry}</span>
+              <h2>{caseData.company}</h2>
+              <p>{caseData.hook_question || caseData.problem}</p>
+              <div className="case-metric-pair">
+                <strong>{caseData.hero_number || caseData.duration}</strong>
+                <span>{caseData.hero_money || '系統化成果'}</span>
+              </div>
+            </button>
+
+            {openId === caseData.id && (
+              <div className="case-study-detail">
+                <div className="case-detail-grid">
+                  <CaseDetail icon={<BarChart3 size={18} />} label="原本斷點" body={caseData.problem} />
+                  <CaseDetail icon={<Lightbulb size={18} />} label="AI 看見的本質" body={caseData.aiInsight} />
+                  <CaseDetail icon={<Wrench size={18} />} label="ORION 系統化做法" body={caseData.strategy} />
+                </div>
+                <div className="case-result-panel">
+                  <h3>可驗證成果</h3>
+                  <p>{caseData.results}</p>
+                  <div className="case-metrics">
+                    {(caseData.metrics || []).map((metric) => (
+                      <span key={`${caseData.id}-${metric.label}`}>
+                        <small>{metric.label}</small>
+                        <strong>{metric.value}</strong>
+                      </span>
+                    ))}
+                  </div>
+                  <button className="orion-primary-btn" onClick={() => startDiagnosis('cases_card_cta')}>
+                    讓 ORION 拆你的案例
+                    <ArrowRight size={18} />
+                  </button>
+                </div>
+              </div>
+            )}
+          </article>
+        ))}
+      </section>
+
+      <section className="site-section site-final-command compact">
+        <CinematicVideo src="/videos/orion-core-devices-card-loop.mp4" label="多裝置企業 AI 系統影片" />
+        <div className="final-command-content">
+          <span className="site-eyebrow">下一步</span>
+          <h2>把你的產業問題，拆成第一版 AI 系統藍圖。</h2>
+          <p>不需要先想清楚技術細節。你只要說出產業、痛點、想達到的結果，ORION 會先幫你拆出流程、工具、資料與工程交付順序。</p>
+          <button className="orion-primary-btn" onClick={() => startDiagnosis('cases_bottom_cta')}>
+            啟動 AI 診斷
+            <ArrowRight size={18} />
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function CaseDetail({ icon, label, body }: { icon: React.ReactNode; label: string; body: string }) {
+  return (
+    <div className="case-detail-card">
+      <span>{icon}</span>
+      <strong>{label}</strong>
+      <p>{body}</p>
     </div>
   );
 }
