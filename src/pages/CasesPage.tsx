@@ -117,6 +117,10 @@ export default function CasesPage() {
 
   const industries = useMemo(() => [ALL, ...Array.from(new Set(cases.map((item) => item.industry))).filter(Boolean)], [cases]);
   const filtered = filter === ALL ? cases : cases.filter((item) => item.industry === filter);
+  const flagshipCases = useMemo(() => {
+    const featured = filtered.filter((item) => item.featured);
+    return (featured.length ? featured : filtered).slice(0, 3);
+  }, [filtered]);
 
   return (
     <div className="orion-cinematic-site site-page">
@@ -139,6 +143,28 @@ export default function CasesPage() {
           </div>
         </div>
         <CinematicVideo src="/videos/orion-systems-city-card-loop.mp4" label="企業系統案例城市動畫" />
+      </section>
+
+      <section className="site-section flagship-case-section" aria-label="三個旗艦案例摘要">
+        <div className="site-section-header narrow">
+          <span className="site-eyebrow">老闆會看到的改變</span>
+          <h2>不是「導入 AI」四個字，是每天少漏幾件事。</h2>
+          <p>先看三個典型斷點：原本誰在忙、哪裡漏掉、O 接手後老闆早上會看到什麼。</p>
+        </div>
+        <div className="flagship-case-grid">
+          {flagshipCases.map((caseData) => (
+            <article key={`flagship-${caseData.id}`} className="flagship-case-card">
+              <span>{caseData.industry}</span>
+              <h3>{caseData.company}</h3>
+              <p><strong>原本卡點：</strong>{caseData.problem}</p>
+              <p><strong>O 接手：</strong>{caseData.strategy}</p>
+              <div>
+                <small>老闆看到</small>
+                <b>{caseData.hero_number || caseData.duration || '待回、逾時、卡住清單'}</b>
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="case-filter-section">

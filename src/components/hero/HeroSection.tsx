@@ -6,9 +6,9 @@ import { DIAG_URL } from '../../lib/api-base';
 import { pushEvent } from '../../lib/analytics';
 
 const trustSignals = [
-  '客人進來，先接住',
-  '報價追單，不靠記憶',
-  '每天回報，老闆少盯',
+  '3 分鐘先拆一條流程',
+  '不換系統也能先做',
+  '輸出入口、派工、提醒、回報',
 ];
 
 export default function HeroSection() {
@@ -23,7 +23,25 @@ export default function HeroSection() {
       has_query: trimmed.length > 0,
       query_length: trimmed.length,
     });
-    window.location.href = trimmed ? `${DIAG_URL}/?q=${encodeURIComponent(trimmed)}` : `${DIAG_URL}/`;
+    if (trimmed) {
+      try {
+        window.sessionStorage.setItem('orionInitialQ', trimmed);
+        window.sessionStorage.setItem('orionDiagnoseFeedback', '1');
+      } catch {
+        // Private browsing can block sessionStorage. In that case we still avoid putting the question in the URL.
+      }
+      try {
+        window.name = `ORION_HANDOFF:${JSON.stringify({
+          type: 'orionInitialQ',
+          value: trimmed,
+          feedback: true,
+          ts: Date.now(),
+        })}`;
+      } catch {
+        // window.name handoff is best-effort; the destination still opens without leaking the question in the URL.
+      }
+    }
+    window.location.href = `${DIAG_URL}/`;
   };
 
   return (
@@ -49,16 +67,16 @@ export default function HeroSection() {
           </div>
 
           <h1>
-            <span>公司不是沒營收</span>
+            <span>老闆不用再當全公司的追蹤器</span>
             <strong>
-              別讓利潤卡在
+              讓 O 幫你回訊息、
               <br />
-              沒人追的流程裡
+              追名單、盯進度。
             </strong>
           </h1>
 
           <p className="orion-hero-subtitle">
-            O 會把客人訊息、報價後續、訂單進度、回訪提醒和主管回報整理成一條線。你不用每天問「誰回了沒、誰追了沒、哪張單卡住」，O 會先整理、派下一步、提醒負責人，再把結果回報給你。
+            你只要說哪段工作最常卡：私訊沒回、報價後沒追、訂單交期卡住、回訪續約忘記，或團隊進度都要你問。ORION 會把它拆成一條每天會跑的流程：誰負責、多久要回、逾時怎麼提醒、老闆早上看什麼。
           </p>
 
           <form
@@ -71,22 +89,22 @@ export default function HeroSection() {
             <input
               value={q}
               onChange={(event) => setQ(event.target.value)}
-              placeholder="例如：報價寄出去沒人追、客人私訊常漏回、進度都要我問"
+              placeholder="例如：LINE 客人常漏回、報價後沒追、交付進度每天都要我問"
               aria-label="輸入你想交給 O 幫忙追的工作"
             />
             <button type="submit">
-              讓 O 幫我拆
+              免費拆第一條流程
               <ArrowRight size={18} />
             </button>
           </form>
 
           <div className="orion-hero-actions">
             <button type="button" className="orion-primary-btn" onClick={() => submit('hero_primary_cta', '')}>
-              讓 O 幫我拆流程
+              免費讓 O 拆一次
               <ArrowRight size={18} />
             </button>
             <a className="orion-secondary-btn" href="#tool-calling-workflow">
-              看 O 每天怎麼追
+              看老闆會看到什麼
             </a>
           </div>
 
