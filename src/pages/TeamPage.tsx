@@ -20,6 +20,7 @@ interface TeamUnit {
   title: string;
   bio: string;
   icon: typeof Users;
+  image?: string;
 }
 
 const GARBLED_RE = /[�]|銝|嚗|瘙|蝟|鞈|撠|摰|憭|隤|雿|蝯|蝺|蝑|閬|頝/;
@@ -27,10 +28,11 @@ const GARBLED_RE = /[�]|銝|嚗|瘙|蝟|鞈|撠|摰|憭|隤|雿|蝯|蝺|蝑|�
 const fallbackTeam: TeamUnit[] = [
   {
     id: 1,
-    name: 'Austin 許耀宸',
+    name: 'Austin 許燿宸',
     title: '創辦人與策略總指揮',
     bio: '負責 ORION 的長期方向、產品判斷、商業模式與資源配置，確保每一次建置都能沉澱成複利資產。',
     icon: ShieldCheck,
+    image: '/team/AUSTIN.png',
   },
   {
     id: 2,
@@ -72,6 +74,21 @@ const fallbackTeam: TeamUnit[] = [
 function getInitial(name: string) {
   const match = name.match(/[A-Za-z]/);
   return match ? match[0].toUpperCase() : name.charAt(0);
+}
+
+const LOCAL_TEAM_IMAGES: Array<{ pattern: RegExp; src: string }> = [
+  { pattern: /Austin|許[耀燿]宸/i, src: '/team/AUSTIN.png' },
+  { pattern: /魏宇霆|David/i, src: '/team/魏宇霆 David.png' },
+  { pattern: /王艾倫|Aaron/i, src: '/team/王艾倫 Aaron.png' },
+  { pattern: /陳建宏|Kevin/i, src: '/team/陳建宏 Kevin.png' },
+  { pattern: /林佳穎|Iris/i, src: '/team/林佳穎 Iris.png' },
+  { pattern: /張雅婷|Tina/i, src: '/team/張雅婷 Tina.png' },
+  { pattern: /吳明哲|Marcus/i, src: '/team/吳明哲 Marcus.png' },
+];
+
+function resolveMemberImage(member: Pick<Member, 'name' | 'title' | 'image_url'>) {
+  const profile = `${member.name} ${member.title}`;
+  return LOCAL_TEAM_IMAGES.find((item) => item.pattern.test(profile))?.src ?? member.image_url ?? null;
 }
 
 function startDiagnosis() {
@@ -144,14 +161,21 @@ export default function TeamPage() {
       <section className="site-section team-system-section">
         {useApiMembers ? (
           <div className="team-card-grid">
-            {members.map((member) => (
-              <article className="team-unit-card" key={member.id}>
-                <div className="team-avatar-letter">{getInitial(member.name)}</div>
-                <h2>{member.name}</h2>
-                <span>{member.title}</span>
-                <p>{member.bio || 'ORION AI 核心成員，負責把商業問題轉成可執行工作流。'}</p>
-              </article>
-            ))}
+            {members.map((member) => {
+              const portrait = resolveMemberImage(member);
+              return (
+                <article className="team-unit-card" key={member.id}>
+                  {portrait ? (
+                    <img className="team-portrait-image" src={portrait} alt={`${member.name} 團隊照`} loading="lazy" />
+                  ) : (
+                    <div className="team-avatar-letter">{getInitial(member.name)}</div>
+                  )}
+                  <h2>{member.name}</h2>
+                  <span>{member.title}</span>
+                  <p>{member.bio || 'ORION AI 核心成員，負責把商業問題轉成可執行工作流。'}</p>
+                </article>
+              );
+            })}
           </div>
         ) : (
           <div className="team-card-grid">
@@ -159,9 +183,13 @@ export default function TeamPage() {
               const Icon = unit.icon;
               return (
                 <article className="team-unit-card" key={unit.id}>
-                  <div className="team-icon-ring">
-                    <Icon size={28} />
-                  </div>
+                  {unit.image ? (
+                    <img className="team-portrait-image" src={unit.image} alt={`${unit.name} 團隊照`} loading="lazy" />
+                  ) : (
+                    <div className="team-icon-ring">
+                      <Icon size={28} />
+                    </div>
+                  )}
                   <h2>{unit.name}</h2>
                   <span>{unit.title}</span>
                   <p>{unit.bio}</p>
