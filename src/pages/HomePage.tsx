@@ -70,17 +70,17 @@ const clarityItems = [
   {
     icon: BrainCircuit,
     title: 'ORION 是什麼',
-    body: '一位 AI 副營運執行長：從客戶進來到成交交付，幫老闆盯住任務、進度、回報與資料。',
+    body: '一個會幫老闆追事情的 O：接訊息、整理需求、排下一步、提醒負責人、回報結果。',
   },
   {
     icon: Workflow,
     title: '你會得到什麼',
-    body: '一張可執行工作流：入口在哪、誰處理、多久要回、卡住怎麼提醒、老闆看什麼報表。',
+    body: '一張每天能跑的清單：誰要回客人、誰要追報價、哪張單卡住、今天老闆要看什麼。',
   },
   {
     icon: Database,
     title: '最後留下什麼',
-    body: '不是一次性建議，而是一套能持續接客、分流、派工、追蹤、回收資料的營運系統。',
+    body: '不是一次性建議，而是讓客人、任務、回訪和成交紀錄都留在系統裡。',
   },
 ];
 
@@ -93,8 +93,8 @@ export default function HomePage() {
   return (
     <div className="orion-cinematic-site">
       <PageSEO
-        title="ORION AI｜別讓利潤死在沒人盯的流程裡"
-        description="ORION AI 是老闆的 AI 副營運執行長，幫企業把客戶入口、需求分流、任務派工、進度追蹤、主管回報、資料沉澱與成交交付做成一條 AI 營運工作流。"
+        title="ORION AI｜別讓利潤卡在沒人追的流程裡"
+        description="ORION AI 會幫老闆接住客人訊息、整理需求、安排下一步、提醒負責人、追蹤進度，最後回報成交與交付結果。"
         url="/home"
       />
 
@@ -117,10 +117,10 @@ export default function HomePage() {
 
       <section className="site-section site-section-intro">
         <div className="site-section-copy">
-          <span className="site-eyebrow">AI 副營運執行長</span>
-          <h2>老闆最累的不是不懂 AI，是每天都要親自確認事情有沒有往前走。</h2>
+          <span className="site-eyebrow">老闆少追一點</span>
+          <h2>最累的不是沒有人，是每件事最後都回到老闆身上。</h2>
           <p>
-            ORION 先找出你公司最常斷掉的營運段落：客戶有沒有被接住、需求有沒有分流、任務有沒有派、負責人有沒有做、進度有沒有卡、結果有沒有回報。接著把這些動作做成 AI 可以每天執行、提醒與回收資料的工作流。
+            客人有沒有回、報價有沒有追、排程有沒有改、回訪有沒有漏、今天誰卡住，這些事不該每天都靠老闆追。ORION 先找出最常斷掉的一段，再把它做成 O 每天可以提醒、追蹤、回報的流程。
           </p>
         </div>
         <div className="site-video-console">
@@ -136,8 +136,8 @@ export default function HomePage() {
       <section id="tool-calling-workflow" className="site-section site-workflow-section">
         <div className="site-section-header">
           <span className="site-eyebrow">AI Operating Workflow</span>
-          <h2>O 不是陪你聊天，是把客戶與任務一路盯到結果的 AI 副營運執行長。</h2>
-          <p>它會先看狀態，再調用工具：整理需求、判斷優先級、建立任務、通知團隊、追蹤卡關、產出回報，讓 AI 從回答問題變成營運執行。</p>
+          <h2>O 不是陪聊，是把「下一步誰要做」追到有結果。</h2>
+          <p>客人一進來，O 先整理他要什麼、急不急、缺什麼資料；再把下一步變成任務，提醒負責人，最後整理成老闆看得懂的回報。</p>
         </div>
 
         <div className="tool-calling-stage">
@@ -159,9 +159,9 @@ export default function HomePage() {
 
       <section id="modules" className="site-section site-modules-section">
         <div className="site-section-header narrow">
-          <span className="site-eyebrow">12 個營運工作流</span>
-          <h2>每個產業都能先找一段最容易造成隱形成本、利潤流失、進度失控的流程。</h2>
-          <p>不用一次重做整家公司。先挑一條最值得自動化的工作流，ORION 會拆出客戶入口、需求分流、負責人、提醒節奏、主管回報、資料欄位與工程交付順序。</p>
+          <span className="site-eyebrow">12 種老闆最常追的事</span>
+          <h2>先不用想 AI 系統。先想：你每天最常追哪一件事？</h2>
+          <p>製造業追交期，電商追私訊和棄單，房仲追看屋後回訪，診所追預約與術後關懷。ORION 先把一段最痛的流程拆清楚，再做成每天可執行的 AI 任務。</p>
         </div>
 
         <div className="module-grid">
@@ -185,7 +185,7 @@ export default function HomePage() {
         </div>
         <div className="method-copy">
           <span className="site-eyebrow">ORION 方法論</span>
-          <h2>做一次工作流，讓下一次不用再靠人盯。</h2>
+          <h2>先接住一段最痛的流程，再複製到下一段。</h2>
           <div className="method-chain">
             {methodSteps.map((step, index) => (
               <div key={step} className="method-step">
@@ -214,13 +214,13 @@ export default function HomePage() {
         <CinematicVideo src="/videos/orion-bg-04-memory-nightcity.mp4" label="夜間資料城市與企業記憶動畫" />
         <div className="final-command-content">
           <span className="site-eyebrow">下一步</span>
-          <h2>先讓 O 看看：你公司哪一條工作流，最值得交給 AI 副營運執行長。</h2>
+          <h2>先讓 O 看看：你每天最常追人的那件事，能不能交給系統追。</h2>
           <p>
-            不用準備企劃書，也不用先懂技術。你只要用白話說目前最常卡住的流程，O 會整理成痛點、入口、負責人、提醒規則、資料欄位、工程估價方向與下一步。
+            不用準備企劃書，也不用先懂技術。你只要用白話說「現在誰常常漏、誰常常卡、哪件事每天都要你問」，O 會整理成痛點、負責人、提醒規則、資料欄位與第一版導入順序。
           </p>
           <div className="final-command-actions">
             <button className="orion-primary-btn" onClick={() => startDiagnosis('home_final_cta')}>
-              讓 O 拆一條營運工作流
+              讓 O 幫我拆流程
               <ArrowRight size={18} />
             </button>
             <a className="orion-secondary-btn" href="/cases">
@@ -253,12 +253,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="site-section site-griffin-flight" aria-label="ORION 獅鷲雲海品牌影片">
-        <CinematicVideo
-          src="/videos/orion-griffin-cloud-flight.mp4"
-          className="griffin-flight-video"
-          label="ORION 獅鷲在雲海中飛行的品牌影片"
-        />
+      <section className="site-section site-griffin-flight" aria-label="ORION 獅鷲雲海品牌視覺">
+        <picture className="griffin-flight-image">
+          <source srcSet="/images/orion-griffin-command-sky.webp" type="image/webp" />
+          <img src="/images/orion-griffin-command-sky.jpg" alt="ORION 獅鷲在雲海上方翱翔" loading="lazy" />
+        </picture>
         <div className="griffin-flight-content">
           <span className="site-eyebrow">ORION SIGNAL</span>
           <h2>
@@ -267,7 +266,7 @@ export default function HomePage() {
             不靠老闆每天追。
           </h2>
           <p>
-            獅鷲不是裝飾，是 ORION 的工作方式：站在高處看全局，往下抓住每一個會讓利潤流失的斷點，直到流程有人負責、任務有回報、資料能沉澱。
+            獅鷲不是裝飾，是 ORION 的工作方式：站在高處看全局，往下抓住每一個讓利潤卡住的斷點，直到流程有人負責、任務有回報、資料能沉澱。
           </p>
         </div>
       </section>

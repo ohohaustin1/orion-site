@@ -121,17 +121,17 @@ export default function CasesPage() {
   return (
     <div className="orion-cinematic-site site-page">
       <PageSEO
-        title="ORION AI 實戰案例｜AI 副營運執行長如何接住工作流"
-        description="查看 ORION AI 如何把不動產、電商、製造、餐飲、客戶留存與企業現金流流程，拆成可派工、可追蹤、可驗證的 AI 營運工作流。"
+        title="ORION AI 實戰案例｜客人、訂單、回訪怎麼被 O 接住"
+        description="看 ORION 如何把不動產、電商、製造、餐飲、診所等常見斷點，變成有人負責、會提醒、會回報的 AI 流程。"
         url="/cases"
       />
 
       <section className="site-page-hero split">
         <div>
           <span className="site-eyebrow">實戰案例</span>
-          <h1>不是展示 AI 功能，是看哪一條工作流被接住、被追到有結果。</h1>
+          <h1>不是看 AI 多炫，是看客人、訂單、回訪有沒有被追到結果。</h1>
           <p>
-            每個案例都從一個真實的營運斷點開始：客人沒追、排程靠人腦、現金流看太慢、回訪沒人盯。ORION 的價值，是把斷點變成入口、任務、提醒、回報與資料。
+            每個案例都從老闆每天會遇到的斷點開始：客人沒追、交期被插單、私訊漏回、回訪沒人做。ORION 的價值，是把這些事變成有人負責、會提醒、會回報。
           </p>
           <div className="source-pill">
             <ShieldCheck size={16} />
@@ -194,7 +194,7 @@ export default function CasesPage() {
                     ))}
                   </div>
                   <button className="orion-primary-btn" onClick={() => startDiagnosis('cases_card_cta')}>
-                    讓 ORION 拆你的案例
+                    讓 O 拆我的案例
                     <ArrowRight size={18} />
                   </button>
                 </div>
@@ -208,10 +208,10 @@ export default function CasesPage() {
         <CinematicVideo src="/videos/orion-core-devices-card-loop.mp4" label="多裝置企業 AI 工作流影片" />
         <div className="final-command-content">
           <span className="site-eyebrow">下一步</span>
-          <h2>把你的產業問題，拆成第一版 AI 營運工作流。</h2>
-          <p>不需要先想清楚技術細節。你只要說出產業、哪裡正在產生隱形成本、誰在處理、想達到的結果，ORION 會先幫你拆出入口、任務、提醒、資料與工程交付順序。</p>
+          <h2>把你每天最常漏掉的事，拆成第一版 O 可以追的流程。</h2>
+          <p>不需要先想技術。你只要說出產業、哪件事常漏、誰在處理、想看到什麼結果，O 會先幫你拆出下一步、負責人、提醒節奏和資料欄位。</p>
           <button className="orion-primary-btn" onClick={() => startDiagnosis('cases_bottom_cta')}>
-            啟動工作流診斷
+            讓 O 幫我拆流程
             <ArrowRight size={18} />
           </button>
         </div>

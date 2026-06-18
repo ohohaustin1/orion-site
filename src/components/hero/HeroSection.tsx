@@ -6,9 +6,9 @@ import { DIAG_URL } from '../../lib/api-base';
 import { pushEvent } from '../../lib/analytics';
 
 const trustSignals = [
-  '客戶進來，先整理需求',
-  '任務建立，派給負責人',
-  '卡住逾時，提醒並回報',
+  '客人進來，先接住',
+  '報價追單，不靠記憶',
+  '每天回報，老闆少盯',
 ];
 
 export default function HeroSection() {
@@ -27,7 +27,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="orion-hero-cinematic" aria-label="ORION AI 揪出利潤流失">
+    <section className="orion-hero-cinematic" aria-label="ORION AI 幫老闆追流程">
       <CinematicVideo
         src="/videos/runway-orion-executive-01.mp4"
         className="orion-hero-video"
@@ -51,14 +51,14 @@ export default function HeroSection() {
           <h1>
             <span>公司不是沒營收</span>
             <strong>
-              別讓利潤死在
+              別讓利潤卡在
               <br />
-              沒人盯的流程裡
+              沒人追的流程裡
             </strong>
           </h1>
 
           <p className="orion-hero-subtitle">
-            O 是老闆的 AI 副營運執行長。客戶從 LINE、IG、表單或官網進來後，O 會先診斷哪裡正在造成利潤流失，整理需求與缺口，判斷急不急、該交給誰，接著建立任務、提醒負責人、追蹤卡點，最後盯到成交與交付，整理成老闆看得懂的進度回報與可沉澱的資料。
+            O 會把客人訊息、報價後續、訂單進度、回訪提醒和主管回報整理成一條線。你不用每天問「誰回了沒、誰追了沒、哪張單卡住」，O 會先整理、派下一步、提醒負責人，再把結果回報給你。
           </p>
 
           <form
@@ -71,22 +71,22 @@ export default function HeroSection() {
             <input
               value={q}
               onChange={(event) => setQ(event.target.value)}
-              placeholder="例如：客人私訊進來後，報價、追單、交付常常斷掉"
-              aria-label="輸入你想交給 AI 副營運執行長接手的工作流"
+              placeholder="例如：報價寄出去沒人追、客人私訊常漏回、進度都要我問"
+              aria-label="輸入你想交給 O 幫忙追的工作"
             />
             <button type="submit">
-              拆工作流
+              讓 O 幫我拆
               <ArrowRight size={18} />
             </button>
           </form>
 
           <div className="orion-hero-actions">
             <button type="button" className="orion-primary-btn" onClick={() => submit('hero_primary_cta', '')}>
-              讓 O 拆一條營運工作流
+              讓 O 幫我拆流程
               <ArrowRight size={18} />
             </button>
             <a className="orion-secondary-btn" href="#tool-calling-workflow">
-              看 O 怎麼盯到成交與交付
+              看 O 每天怎麼追
             </a>
           </div>
 
@@ -115,7 +115,7 @@ export default function HeroSection() {
             <div className="orion-command-hud">
               <span>
                 <ShieldCheck size={15} />
-                營運工作流
+                每天追蹤
               </span>
               <span>
                 <Workflow size={15} />

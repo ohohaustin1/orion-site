@@ -8,39 +8,39 @@ import { pushEvent } from '../lib/analytics';
 const services = [
   {
     icon: BrainCircuit,
-    title: '流程診斷',
-    desc: '先找出公司最容易產生隱形成本、利潤流失與進度失控的營運段落，判斷哪一段最值得先交給 AI。',
-    output: '營運斷點、ROI 假設、第一版工作流',
+    title: '找出最常卡住的事',
+    desc: '先找出客人、報價、訂單、回訪或團隊進度哪裡最常卡住，再決定第一版 O 要先追哪一段。',
+    output: '常卡流程、負責人、第一版追蹤清單',
   },
   {
     icon: Workflow,
-    title: '入口整合',
-    desc: '把 LINE、IG、官網表單、CRM、內部任務或人工回報整理成同一個狀態入口。',
-    output: '入口清單、資料欄位、狀態規則',
+    title: '接住客人和任務',
+    desc: '把 LINE、IG、官網表單、CRM、內部任務或人工回報整理到同一條線，先不要讓事情散掉。',
+    output: '入口清單、基本欄位、處理狀態',
   },
   {
     icon: Network,
-    title: '任務派工',
-    desc: '讓每個客人、名單、訂單與內部任務都有負責人、下一步與提醒規則。',
-    output: '任務分派、回訪節奏、逾時提醒',
+    title: '把下一步派出去',
+    desc: '讓每個客人、名單、訂單與內部任務都有負責人、下一步和提醒時間，不再只靠人記。',
+    output: '負責人、下一步、逾時提醒',
   },
   {
     icon: FileText,
-    title: '進度回報',
-    desc: '把每天卡住的事、完成的事、需要老闆判斷的事整理成可以直接看的回報。',
-    output: '主管摘要、異常清單、下一步建議',
+    title: '每天回報給老闆',
+    desc: '把今天完成什麼、卡住什麼、誰還沒處理、哪裡需要老闆判斷，整理成可以直接看的回報。',
+    output: '每日摘要、卡點清單、下一步建議',
   },
   {
     icon: Database,
-    title: '資料記憶',
-    desc: '把每一次接單、追蹤、成交、流失、驗收沉澱成資料，讓下一次不用重新開始。',
-    output: '資料欄位、回收節點、營運儀表板',
+    title: '留下客戶記憶',
+    desc: '把每一次訊息、追蹤、成交、流失和回訪留下紀錄，讓下一次不用重新問、重新整理。',
+    output: '客戶紀錄、回訪節點、主管儀表板',
   },
   {
     icon: ShieldCheck,
-    title: '驗收與風險',
-    desc: '把 AI 輸出、工程交付、production 狀態與客戶流程分層驗證，避免做出不能用的漂亮 demo。',
-    output: '測試清單、驗收證據、風險紀錄',
+    title: '確認真的能用',
+    desc: '不是做漂亮畫面就結束，而是確認客人進得來、任務派得出去、提醒會送、老闆看得到回報。',
+    output: '測試清單、畫面證據、風險紀錄',
   },
 ];
 
@@ -80,24 +80,24 @@ export default function AboutPage() {
   return (
     <div className="orion-cinematic-site site-page">
       <PageSEO
-        title="ORION AI 服務介紹｜老闆的 AI 副營運執行長"
-        description="ORION AI 把企業的客戶入口、需求分流、任務派工、進度追蹤、主管回報、資料記憶與成交交付做成可執行的 AI 營運工作流。"
+        title="ORION AI 服務介紹｜把每天追人的事交給 O"
+        description="ORION AI 幫企業把客人訊息、報價追蹤、任務派工、逾時提醒、主管回報與客戶紀錄做成每天可執行的系統。"
         url="/about"
       />
 
       <section className="site-page-hero split">
         <div>
           <span className="site-eyebrow">服務介紹</span>
-          <h1>不是做一個 AI 功能，是請一位會盯流程的 AI 副營運執行長。</h1>
+          <h1>不是多買一個 AI 工具，是把每天要追人的事交給 O。</h1>
           <p>
-            我們從每天最混亂的營運流程開始，不急著堆功能。先找出客戶從哪裡來、誰負責處理、多久要回、哪裡常卡住、老闆需要看什麼，再決定要接哪些工具、建立哪些任務、回收哪些資料。
+            我們不急著堆功能。先找出客人從哪裡來、誰要處理、多久要回、哪裡常卡住、老闆每天要看什麼，再決定要接哪些工具、建立哪些提醒、留下哪些資料。
           </p>
           <button className="orion-primary-btn" onClick={() => startDiagnosis('about_hero_cta')}>
-            讓 ORION 拆你的工作流
+            讓 O 幫我拆流程
             <ArrowRight size={18} />
           </button>
         </div>
-        <CinematicVideo src="/videos/orion-bg-00-command.mp4" label="企業 AI 指揮中心資料牆影片" />
+        <CinematicVideo src="/videos/runway-orion-executive-03.mp4" label="企業主管檢視 AI 任務追蹤系統影片" />
       </section>
 
       <section className="site-section service-lab">
@@ -134,7 +134,7 @@ export default function AboutPage() {
       <section className="site-section site-method-section reversed">
         <div className="method-copy">
           <span className="site-eyebrow">交付方法</span>
-          <h2>從一個卡住的流程，到一套能被團隊每天使用的工作流。</h2>
+          <h2>從一件每天都要追的事，變成團隊每天會照著跑的系統。</h2>
           <div className="method-chain">
             {phases.map((phase, index) => (
               <div key={phase} className="method-step">
@@ -152,8 +152,8 @@ export default function AboutPage() {
       <section className="site-section automation-map">
         <div className="site-section-header narrow">
           <span className="site-eyebrow">可擴張模組</span>
-          <h2>先做一條最有價值的流程，再一段一段接成公司的 AI 作業層。</h2>
-          <p>每個模組都可以獨立交付，也可以接在一起形成完整營運轉換流程：從客戶入口、需求分流、任務派工、主管回報到成交交付與工程驗收。</p>
+          <h2>先做一段最痛的流程，再一段一段接成公司的 AI 作業層。</h2>
+          <p>每個模組都可以獨立交付，也可以接在一起：從客人進來、誰要處理、多久提醒、怎麼回報，到成交後留下資料。</p>
         </div>
         <div className="automation-grid">
           {automationBlocks.map((block, index) => (
@@ -169,12 +169,12 @@ export default function AboutPage() {
         <CinematicVideo src="/videos/orion-bg-01-core-devices.mp4" label="跨裝置企業 AI 工作流影片" />
         <div className="final-command-content">
           <span className="site-eyebrow">適合誰</span>
-          <h2>適合每天被訊息、名單、訂單、團隊進度追著跑的企業主。</h2>
+          <h2>適合每天被訊息、名單、訂單、團隊進度追著跑的老闆。</h2>
           <p>
-            如果你只是想做一個好看的 demo，ORION 不是最便宜的選擇。如果你想把核心營運流程變成可複製、可追蹤、可交接的 AI 工作流，這正是 ORION 的位置。
+            如果你想要的是「客人有人接、報價有人追、任務有人做、老闆每天看得到回報」，這才是 ORION 的位置。
           </p>
           <button className="orion-primary-btn" onClick={() => startDiagnosis('about_bottom_cta')}>
-            啟動工作流診斷
+            讓 O 幫我看哪裡卡住
             <Zap size={18} />
           </button>
         </div>

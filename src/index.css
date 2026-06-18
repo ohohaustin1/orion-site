@@ -3729,9 +3729,10 @@ body {
 
 .site-griffin-flight::before {
   background:
-    linear-gradient(180deg, rgba(5, 9, 17, 0.18), rgba(5, 9, 17, 0.72)),
-    radial-gradient(circle at 18% 16%, rgba(229, 188, 104, 0.20), transparent 34rem),
-    radial-gradient(circle at 84% 72%, rgba(93, 190, 255, 0.16), transparent 30rem);
+    linear-gradient(90deg, rgba(5, 9, 17, 0.82), rgba(5, 9, 17, 0.38) 48%, rgba(5, 9, 17, 0.18)),
+    linear-gradient(180deg, rgba(5, 9, 17, 0.06), rgba(5, 9, 17, 0.52)),
+    radial-gradient(circle at 12% 18%, rgba(229, 188, 104, 0.24), transparent 34rem),
+    radial-gradient(circle at 82% 64%, rgba(93, 190, 255, 0.14), transparent 30rem);
 }
 
 .site-griffin-flight::after {
@@ -3742,17 +3743,30 @@ body {
   background-size: 86px 86px;
 }
 
-.site-griffin-flight > .cinematic-video {
+.griffin-flight-image {
   position: absolute;
   inset: 0;
-  min-height: 100%;
-  border: 0;
-  border-radius: 36px;
-  box-shadow: none;
+  z-index: 0;
+  overflow: hidden;
 }
 
-.griffin-flight-video video {
+.griffin-flight-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   object-position: center center;
+  transform: scale(1.025);
+  animation: griffinImageDrift 18s ease-in-out infinite alternate;
+}
+
+@keyframes griffinImageDrift {
+  from {
+    transform: scale(1.025) translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: scale(1.07) translate3d(-1.2%, -1%, 0);
+  }
 }
 
 .griffin-flight-content {
@@ -4497,8 +4511,8 @@ body {
     margin-top: 0;
   }
 
-  .site-griffin-flight > .cinematic-video {
-    border-radius: 28px;
+  .griffin-flight-image img {
+    object-position: 58% center;
   }
 
   .griffin-flight-content {
@@ -4532,6 +4546,11 @@ body {
   }
 
   .cinematic-video video {
+    transform: none !important;
+  }
+
+  .griffin-flight-image img {
+    animation: none !important;
     transform: none !important;
   }
 }
