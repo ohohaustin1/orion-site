@@ -11,7 +11,7 @@ interface CinematicVideoProps {
 export default function CinematicVideo({
   src,
   className = '',
-  label = 'ORION 企業級 AI 系統視覺影片',
+  label = 'ORION AI 營運工作流視覺影片',
   overlay = true,
 }: CinematicVideoProps) {
   const reduceMotion = useReducedMotion();

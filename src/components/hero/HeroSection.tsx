@@ -6,9 +6,9 @@ import { DIAG_URL } from '../../lib/api-base';
 import { pushEvent } from '../../lib/analytics';
 
 const trustSignals = [
-  '策略判斷變成流程',
-  '工具調用變成任務',
-  '數據回收變成複利',
+  '客戶進來，先整理需求',
+  '任務建立，派給負責人',
+  '卡住逾時，提醒並回報',
 ];
 
 export default function HeroSection() {
@@ -27,7 +27,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="orion-hero-cinematic" aria-label="ORION AI 企業級 AI 指揮中心">
+    <section className="orion-hero-cinematic" aria-label="ORION AI 副營運執行長">
       <CinematicVideo
         src="/videos/runway-orion-executive-01.mp4"
         className="orion-hero-video"
@@ -45,16 +45,20 @@ export default function HeroSection() {
         >
           <div className="orion-kicker">
             <Sparkles size={14} />
-            ORION AI COMMAND CENTER
+            ORION AI OPERATING OFFICER
           </div>
 
           <h1>
-            <span>把模糊想法</span>
-            <strong>變成會執行的企業系統</strong>
+            <span>不用多請一位營運主管</span>
+            <strong>
+              AI 副營運執行長
+              <br />
+              揪出隱形成本
+            </strong>
           </h1>
 
           <p className="orion-hero-subtitle">
-            ORION 將策略判斷、流程設計、工具調用、資料回收與工程交付，整合成一套可複製、可放大、可持續演化的企業級 AI 決策基礎建設。
+            客戶從 LINE、IG、表單或官網進來後，O 會先診斷哪裡正在造成利潤流失，整理需求與缺口，判斷急不急、該交給誰，接著建立任務、提醒負責人、追蹤卡點，最後盯到成交與交付，整理成老闆看得懂的進度回報與可沉澱的資料。
           </p>
 
           <form
@@ -67,22 +71,22 @@ export default function HeroSection() {
             <input
               value={q}
               onChange={(event) => setQ(event.target.value)}
-              placeholder="輸入你的產業、痛點或想做的 AI 系統"
-              aria-label="輸入你的產業、痛點或想做的 AI 系統"
+              placeholder="例如：客人私訊進來後，報價、追單、交付常常斷掉"
+              aria-label="輸入你想交給 AI 副營運執行長接手的工作流"
             />
             <button type="submit">
-              啟動診斷
+              拆工作流
               <ArrowRight size={18} />
             </button>
           </form>
 
           <div className="orion-hero-actions">
             <button type="button" className="orion-primary-btn" onClick={() => submit('hero_primary_cta', '')}>
-              啟動你的 AI 系統
+              讓 O 拆一條營運工作流
               <ArrowRight size={18} />
             </button>
             <a className="orion-secondary-btn" href="#tool-calling-workflow">
-              查看工具調用流程
+              看 O 怎麼盯到成交與交付
             </a>
           </div>
 
@@ -106,23 +110,23 @@ export default function HeroSection() {
             <CinematicVideo
               src="/videos/runway-orion-executive-02.mp4"
               className="orion-command-frame-video"
-              label="主管在透明螢幕前操作 AI 系統的影片"
+              label="主管在透明螢幕前操作 AI 營運工作流的影片"
             />
             <div className="orion-command-hud">
               <span>
                 <ShieldCheck size={15} />
-                企業級決策中樞
+                營運工作流
               </span>
               <span>
                 <Workflow size={15} />
-                工具調用工作流
+                追蹤回報
               </span>
             </div>
           </div>
 
-          <div className="orion-floating-label label-one">策略拆解</div>
-          <div className="orion-floating-label label-two">任務派工</div>
-          <div className="orion-floating-label label-three">資料記憶</div>
+          <div className="orion-floating-label label-one">客戶入口</div>
+          <div className="orion-floating-label label-two">派工</div>
+          <div className="orion-floating-label label-three">回報</div>
         </motion.div>
       </div>
     </section>

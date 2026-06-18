@@ -13,7 +13,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
  *   T=3.0s      獅鷲能量脈衝（X-Ray brightness 1.55）
  *   T=3.3-4.1s  4 corner L-brackets 收縮
  *   T=4.1s      「ORION AI」matte gold 淡入
- *   T=4.6s      tagline「做一次系統　當你一輩子的 AI 顧問」
+ *   T=4.6s      tagline「做一條工作流　當你的 AI 副營運執行長」
  *   T=5.0-5.5s  4 行 checklist 逐行 inject
  *   T=5.5-6.0s  progress bar 0→100% + 全部淡出
  *   T=6.0s      onComplete()
@@ -27,9 +27,9 @@ const ORION_LOGO = '/brand/griffin-256.png';
 
 const BOOT_LINES = [
   'Orion 核心初始化中...',
-  '正在對齊 AI 自動化節點...',
-  '系統自我迭代環境檢測中...',
-  '系統就緒 ✓',
+  '正在對齊 AI 營運節點...',
+  '工作流回報環境檢測中...',
+  'AI 副營運執行長就緒 ✓',
 ];
 
 const DURATION_FULL_MS = 6000;
@@ -172,7 +172,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
   }, []);
 
   return (
-    <div className="splash-v2" role="status" aria-live="polite" aria-label="Orion AI 系統初始化中">
+    <div className="splash-v2" role="status" aria-live="polite" aria-label="Orion AI 副營運執行長初始化中">
       <canvas ref={canvasRef} className="splash-stars" aria-hidden="true" />
 
       <div className="splash-stage">
@@ -194,7 +194,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
         </div>
 
         <div className="brand-name">ORION AI</div>
-        <div className="brand-tagline">做一次系統　當你一輩子的 AI 顧問</div>
+        <div className="brand-tagline">做一條工作流　當你的 AI 副營運執行長</div>
 
         <div className="checklist">
           {BOOT_LINES.map((line, i) => (

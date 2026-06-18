@@ -121,17 +121,17 @@ export default function CasesPage() {
   return (
     <div className="orion-cinematic-site site-page">
       <PageSEO
-        title="ORION AI 實戰案例｜企業 AI 系統如何落地"
-        description="查看 ORION AI 如何把不動產、電商、製造、餐飲、客戶留存與企業現金流問題，拆成可執行、可驗證、可放大的 AI 系統。"
+        title="ORION AI 實戰案例｜AI 副營運執行長如何接住工作流"
+        description="查看 ORION AI 如何把不動產、電商、製造、餐飲、客戶留存與企業現金流流程，拆成可派工、可追蹤、可驗證的 AI 營運工作流。"
         url="/cases"
       />
 
       <section className="site-page-hero split">
         <div>
           <span className="site-eyebrow">實戰案例</span>
-          <h1>不是展示功能，是把企業問題變成可執行系統。</h1>
+          <h1>不是展示 AI 功能，是看哪一條工作流被接住、被追到有結果。</h1>
           <p>
-            每個案例都從一個真實的營運斷點開始：線索沒有追蹤、排程靠人腦、現金流看太慢、品牌語感不可複製。ORION 的價值，是把斷點變成流程與資料。
+            每個案例都從一個真實的營運斷點開始：客人沒追、排程靠人腦、現金流看太慢、回訪沒人盯。ORION 的價值，是把斷點變成入口、任務、提醒、回報與資料。
           </p>
           <div className="source-pill">
             <ShieldCheck size={16} />
@@ -171,7 +171,7 @@ export default function CasesPage() {
               <p>{caseData.hook_question || caseData.problem}</p>
               <div className="case-metric-pair">
                 <strong>{caseData.hero_number || caseData.duration}</strong>
-                <span>{caseData.hero_money || '系統化成果'}</span>
+                <span>{caseData.hero_money || '工作流成果'}</span>
               </div>
             </button>
 
@@ -180,7 +180,7 @@ export default function CasesPage() {
                 <div className="case-detail-grid">
                   <CaseDetail icon={<BarChart3 size={18} />} label="原本斷點" body={caseData.problem} />
                   <CaseDetail icon={<Lightbulb size={18} />} label="AI 看見的本質" body={caseData.aiInsight} />
-                  <CaseDetail icon={<Wrench size={18} />} label="ORION 系統化做法" body={caseData.strategy} />
+                  <CaseDetail icon={<Wrench size={18} />} label="ORION 工作流做法" body={caseData.strategy} />
                 </div>
                 <div className="case-result-panel">
                   <h3>可驗證成果</h3>
@@ -205,13 +205,13 @@ export default function CasesPage() {
       </section>
 
       <section className="site-section site-final-command compact">
-        <CinematicVideo src="/videos/orion-core-devices-card-loop.mp4" label="多裝置企業 AI 系統影片" />
+        <CinematicVideo src="/videos/orion-core-devices-card-loop.mp4" label="多裝置企業 AI 工作流影片" />
         <div className="final-command-content">
           <span className="site-eyebrow">下一步</span>
-          <h2>把你的產業問題，拆成第一版 AI 系統藍圖。</h2>
-          <p>不需要先想清楚技術細節。你只要說出產業、痛點、想達到的結果，ORION 會先幫你拆出流程、工具、資料與工程交付順序。</p>
+          <h2>把你的產業問題，拆成第一版 AI 營運工作流。</h2>
+          <p>不需要先想清楚技術細節。你只要說出產業、哪裡正在產生隱形成本、誰在處理、想達到的結果，ORION 會先幫你拆出入口、任務、提醒、資料與工程交付順序。</p>
           <button className="orion-primary-btn" onClick={() => startDiagnosis('cases_bottom_cta')}>
-            啟動 AI 診斷
+            啟動工作流診斷
             <ArrowRight size={18} />
           </button>
         </div>
