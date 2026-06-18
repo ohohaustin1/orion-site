@@ -15,56 +15,69 @@ export default function CinematicVideo({
   overlay = true,
 }: CinematicVideoProps) {
   const reduceMotion = useReducedMotion();
-  const rootRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [failed, setFailed] = useState(false);
-  const [inView, setInView] = useState(false);
-  const [pausedByUser, setPausedByUser] = useState(false);
-  const shouldPlay = !reduceMotion && inView && !pausedByUser && !failed;
   const poster = src.replace('/videos/', '/videos/posters/').replace(/\.[a-z0-9]+$/i, '.jpg');
 
   useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-
-    if (!('IntersectionObserver' in window)) {
-      setInView(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setInView(entry.isIntersecting);
-      },
-      { rootMargin: '240px 0px', threshold: 0.12 },
-    );
-
-    observer.observe(root);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video || failed) return;
 
-    if (shouldPlay) {
-      video.play().catch(() => undefined);
-    } else {
-      video.pause();
-    }
-  }, [shouldPlay]);
+    const requestPlayback = () => {
+      const currentVideo = videoRef.current;
+      if (!currentVideo || failed) return;
+
+      currentVideo.muted = true;
+      currentVideo.defaultMuted = true;
+      currentVideo.playsInline = true;
+
+      if (reduceMotion) {
+        currentVideo.pause();
+        return;
+      }
+
+      void currentVideo.play().catch(() => undefined);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        requestPlayback();
+      }
+    };
+
+    requestPlayback();
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', requestPlayback);
+    window.addEventListener('pageshow', requestPlayback);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', requestPlayback);
+      window.removeEventListener('pageshow', requestPlayback);
+    };
+  }, [failed, reduceMotion]);
 
   return (
-    <div ref={rootRef} className={`cinematic-video ${className} ${failed ? 'is-fallback' : ''}`} aria-label={label}>
+    <div className={`cinematic-video ${className} ${failed ? 'is-fallback' : ''}`} aria-label={label}>
       {!failed && (
         <video
           ref={videoRef}
           src={src}
           poster={poster}
+          autoPlay
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
+          onCanPlay={() => {
+            const currentVideo = videoRef.current;
+            if (!currentVideo || reduceMotion) return;
+
+            currentVideo.muted = true;
+            currentVideo.defaultMuted = true;
+            currentVideo.playsInline = true;
+            void currentVideo.play().catch(() => undefined);
+          }}
           onError={() => setFailed(true)}
         />
       )}
@@ -75,16 +88,6 @@ export default function CinematicVideo({
         </div>
       )}
       {overlay && <span className="cinematic-video-overlay" aria-hidden="true" />}
-      {!failed && (
-        <button
-          className="cinematic-video-control"
-          type="button"
-          onClick={() => setPausedByUser((value) => !value)}
-          aria-label={pausedByUser ? '播放背景影片' : '暫停背景影片'}
-        >
-          {pausedByUser ? '播放' : '暫停'}
-        </button>
-      )}
     </div>
   );
 }
