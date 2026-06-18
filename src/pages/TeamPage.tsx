@@ -77,7 +77,7 @@ function getInitial(name: string) {
 }
 
 const LOCAL_TEAM_IMAGES: Array<{ pattern: RegExp; src: string }> = [
-  { pattern: /Austin|許[耀燿]宸/i, src: '/team/AUSTIN.png' },
+  { pattern: /許[耀燿]宸|Chairman|創辦人/i, src: '/team/AUSTIN.png' },
   { pattern: /魏宇霆|David/i, src: '/team/魏宇霆 David.png' },
   { pattern: /王艾倫|Aaron/i, src: '/team/王艾倫 Aaron.png' },
   { pattern: /陳建宏|Kevin/i, src: '/team/陳建宏 Kevin.png' },
