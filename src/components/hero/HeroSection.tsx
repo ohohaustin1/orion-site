@@ -15,7 +15,29 @@ export default function HeroSection() {
   const [q, setQ] = useState('');
   const reduceMotion = useReducedMotion();
 
-  const submit = (entryPoint: string, query = q) => {
+  const createHandoffToken = async (value: string) => {
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 3000);
+    try {
+      const response = await fetch(`${DIAG_URL}/api/handoff`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value, feedback: true }),
+        signal: controller.signal,
+      });
+      const data = await response.json().catch(() => null);
+      if (response.ok && data?.ok && typeof data.token === 'string') {
+        return data.token;
+      }
+    } catch {
+      // If handoff creation fails, keep the customer text out of the URL and open O normally.
+    } finally {
+      window.clearTimeout(timeout);
+    }
+    return '';
+  };
+
+  const submit = async (entryPoint: string, query = q) => {
     const trimmed = query.trim();
     pushEvent('chat_initiated', {
       flow_name: 'o',
@@ -39,6 +61,11 @@ export default function HeroSection() {
         })}`;
       } catch {
         // window.name handoff is best-effort; the destination still opens without leaking the question in the URL.
+      }
+      const token = await createHandoffToken(trimmed);
+      if (token) {
+        window.location.href = `${DIAG_URL}/?handoff=${encodeURIComponent(token)}`;
+        return;
       }
     }
     window.location.href = `${DIAG_URL}/`;
