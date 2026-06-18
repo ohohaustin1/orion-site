@@ -63,8 +63,8 @@ const fallbackTeam: TeamUnit[] = [
   {
     id: 6,
     name: 'AI Agent 作業層',
-    title: 'AI 副營運執行長作業層',
-    bio: '負責把診斷、工具調用、任務派工、進度提醒、主管回報與資料記憶串起來，讓 ORION 不是聊天，而是營運中樞。',
+    title: 'O 每天追蹤作業層',
+    bio: '負責把診斷、工具調用、任務派工、進度提醒、主管回報與資料記憶串起來，讓 ORION 不是聊天，而是每天幫團隊追結果。',
     icon: Bot,
   },
 ];
@@ -121,17 +121,17 @@ export default function TeamPage() {
   return (
     <div className="orion-cinematic-site site-page">
       <PageSEO
-        title="ORION AI 核心團隊｜打造 AI 副營運執行長的作戰鏈"
-        description="ORION AI 團隊由策略總控、工程節點、瀏覽器驗收、內容成長與 AI Agent 作業層組成，負責把企業流程做成可派工、可追蹤、可驗證的 AI 工作流。"
+        title="ORION AI 核心團隊｜把老闆每天追的事做成系統"
+        description="ORION AI 團隊由策略、工程、瀏覽器驗收、內容成長與 AI Agent 作業層組成，負責把客人、訂單、任務、回訪與主管回報做成可追蹤流程。"
         url="/team"
       />
 
       <section className="site-page-hero split">
         <div>
           <span className="site-eyebrow">核心團隊</span>
-          <h1>你提出一段混亂流程，ORION 團隊把它拆成能每天運轉的 AI 工作流。</h1>
+          <h1>你說出一段混亂流程，ORION 團隊把它做成每天會跑的系統。</h1>
           <p>
-            戰略部判斷哪一段最值得做，工程把第一版做出來，瀏覽器驗收確認客戶真的能用，AI Agent 負責把提醒、派工、追蹤、回報與資料回收接起來。
+            戰略先判斷哪一段最值得做，工程做出第一版，瀏覽器驗收確認客戶真的能用，AI Agent 把提醒、派工、追蹤、回報與資料回收接起來。
           </p>
           <div className="source-pill">
             <Users size={16} />
@@ -173,13 +173,13 @@ export default function TeamPage() {
       </section>
 
       <section className="site-section site-final-command compact">
-        <CinematicVideo src="/videos/orion-trust-host-stage-loop.mp4" label="ORION 信任說明與企業級展示影片" />
+        <CinematicVideo src="/videos/orion-memory-city-card-loop.mp4" label="企業資料記憶與團隊交接動畫" />
         <div className="final-command-content">
           <span className="site-eyebrow">合作方式</span>
-          <h2>你不用自己寫規格，先把最常卡住的流程講出來。</h2>
-          <p>ORION 會幫你整理成：入口在哪、誰處理、哪裡卡住、AI 先接哪一段、工程要做哪些功能、驗收要看哪些畫面。</p>
+          <h2>你不用自己寫規格，先把最常漏、最常卡、最常要你追的事講出來。</h2>
+          <p>ORION 會幫你整理成：誰進來、誰處理、哪裡卡住、O 先接哪一段、工程要做哪些功能、驗收要看哪些畫面。</p>
           <button className="orion-primary-btn" onClick={startDiagnosis}>
-            和 ORION 開始診斷
+            讓 O 幫我拆流程
             <ArrowRight size={18} />
           </button>
         </div>

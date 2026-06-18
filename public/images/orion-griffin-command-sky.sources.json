@@ -1,0 +1,15 @@
+{
+  "output": {
+    "webp": "/images/orion-griffin-command-sky.webp",
+    "jpg": "/images/orion-griffin-command-sky.jpg"
+  },
+  "generated_at": "2026-06-19",
+  "source": {
+    "provider": "OpenAI image generation",
+    "path": "C:\\Users\\user\\.codex\\generated_images\\019e0eb7-e885-7633-8386-59e60cd3fbd3\\ig_066b4092a072d984016a34284a9ef08191bce27b4a90b3aea1.png"
+  },
+  "processing": {
+    "tool": "ffmpeg",
+    "notes": "Cropped and resized to 1920x1080, exported as JPG and WebP for the ORION01 homepage final brand section."
+  }
+}
