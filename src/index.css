@@ -3768,6 +3768,7 @@ body {
   font-size: clamp(2.4rem, 5vw, 5rem);
   line-height: 0.98;
   letter-spacing: 0;
+  word-break: keep-all;
 }
 
 .griffin-flight-content p {
@@ -4502,6 +4503,11 @@ body {
 
   .griffin-flight-content {
     padding: 28px;
+  }
+
+  .griffin-flight-content h2 {
+    font-size: clamp(2.05rem, 8.5vw, 2.75rem);
+    line-height: 1.06;
   }
 
   .final-plain-cta {
