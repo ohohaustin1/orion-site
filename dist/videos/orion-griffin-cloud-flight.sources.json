@@ -1,0 +1,25 @@
+{
+  "output": "/videos/orion-griffin-cloud-flight.mp4",
+  "poster": "/videos/posters/orion-griffin-cloud-flight.jpg",
+  "generated_at": "2026-06-19",
+  "sources": [
+    {
+      "provider": "Pixabay",
+      "title": "Griffin, flying, magic",
+      "page_url": "https://pixabay.com/videos/griffin-flying-magic-mistery-fly-148323/",
+      "media_url": "https://cdn.pixabay.com/video/2023/01/28/148323-793718162_large.mp4",
+      "license": "Pixabay Content License"
+    },
+    {
+      "provider": "Mixkit",
+      "title": "Flying over a thick layer of clouds in the sky",
+      "page_url": "https://mixkit.co/free-stock-video/flying-over-a-thick-layer-of-clouds-in-the-sky-14272/",
+      "media_url": "https://assets.mixkit.co/videos/14272/14272-720.mp4",
+      "license": "Mixkit Stock Video Free License"
+    }
+  ],
+  "processing": {
+    "tool": "ffmpeg",
+    "notes": "Composited Pixabay green-screen griffin over Mixkit cloud-flight background, removed audio, resized to 1280x720, and encoded as web-ready H.264 with faststart."
+  }
+}

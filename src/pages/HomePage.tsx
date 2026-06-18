@@ -93,8 +93,8 @@ export default function HomePage() {
   return (
     <div className="orion-cinematic-site">
       <PageSEO
-        title="ORION AI｜老闆的 AI 副營運執行長"
-        description="ORION AI 幫企業把客戶入口、需求分流、任務派工、進度追蹤、主管回報、資料沉澱與成交交付做成一條 AI 營運工作流。"
+        title="ORION AI｜別讓利潤死在沒人盯的流程裡"
+        description="ORION AI 是老闆的 AI 副營運執行長，幫企業把客戶入口、需求分流、任務派工、進度追蹤、主管回報、資料沉澱與成交交付做成一條 AI 營運工作流。"
         url="/home"
       />
 
@@ -250,6 +250,25 @@ export default function HomePage() {
           <ShieldCheck size={22} />
           <strong>記憶</strong>
           <span>每次結果都變成下一次判斷資料</span>
+        </div>
+      </section>
+
+      <section className="site-section site-griffin-flight" aria-label="ORION 獅鷲雲海品牌影片">
+        <CinematicVideo
+          src="/videos/orion-griffin-cloud-flight.mp4"
+          className="griffin-flight-video"
+          label="ORION 獅鷲在雲海中飛行的品牌影片"
+        />
+        <div className="griffin-flight-content">
+          <span className="site-eyebrow">ORION SIGNAL</span>
+          <h2>
+            好系統，
+            <br />
+            不靠老闆每天追。
+          </h2>
+          <p>
+            獅鷲不是裝飾，是 ORION 的工作方式：站在高處看全局，往下抓住每一個會讓利潤流失的斷點，直到流程有人負責、任務有回報、資料能沉澱。
+          </p>
         </div>
       </section>
     </div>
