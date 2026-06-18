@@ -67,7 +67,7 @@ export default function Sidebar() {
           <img src={ORION_LOGO} alt="ORION" />
           <span>
             <strong>ORION AI</strong>
-            <small>企業級 AI 決策基礎建設</small>
+            <small>老闆的 AI 副營運執行長</small>
           </span>
         </Link>
 

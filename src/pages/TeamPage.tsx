@@ -35,15 +35,15 @@ const fallbackTeam: TeamUnit[] = [
   {
     id: 2,
     name: '戰略部',
-    title: '商業模型與任務總控',
-    bio: '把市場、漏斗、風險與 Chairman 決策整理成清楚派工，讓每個 AI 節點知道要完成什麼、驗證到哪一層。',
+    title: '營運斷點與任務總控',
+    bio: '把客戶入口、營運斷點、風險與 Chairman 決策整理成清楚派工，讓每個 AI 節點知道要接哪一段流程、驗證到哪一層。',
     icon: BrainCircuit,
   },
   {
     id: 3,
     name: 'Codex 工程節點',
-    title: '系統建置與自動化交付',
-    bio: '負責程式碼、測試、部署、驗證報告與工程紀律，把想法落成可跑、可驗、可維護的系統。',
+    title: '工作流建置與自動化交付',
+    bio: '負責程式碼、測試、部署、驗證報告與工程紀律，把入口、派工、提醒、回報落成可跑、可驗、可維護的系統。',
     icon: Code2,
   },
   {
@@ -56,15 +56,15 @@ const fallbackTeam: TeamUnit[] = [
   {
     id: 5,
     name: '內容與成長節點',
-    title: '品牌、漏斗與資料回收',
-    bio: '把品牌敘事、廣告素材、CTA、UTM 與回訪任務接成漏斗，讓每次曝光都能回收資料。',
+    title: '品牌、轉換流程與資料回收',
+    bio: '把品牌敘事、廣告素材、CTA、UTM、名單分級與回訪任務接成轉換流程，讓每次曝光都能回收資料。',
     icon: Megaphone,
   },
   {
     id: 6,
     name: 'AI Agent 作業層',
-    title: '工具調用、報告生成與任務派發',
-    bio: '負責把診斷、工具調用、報告、通知、任務與資料記憶串起來，讓 ORION 不是聊天，而是中樞。',
+    title: 'AI 副營運執行長作業層',
+    bio: '負責把診斷、工具調用、任務派工、進度提醒、主管回報與資料記憶串起來，讓 ORION 不是聊天，而是營運中樞。',
     icon: Bot,
   },
 ];
@@ -121,24 +121,24 @@ export default function TeamPage() {
   return (
     <div className="orion-cinematic-site site-page">
       <PageSEO
-        title="ORION AI 核心團隊｜策略、工程、驗證與 AI 作業層"
-        description="ORION AI 團隊由策略總控、工程節點、瀏覽器驗收、內容成長與 AI Agent 作業層組成，負責把企業想法做成可驗證系統。"
+        title="ORION AI 核心團隊｜打造 AI 副營運執行長的作戰鏈"
+        description="ORION AI 團隊由策略總控、工程節點、瀏覽器驗收、內容成長與 AI Agent 作業層組成，負責把企業流程做成可派工、可追蹤、可驗證的 AI 工作流。"
         url="/team"
       />
 
       <section className="site-page-hero split">
         <div>
           <span className="site-eyebrow">核心團隊</span>
-          <h1>ORION 的團隊不是職稱集合，而是一條可驗證的作戰鏈。</h1>
+          <h1>你提出一段混亂流程，ORION 團隊把它拆成能每天運轉的 AI 工作流。</h1>
           <p>
-            策略負責取捨，工程負責落地，瀏覽器驗收負責真實體驗，內容與成長負責把流量變成資料，AI Agent 負責把流程持續運轉。
+            戰略部判斷哪一段最值得做，工程把第一版做出來，瀏覽器驗收確認客戶真的能用，AI Agent 負責把提醒、派工、追蹤、回報與資料回收接起來。
           </p>
           <div className="source-pill">
             <Users size={16} />
             {source === 'api' ? '使用 production 團隊資料' : source === 'loading' ? '正在讀取 production 團隊資料' : 'API 未回應或資料異常，使用本地團隊架構'}
           </div>
         </div>
-        <CinematicVideo src="/videos/runway-orion-executive-03.mp4" label="企業 AI 團隊在未來辦公室協作的影片" />
+        <CinematicVideo src="/videos/orion-executive-team-pan.mp4" label="企業 AI 團隊在未來辦公室協作的影片" />
       </section>
 
       <section className="site-section team-system-section">
@@ -149,7 +149,7 @@ export default function TeamPage() {
                 <div className="team-avatar-letter">{getInitial(member.name)}</div>
                 <h2>{member.name}</h2>
                 <span>{member.title}</span>
-                <p>{member.bio || 'ORION AI 核心成員，負責把商業問題轉成可執行系統。'}</p>
+                <p>{member.bio || 'ORION AI 核心成員，負責把商業問題轉成可執行工作流。'}</p>
               </article>
             ))}
           </div>
@@ -173,11 +173,11 @@ export default function TeamPage() {
       </section>
 
       <section className="site-section site-final-command compact">
-        <CinematicVideo src="/videos/orion-executive-team-pan.mp4" label="ORION 團隊協作與企業辦公室影片" />
+        <CinematicVideo src="/videos/orion-trust-host-stage-loop.mp4" label="ORION 信任說明與企業級展示影片" />
         <div className="final-command-content">
           <span className="site-eyebrow">合作方式</span>
-          <h2>你不需要先懂 AI 技術，你需要先把企業問題講清楚。</h2>
-          <p>ORION 會把你的問題轉成策略假設、工具調用、工程規格、驗收證據與後續回收節點。</p>
+          <h2>你不用自己寫規格，先把最常卡住的流程講出來。</h2>
+          <p>ORION 會幫你整理成：入口在哪、誰處理、哪裡卡住、AI 先接哪一段、工程要做哪些功能、驗收要看哪些畫面。</p>
           <button className="orion-primary-btn" onClick={startDiagnosis}>
             和 ORION 開始診斷
             <ArrowRight size={18} />
