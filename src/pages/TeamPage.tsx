@@ -84,6 +84,9 @@ const LOCAL_TEAM_IMAGES: Array<{ pattern: RegExp; src: string }> = [
   { pattern: /林佳穎|Iris/i, src: '/team/林佳穎 Iris.png' },
   { pattern: /張雅婷|Tina/i, src: '/team/張雅婷 Tina.png' },
   { pattern: /吳明哲|Marcus/i, src: '/team/吳明哲 Marcus.png' },
+  { pattern: /Austin Chen/i, src: '/team/Austin Chen.png' },
+  { pattern: /Mira Lin/i, src: '/team/Mira Lin.png' },
+  { pattern: /Ken Wu/i, src: '/team/Ken Wu.png' },
 ];
 
 function resolveMemberImage(member: Pick<Member, 'name' | 'title' | 'image_url'>) {
