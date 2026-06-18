@@ -3704,6 +3704,79 @@ body {
   line-height: 1.5;
 }
 
+.site-griffin-flight {
+  position: relative;
+  width: min(1320px, calc(100% - 56px));
+  min-height: 620px;
+  display: grid;
+  align-items: end;
+  overflow: hidden;
+  border-radius: 36px;
+  margin-top: 28px;
+  border: 1px solid rgba(229, 188, 104, 0.22);
+  box-shadow: 0 46px 130px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: #07111d;
+}
+
+.site-griffin-flight::before,
+.site-griffin-flight::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.site-griffin-flight::before {
+  background:
+    linear-gradient(180deg, rgba(5, 9, 17, 0.18), rgba(5, 9, 17, 0.72)),
+    radial-gradient(circle at 18% 16%, rgba(229, 188, 104, 0.20), transparent 34rem),
+    radial-gradient(circle at 84% 72%, rgba(93, 190, 255, 0.16), transparent 30rem);
+}
+
+.site-griffin-flight::after {
+  opacity: 0.11;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px);
+  background-size: 86px 86px;
+}
+
+.site-griffin-flight > .cinematic-video {
+  position: absolute;
+  inset: 0;
+  min-height: 100%;
+  border: 0;
+  border-radius: 36px;
+  box-shadow: none;
+}
+
+.griffin-flight-video video {
+  object-position: center center;
+}
+
+.griffin-flight-content {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+  padding: clamp(34px, 5vw, 68px);
+}
+
+.griffin-flight-content h2 {
+  margin: 14px 0 18px;
+  color: var(--site-text);
+  font-size: clamp(2.4rem, 5vw, 5rem);
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+.griffin-flight-content p {
+  max-width: 660px;
+  color: rgba(232, 240, 255, 0.78);
+  font-size: clamp(1rem, 1.5vw, 1.18rem);
+  line-height: 1.75;
+}
+
 .site-page {
   padding-bottom: 60px;
 }
@@ -4411,10 +4484,24 @@ body {
   }
 
   .site-final-command,
+  .site-griffin-flight,
   .site-final-command.compact {
     min-height: 560px;
     border-radius: 28px;
     margin-bottom: 44px;
+  }
+
+  .site-griffin-flight {
+    width: min(100% - 28px, 1320px);
+    margin-top: 0;
+  }
+
+  .site-griffin-flight > .cinematic-video {
+    border-radius: 28px;
+  }
+
+  .griffin-flight-content {
+    padding: 28px;
   }
 
   .final-plain-cta {

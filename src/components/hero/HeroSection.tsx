@@ -27,7 +27,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="orion-hero-cinematic" aria-label="ORION AI 副營運執行長">
+    <section className="orion-hero-cinematic" aria-label="ORION AI 揪出利潤流失">
       <CinematicVideo
         src="/videos/runway-orion-executive-01.mp4"
         className="orion-hero-video"
@@ -49,16 +49,16 @@ export default function HeroSection() {
           </div>
 
           <h1>
-            <span>不用多請一位營運主管</span>
+            <span>公司不是沒營收</span>
             <strong>
-              AI 副營運執行長
+              別讓利潤死在
               <br />
-              揪出隱形成本
+              沒人盯的流程裡
             </strong>
           </h1>
 
           <p className="orion-hero-subtitle">
-            客戶從 LINE、IG、表單或官網進來後，O 會先診斷哪裡正在造成利潤流失，整理需求與缺口，判斷急不急、該交給誰，接著建立任務、提醒負責人、追蹤卡點，最後盯到成交與交付，整理成老闆看得懂的進度回報與可沉澱的資料。
+            O 是老闆的 AI 副營運執行長。客戶從 LINE、IG、表單或官網進來後，O 會先診斷哪裡正在造成利潤流失，整理需求與缺口，判斷急不急、該交給誰，接著建立任務、提醒負責人、追蹤卡點，最後盯到成交與交付，整理成老闆看得懂的進度回報與可沉澱的資料。
           </p>
 
           <form
