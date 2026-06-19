@@ -2,7 +2,9 @@
 
 ## Conclusion
 
-Status: local implementation and verification complete. Not yet confirmed on production until this commit is deployed and crawled.
+Status: implemented, pushed, deployed, and production-smoke verified.
+
+Commit: `d346327 Add SEO and AI search foundation`
 
 This change makes ORION easier for Google Search and AI answer engines to identify as:
 
@@ -98,16 +100,28 @@ Key finding:
 
 ## Production Follow-up
 
+### L4 Production Smoke Verify
+
+Production checked after push:
+
+- `https://orion01.com/home`: 200, updated title, JSON-LD, Austin, email, LINE, enterprise AI positioning present.
+- `https://orion01.com/llms.txt`: 200, Austin, email, LINE, enterprise AI positioning present.
+- `https://orion01.com/sitemap.xml`: 200.
+- `https://orion01.com/enterprise-ai-automation`: 200, Austin, email, LINE, enterprise AI positioning present.
+- `https://orion01.com/ai-workflow-automation`: 200, Austin, email, LINE, enterprise AI positioning present.
+- `https://orion01.com/ai-customer-followup-system`: 200, Austin, email, LINE, enterprise AI positioning present.
+- `https://orion01.com/founder-austin-xu-yaochen`: 200, Austin, email, LINE, enterprise AI positioning present.
+
+Verification level reached: L4 production smoke verification.
+
 After deployment:
 
-1. Confirm `https://orion01.com/llms.txt` returns 200.
-2. Confirm `https://orion01.com/sitemap.xml` includes all new URLs.
-3. In Google Search Console, submit sitemap and request indexing for:
+1. In Google Search Console, submit sitemap and request indexing for:
    - `https://orion01.com/enterprise-ai-automation`
    - `https://orion01.com/ai-workflow-automation`
    - `https://orion01.com/ai-customer-followup-system`
    - `https://orion01.com/founder-austin-xu-yaochen`
-4. Re-check search result snippets after indexing.
+2. Re-check search result snippets after indexing.
 
 ## Risk / Limits
 
