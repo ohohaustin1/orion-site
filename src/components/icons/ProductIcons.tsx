@@ -114,7 +114,7 @@ export const ProductIcon11 = (p: IconProps) => (
 );
 
 export const ProductIcon12 = (p: IconProps) => (
-  <svg {...base} {...p} aria-label="命運機率 AI">
+  <svg {...base} {...p} aria-label="重大決策 AI">
     <circle cx={16} cy={16} r={10} stroke="currentColor" strokeWidth={1.5} fill="none" />
     <circle cx={16} cy={16} r={6} stroke="currentColor" strokeWidth={1} fill="none" />
     <circle cx={16} cy={16} r={2} fill="currentColor" />

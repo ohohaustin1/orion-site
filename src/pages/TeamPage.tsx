@@ -52,7 +52,7 @@ const fallbackTeam: TeamUnit[] = [
     id: 4,
     name: 'Cowork 瀏覽器驗收',
     title: '真實使用者視角 QA',
-    bio: '用真實瀏覽器、截圖、DOM 與 production flow 驗收，不讓 server-side 檢查假裝等於客戶體驗。',
+    bio: '用真實瀏覽器、截圖與實際操作流程驗收，站在客戶視角確認每個畫面真的能用，不讓後台檢查假裝等於客戶體驗。',
     icon: Eye,
   },
   {
@@ -155,7 +155,7 @@ export default function TeamPage() {
           </p>
           <div className="source-pill">
             <Users size={16} />
-            {source === 'api' ? '使用 production 團隊資料' : source === 'loading' ? '正在讀取 production 團隊資料' : 'API 未回應或資料異常，使用本地團隊架構'}
+            ORION AI 核心團隊
           </div>
         </div>
         <CinematicVideo src="/videos/orion-executive-team-pan.mp4" label="企業 AI 團隊在未來辦公室協作的影片" />

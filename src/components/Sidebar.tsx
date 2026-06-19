@@ -35,11 +35,15 @@ const navItems: NavItem[] = [
   { path: '/resources', label: '資源中心', desc: '筆記與 FAQ', icon: BookOpen },
 ];
 
+function isActivePath(itemPath: string, location: string): boolean {
+  return location === itemPath || location.startsWith(itemPath + '/');
+}
+
 export default function Sidebar() {
-  const [location, setLocation] = useLocation();
+  const [location] = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const activeItem = navItems.find((item) => item.path === location) || navItems[0];
+  const activeItem = navItems.find((item) => isActivePath(item.path, location)) || navItems[0];
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -54,11 +58,6 @@ export default function Sidebar() {
       document.removeEventListener('keydown', onKey);
     };
   }, [menuOpen]);
-
-  const goTo = (path: string) => {
-    setLocation(path);
-    setMenuOpen(false);
-  };
 
   return (
     <>
@@ -76,10 +75,10 @@ export default function Sidebar() {
             const Icon = item.icon;
             const active = activeItem.path === item.path;
             return (
-              <button key={item.path} className={active ? 'active' : ''} onClick={() => goTo(item.path)} type="button">
+              <Link key={item.path} href={item.path} className={active ? 'active' : ''}>
                 <Icon size={16} />
                 <span>{item.label}</span>
-              </button>
+              </Link>
             );
           })}
         </nav>
@@ -123,16 +122,16 @@ export default function Sidebar() {
               {navItems.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <button
+                  <Link
                     key={item.path}
+                    href={item.path}
                     className={activeItem.path === item.path ? 'active' : ''}
-                    onClick={() => goTo(item.path)}
-                    type="button"
+                    onClick={() => setMenuOpen(false)}
                   >
                     <Icon size={20} />
                     <span>{item.label}</span>
                     <small>{item.desc}</small>
-                  </button>
+                  </Link>
                 );
               })}
             </nav>

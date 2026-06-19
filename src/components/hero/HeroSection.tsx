@@ -4,6 +4,8 @@ import { ArrowRight, ShieldCheck, Sparkles, Workflow } from 'lucide-react';
 import CinematicVideo from '../shared/CinematicVideo';
 import { DIAG_URL } from '../../lib/api-base';
 import { pushEvent } from '../../lib/analytics';
+// 首頁 hero 無障礙對比強化樣式（WCAG AA），只作用於 .orion-hero-cinematic
+import './hero-contrast.css';
 
 const trustSignals = [
   '3 分鐘先拆一條流程',
@@ -114,7 +116,7 @@ export default function HeroSection() {
             <input
               value={q}
               onChange={(event) => setQ(event.target.value)}
-              placeholder="例如：LINE 客人常漏回、報價後沒追、交付進度每天都要我問"
+              placeholder="例如：LINE 客人漏回、報價沒追"
               aria-label="輸入你想交給 O 幫忙追的工作"
             />
             <button type="submit">

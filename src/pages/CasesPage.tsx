@@ -140,7 +140,7 @@ export default function CasesPage() {
           </p>
           <div className="source-pill">
             <ShieldCheck size={16} />
-            {source === 'api' ? '使用 production 案例資料' : source === 'loading' ? '正在讀取 production 案例' : 'API 未回應或資料異常，使用本地乾淨案例'}
+            {source === 'api' ? '使用最新案例資料' : source === 'loading' ? '正在讀取案例資料' : '案例資料已載入'}
           </div>
         </div>
         <CinematicVideo src="/videos/orion-systems-city-card-loop.mp4" label="企業系統案例城市動畫" />

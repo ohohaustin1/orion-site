@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 /**
  * SplashScreen — Industrial Design Protocol v1
@@ -53,14 +53,6 @@ interface Particle {
 export function SplashScreen({ onComplete }: SplashScreenProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const completedRef = useRef(false);
-
-  // Stable session ID across re-renders
-  const sid = useMemo(() => {
-    const hex = '0123456789ABCDEF';
-    let id = '';
-    for (let i = 0; i < 8; i += 1) id += hex[Math.floor(Math.random() * 16)];
-    return id;
-  }, []);
 
   // Main timer + interaction skip + watchdog
   useEffect(() => {
@@ -219,11 +211,6 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
       <div className="scan-line" aria-hidden="true" />
       <div className="splash-scanlines" aria-hidden="true" />
       <div className="splash-vignette" aria-hidden="true" />
-
-      <div className="session-id" aria-hidden="true">
-        <span className="live" />
-        SID-{sid}
-      </div>
     </div>
   );
 }

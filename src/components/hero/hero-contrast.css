@@ -1,0 +1,82 @@
+/* ==============================================================
+   首頁 Hero 無障礙對比強化（WCAG AA / 4.5:1）
+   說明：hero 是深色商務影片背景，原文字用 --site-muted (#a8b7ca)
+   與多處半透明白，壓在繁忙畫面上對比不足、實機偏灰難讀。
+   本檔只覆寫「首頁 hero」文字顏色並補一層暗化 scrim，
+   不動金色 accent（kicker / CTA 漸層 / 金字 / floating label）。
+   選擇器以 .orion-hero-cinematic 前綴提高特異性（0-2-x），
+   穩定贏過 index.css 的原規則（0-1-x）。
+   由 HeroSection.tsx import；scoped、不影響其他頁。
+   ============================================================== */
+
+/* (1) 文字區後方加一層左→右深色漸層 scrim，
+       讓標題與內文落在夠暗的區域，但不糊整張照片（右側可見影片）。*/
+.orion-hero-cinematic .orion-hero-copy::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  /* 往四周外擴，覆蓋整段文字 + CTA + 步驟標籤所在區塊 */
+  inset: -7% -10% -7% -12%;
+  background:
+    linear-gradient(
+      105deg,
+      rgba(3, 8, 16, 0.86) 0%,
+      rgba(3, 8, 16, 0.72) 42%,
+      rgba(3, 8, 16, 0.34) 74%,
+      rgba(3, 8, 16, 0) 100%
+    );
+  /* 邊緣淡出，避免出現生硬方塊邊界 */
+  -webkit-mask-image: radial-gradient(120% 130% at 28% 46%, #000 58%, transparent 100%);
+  mask-image: radial-gradient(120% 130% at 28% 46%, #000 58%, transparent 100%);
+  pointer-events: none;
+}
+
+/* (2) H1 主標 / 副標 → 提到近白，標題不透明 */
+.orion-hero-cinematic .orion-hero-copy h1 {
+  color: #f5f7fa;
+}
+.orion-hero-cinematic .orion-hero-copy h1 span {
+  /* 原 rgba(234,241,249,0.84)：透明在亮畫面處會掉 AA → 改不透明近白 */
+  color: #eaf2fb;
+}
+.orion-hero-cinematic .orion-hero-copy h1 strong {
+  color: #f7f9fc;
+  /* 輕微暗描邊，進一步保證壓在任何亮處仍可讀 */
+  text-shadow: 0 1px 18px rgba(2, 7, 14, 0.55);
+}
+
+/* (3) 內文 subtitle：原 --site-muted #a8b7ca（實機偏灰、區域對比不足）
+       → #e4ecf5，於暗底 scrim 上對比約 13:1，遠超 AA */
+.orion-hero-cinematic .orion-hero-subtitle {
+  color: #e4ecf5;
+  text-shadow: 0 1px 14px rgba(2, 7, 14, 0.5);
+}
+
+/* (4) 三個步驟標籤（01/02/03）說明文字：原 78% 透明白 → 不透明近白 */
+.orion-hero-cinematic .orion-trust-strip p {
+  color: #e8f1fa;
+}
+/* 分隔線也略提亮，數字維持金色 accent 不動 */
+.orion-hero-cinematic .orion-trust-strip div {
+  border-top-color: rgba(206, 225, 255, 0.30);
+}
+
+/* (5) 輸入框文字與 placeholder：提高可讀性（玻璃底較亮，需更高對比） */
+.orion-hero-cinematic .orion-hero-command input {
+  color: #f5f7fa;
+}
+.orion-hero-cinematic .orion-hero-command input::placeholder {
+  /* 原 rgba(205,220,237,0.58) 偏淡 → 提到約 0.74，placeholder AA 非強制但更易讀 */
+  color: rgba(214, 226, 240, 0.74);
+}
+
+/* (6) kicker（badge）文字略提亮，維持金/淺色調性 */
+.orion-hero-cinematic .orion-kicker {
+  color: #e7f0fb;
+}
+
+/* (7) 次要 CTA「先看實戰案例」文字提到近白，邊框略加強對比 */
+.orion-hero-cinematic .orion-secondary-btn {
+  color: #f5f7fa;
+  border-color: rgba(206, 225, 255, 0.34);
+}

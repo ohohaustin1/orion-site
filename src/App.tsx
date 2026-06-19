@@ -11,6 +11,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { SplashScreen } from "./components/SplashScreen";
 import Sidebar from "./components/Sidebar";
 import Starfield from "./components/Starfield";
+import Footer from "./components/Footer";
 // Pages
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -39,6 +40,7 @@ function SidebarLayout({ children }: { children: React.ReactNode }) {
       <main className="orion-main-content" style={{ paddingBottom: 80 }}>
         {children}
       </main>
+      <Footer />
     </div>
   );
 }
