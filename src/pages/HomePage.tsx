@@ -131,7 +131,38 @@ export default function HomePage() {
                 className="home-case-feature-card"
                 href={`/cases?industry=${encodeURIComponent(caseData.industry)}`}
               >
-                {visual && <img src={visual.src} alt={visual.alt} loading="eager" />}
+                {visual?.videoMp4 ? (
+                  <video
+                    className="home-case-feature-media"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="auto"
+                    poster={visual.src}
+                    aria-hidden="true"
+                    tabIndex={-1}
+                    onLoadedData={(event) => {
+                      const video = event.currentTarget;
+                      video.muted = true;
+                      video.defaultMuted = true;
+                      video.playsInline = true;
+                      void video.play().catch(() => undefined);
+                    }}
+                    onCanPlay={(event) => {
+                      const video = event.currentTarget;
+                      video.muted = true;
+                      video.defaultMuted = true;
+                      video.playsInline = true;
+                      void video.play().catch(() => undefined);
+                    }}
+                  >
+                    {visual.videoWebm && <source src={visual.videoWebm} type="video/webm" />}
+                    <source src={visual.videoMp4} type="video/mp4" />
+                  </video>
+                ) : (
+                  visual && <img src={visual.src} alt={visual.alt} loading="eager" />
+                )}
                 <div className="home-case-card-shade" aria-hidden="true" />
                 <div className="home-case-card-copy">
                   <span>{caseData.industry}</span>

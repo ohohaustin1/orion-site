@@ -6,6 +6,8 @@ export interface MetricItem {
 export interface CaseVisual {
   src: string;
   alt: string;
+  videoMp4?: string;
+  videoWebm?: string;
 }
 
 export interface CaseStudy {
@@ -32,14 +34,20 @@ export interface CaseStudy {
 export const caseVisuals: Record<number, CaseVisual> = {
   1: {
     src: '/images/cases/case-real-estate-ai-followup.jpg',
+    videoMp4: '/videos/cases/case-real-estate-command-loop.mp4',
+    videoWebm: '/videos/cases/case-real-estate-command-loop.webm',
     alt: '不動產銷售團隊在 AI 指揮中心追蹤高意向客戶',
   },
   2: {
     src: '/images/cases/case-ecommerce-cart-recovery.jpg',
+    videoMp4: '/videos/cases/case-ecommerce-command-loop.mp4',
+    videoWebm: '/videos/cases/case-ecommerce-command-loop.webm',
     alt: '電商品牌團隊用 AI 整理客服訊息與棄單回收任務',
   },
   3: {
     src: '/images/cases/case-manufacturing-schedule.jpg',
+    videoMp4: '/videos/cases/case-manufacturing-command-loop.mp4',
+    videoWebm: '/videos/cases/case-manufacturing-command-loop.webm',
     alt: '製造業主管在工廠指揮中心檢查產能排程與交期風險',
   },
   4: {
