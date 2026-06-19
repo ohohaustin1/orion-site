@@ -1,0 +1,134 @@
+[
+  {
+    "viewport": "production-desktop",
+    "route": "/home",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\CODEX-SITE-UX-COPY-AESTHETIC-2026-06-19\\production-desktop-home.png",
+    "url": "https://orion01.com/home",
+    "title": "ORION AI｜幫老闆追客、追單、追進度",
+    "h1": "做一套專屬你的智慧中樞營運系統\nO AI 就是你的好幫手",
+    "overflowX": 0,
+    "navLinkCount": 6,
+    "activeText": "首頁",
+    "nav": {
+      "width": 1240,
+      "height": 78,
+      "top": 18
+    },
+    "firstLink": {
+      "text": "首頁",
+      "display": "flex",
+      "flexDirection": "row",
+      "ariaCurrent": "page",
+      "background": "linear-gradient(135deg, rgb(244, 251, 255), rgb(231, 212, 149))"
+    },
+    "menuDisplay": "none",
+    "stylesheets": [
+      "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+      "https://orion01.com/assets/index-DL_IMK6J.css"
+    ],
+    "scripts": [
+      "https://www.googletagmanager.com/gtag/js?id=G-KJCZ121S9D&cx=c&gtm=4e66h0",
+      "https://www.googletagmanager.com/gtm.js?id=GTM-TG3PRS2P",
+      "https://orion01.com/assets/index-aOtZ-u_W.js"
+    ]
+  },
+  {
+    "viewport": "production-desktop",
+    "route": "/cases",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\CODEX-SITE-UX-COPY-AESTHETIC-2026-06-19\\production-desktop-cases.png",
+    "url": "https://orion01.com/cases",
+    "title": "ORION AI 實戰案例｜客人、訂單、回訪怎麼被 O 接住",
+    "h1": "不是看 AI 多炫，是看客人、訂單、回訪有沒有被追到結果。",
+    "overflowX": 0,
+    "navLinkCount": 6,
+    "activeText": "案例",
+    "nav": {
+      "width": 1240,
+      "height": 78,
+      "top": 18
+    },
+    "firstLink": {
+      "text": "首頁",
+      "display": "flex",
+      "flexDirection": "row",
+      "ariaCurrent": null,
+      "background": "none"
+    },
+    "menuDisplay": "none",
+    "stylesheets": [
+      "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+      "https://orion01.com/assets/index-DL_IMK6J.css"
+    ],
+    "scripts": [
+      "https://www.googletagmanager.com/gtag/js?id=G-KJCZ121S9D&cx=c&gtm=4e66h0",
+      "https://www.googletagmanager.com/gtm.js?id=GTM-TG3PRS2P",
+      "https://orion01.com/assets/index-aOtZ-u_W.js"
+    ]
+  },
+  {
+    "viewport": "production-mobile",
+    "route": "/home",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\CODEX-SITE-UX-COPY-AESTHETIC-2026-06-19\\production-mobile-home.png",
+    "url": "https://orion01.com/home",
+    "title": "ORION AI｜幫老闆追客、追單、追進度",
+    "h1": "做一套專屬你的智慧中樞營運系統\nO AI 就是你的好幫手",
+    "overflowX": 0,
+    "navLinkCount": 6,
+    "activeText": "首頁",
+    "nav": {
+      "width": 370,
+      "height": 66,
+      "top": 10
+    },
+    "firstLink": {
+      "text": "首頁",
+      "display": "inline-flex",
+      "flexDirection": "row",
+      "ariaCurrent": "page",
+      "background": "linear-gradient(135deg, rgb(244, 251, 255), rgb(231, 212, 149))"
+    },
+    "menuDisplay": "grid",
+    "stylesheets": [
+      "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+      "https://orion01.com/assets/index-DL_IMK6J.css"
+    ],
+    "scripts": [
+      "https://www.googletagmanager.com/gtag/js?id=G-KJCZ121S9D&cx=c&gtm=4e66h0",
+      "https://www.googletagmanager.com/gtm.js?id=GTM-TG3PRS2P",
+      "https://orion01.com/assets/index-aOtZ-u_W.js"
+    ]
+  },
+  {
+    "viewport": "production-mobile",
+    "route": "/cases",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\CODEX-SITE-UX-COPY-AESTHETIC-2026-06-19\\production-mobile-cases.png",
+    "url": "https://orion01.com/cases",
+    "title": "ORION AI 實戰案例｜客人、訂單、回訪怎麼被 O 接住",
+    "h1": "不是看 AI 多炫，是看客人、訂單、回訪有沒有被追到結果。",
+    "overflowX": 0,
+    "navLinkCount": 6,
+    "activeText": "案例",
+    "nav": {
+      "width": 370,
+      "height": 66,
+      "top": 10
+    },
+    "firstLink": {
+      "text": "首頁",
+      "display": "inline-flex",
+      "flexDirection": "row",
+      "ariaCurrent": null,
+      "background": "none"
+    },
+    "menuDisplay": "grid",
+    "stylesheets": [
+      "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+      "https://orion01.com/assets/index-DL_IMK6J.css"
+    ],
+    "scripts": [
+      "https://www.googletagmanager.com/gtag/js?id=G-KJCZ121S9D&cx=c&gtm=4e66h0",
+      "https://www.googletagmanager.com/gtm.js?id=GTM-TG3PRS2P",
+      "https://orion01.com/assets/index-aOtZ-u_W.js"
+    ]
+  }
+]

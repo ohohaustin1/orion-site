@@ -4,7 +4,7 @@
 
 ## 結論
 
-完成本輪「導覽美術修復 + 全站第一屏文案流程檢查 + 桌機/手機瀏覽器驗證」。
+完成本輪「導覽美術修復 + 全站第一屏文案流程檢查 + 桌機/手機瀏覽器驗證 + production 複驗」。
 
 本輪沒有重做整站內容，也沒有動 O AI 後端。主要修掉截圖中最明顯的廉價感來源：導覽列輸出是 `<a>`，但 CSS 寫成 `.orion-topnav-links button`，導致主導覽沒有吃到正確樣式、active 狀態與橫排節奏。
 
@@ -105,6 +105,7 @@
 ## 驗證證據
 
 - `browser-check.json`
+- `production-check.json`
 - `desktop-home.png`
 - `desktop-cases.png`
 - `desktop-about.png`
@@ -117,6 +118,10 @@
 - `mobile-insights.png`
 - `mobile-team.png`
 - `mobile-resources.png`
+- `production-desktop-home.png`
+- `production-desktop-cases.png`
+- `production-mobile-home.png`
+- `production-mobile-cases.png`
 
 ## 驗證等級
 
@@ -126,12 +131,22 @@ L2：`npm run build` 通過。
 
 L3：本地 Chrome 瀏覽器驗證通過。
 
-L4：尚未做 production 驗證，需 push/deploy 後再驗。
+L4：production 驗證通過。
+
+Production 驗證：
+
+- URL：`https://orion01.com/home`
+- URL：`https://orion01.com/cases`
+- CSS hash：`assets/index-DL_IMK6J.css`
+- JS hash：`assets/index-aOtZ-u_W.js`
+- `/home` 桌機：nav link count = 6、active = 首頁、display = flex、flexDirection = row、overflowX = 0
+- `/cases` 桌機：nav link count = 6、active = 案例、display = flex、flexDirection = row、overflowX = 0
+- `/home` 手機：menu display = grid、overflowX = 0
+- `/cases` 手機：menu display = grid、overflowX = 0
 
 ## 未驗項目
 
 - 尚未用真機手動滑完整站。
-- 尚未等 production deploy 後做線上複驗。
 - 尚未做 Lighthouse / WCAG AA 全量評分。
 
 ## 下一步建議
