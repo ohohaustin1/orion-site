@@ -25,9 +25,6 @@ export default function CaseMedia({ visual, className, loading = 'lazy', preload
       currentVideo.playsInline = true;
       void currentVideo.play().catch(() => undefined);
     };
-    const pausePlayback = () => {
-      videoRef.current?.pause();
-    };
     const requestVisiblePlayback = () => {
       if (document.visibilityState === 'visible') {
         requestPlayback();
@@ -35,14 +32,12 @@ export default function CaseMedia({ visual, className, loading = 'lazy', preload
     };
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          requestPlayback();
-        } else {
-          pausePlayback();
-        }
-      },
-      { threshold: 0.18 },
+        ([entry]) => {
+          if (entry?.isIntersecting) {
+            requestPlayback();
+          }
+        },
+        { threshold: 0.18 },
     );
 
     observer.observe(video);
