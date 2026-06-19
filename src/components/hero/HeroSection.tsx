@@ -94,11 +94,9 @@ export default function HeroSection() {
           </div>
 
           <h1>
-            <span>老闆不用再當全公司的追蹤器</span>
+            <span>做一套專屬你的智慧中樞營運系統</span>
             <strong>
-              讓 O 幫你回訊息、
-              <br />
-              追名單、盯進度。
+              O AI 就是你的好幫手
             </strong>
           </h1>
 

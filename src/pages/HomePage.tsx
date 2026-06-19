@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import {
   ArrowRight,
   BarChart3,
@@ -93,6 +94,78 @@ function startDiagnosis(entryPoint: string) {
   window.location.href = `${DIAG_URL}/`;
 }
 
+interface CaseLoopVideoProps {
+  mp4: string;
+  webm?: string;
+  poster: string;
+}
+
+function CaseLoopVideo({ mp4, webm, poster }: CaseLoopVideoProps) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const requestPlayback = () => {
+      const video = videoRef.current;
+      if (!video || shouldReduceMotion) return;
+
+      video.muted = true;
+      video.defaultMuted = true;
+      video.playsInline = true;
+      void video.play().catch(() => undefined);
+    };
+    const requestVisiblePlayback = () => {
+      if (document.visibilityState === 'visible') {
+        requestPlayback();
+      }
+    };
+
+    requestPlayback();
+    const interval = window.setInterval(requestPlayback, 4000);
+    document.addEventListener('visibilitychange', requestVisiblePlayback);
+    window.addEventListener('focus', requestPlayback);
+    window.addEventListener('pageshow', requestPlayback);
+    window.addEventListener('scroll', requestPlayback, { passive: true });
+    window.addEventListener('touchstart', requestPlayback, { passive: true });
+
+    return () => {
+      window.clearInterval(interval);
+      document.removeEventListener('visibilitychange', requestVisiblePlayback);
+      window.removeEventListener('focus', requestPlayback);
+      window.removeEventListener('pageshow', requestPlayback);
+      window.removeEventListener('scroll', requestPlayback);
+      window.removeEventListener('touchstart', requestPlayback);
+    };
+  }, [mp4, webm]);
+
+  const requestLoadedPlayback = (video: HTMLVideoElement) => {
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    void video.play().catch(() => undefined);
+  };
+
+  return (
+    <video
+      ref={videoRef}
+      className="home-case-feature-media"
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="auto"
+      poster={poster}
+      aria-hidden="true"
+      tabIndex={-1}
+      onLoadedData={(event) => requestLoadedPlayback(event.currentTarget)}
+      onCanPlay={(event) => requestLoadedPlayback(event.currentTarget)}
+    >
+      {webm && <source src={webm} type="video/webm" />}
+      <source src={mp4} type="video/mp4" />
+    </video>
+  );
+}
+
 export default function HomePage() {
   return (
     <div className="orion-cinematic-site">
@@ -132,36 +205,15 @@ export default function HomePage() {
                 href={`/cases?industry=${encodeURIComponent(caseData.industry)}`}
               >
                 {visual?.videoMp4 ? (
-                  <video
-                    className="home-case-feature-media"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="auto"
-                    poster={visual.src}
-                    aria-hidden="true"
-                    tabIndex={-1}
-                    onLoadedData={(event) => {
-                      const video = event.currentTarget;
-                      video.muted = true;
-                      video.defaultMuted = true;
-                      video.playsInline = true;
-                      void video.play().catch(() => undefined);
-                    }}
-                    onCanPlay={(event) => {
-                      const video = event.currentTarget;
-                      video.muted = true;
-                      video.defaultMuted = true;
-                      video.playsInline = true;
-                      void video.play().catch(() => undefined);
-                    }}
-                  >
-                    {visual.videoWebm && <source src={visual.videoWebm} type="video/webm" />}
-                    <source src={visual.videoMp4} type="video/mp4" />
-                  </video>
+                  <CaseLoopVideo mp4={visual.videoMp4} webm={visual.videoWebm} poster={visual.src} />
                 ) : (
                   visual && <img src={visual.src} alt={visual.alt} loading="eager" />
+                )}
+                {visual?.videoMp4 && (
+                  <span className="home-case-video-badge" aria-hidden="true">
+                    <i />
+                    動態案例
+                  </span>
                 )}
                 <div className="home-case-card-shade" aria-hidden="true" />
                 <div className="home-case-card-copy">
