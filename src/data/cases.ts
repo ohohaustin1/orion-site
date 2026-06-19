@@ -78,6 +78,98 @@ export const caseVisuals: Record<number, CaseVisual> = {
     src: '/images/cases/case-decision-strategy.jpg',
     alt: '企業主重大決策團隊用 AI 拆解情境、風險邊界與下一步',
   },
+  21: {
+    src: '/images/cases/case-real-estate-ai-followup.jpg',
+    alt: '房地產仲介團隊用 AI 分級客戶並追蹤成交機會',
+  },
+  22: {
+    src: '/images/cases/case-ecommerce-cart-recovery.jpg',
+    alt: '電商零售團隊用 AI 接住客服、退貨與商品推薦流程',
+  },
+  23: {
+    src: '/images/cases/case-manufacturing-schedule.jpg',
+    alt: '製造業團隊用 AI 檢查報價、產能與交期風險',
+  },
+  24: {
+    src: '/images/cases/case-restaurant-staffing.jpg',
+    alt: '餐飲連鎖團隊用 AI 預測庫存、採購與跨店調度',
+  },
+  25: {
+    src: '/images/cases/case-brand-voice-system.jpg',
+    alt: '管理顧問團隊用 AI 整理研究、提案與交付流程',
+  },
+  26: {
+    src: '/images/cases/case-wellness-followup.jpg',
+    alt: '診所團隊用 AI 整理排程、紀錄與回訪提醒',
+  },
+  27: {
+    src: '/images/cases/case-dental-appointment-recall.jpg',
+    alt: '牙醫診所用 AI 追蹤預約、爽約風險與回診提醒',
+  },
+  28: {
+    src: '/images/cases/case-legal-risk-workflow.jpg',
+    alt: '法律事務所用 AI 搜尋法規、案件資料與客戶進度',
+  },
+  29: {
+    src: '/images/cases/case-contract-review-training.jpg',
+    alt: '法律團隊用 AI 協助合約審閱、風險標註與新人訓練',
+  },
+  30: {
+    src: '/images/cases/case-education-transfer.jpg',
+    alt: '補習班用 AI 追蹤學生進度、家長溝通與續班機會',
+  },
+  31: {
+    src: '/images/cases/case-education-scheduling.jpg',
+    alt: '語言學院用 AI 安排教師、教室與學生出席提醒',
+  },
+  32: {
+    src: '/images/cases/case-warehouse-picking.jpg',
+    alt: '倉儲團隊用 AI 最佳化揀貨路線、庫位與錯誤預警',
+  },
+  33: {
+    src: '/images/cases/case-logistics-fleet-routing.jpg',
+    alt: '物流車隊用 AI 規劃配送路線、油耗與即時貨態',
+  },
+  34: {
+    src: '/images/cases/case-decision-strategy.jpg',
+    alt: '建築設計團隊用 AI 對齊提案、視覺化與專案里程碑',
+  },
+  35: {
+    src: '/images/cases/case-salon-appointment-return.jpg',
+    alt: '高端沙龍用 AI 管理預約、客戶偏好與回流提醒',
+  },
+  36: {
+    src: '/images/cases/case-beauty-social-crm.jpg',
+    alt: '造型工作室用 AI 追蹤社群成效、會員分群與促銷回收',
+  },
+  37: {
+    src: '/images/cases/case-automotive-maintenance.jpg',
+    alt: '汽車保養中心用 AI 預測保養時機、零件庫存與回廠提醒',
+  },
+  38: {
+    src: '/images/cases/case-cashflow-command.jpg',
+    alt: '保險業務團隊用 AI 分級客戶、預測成交與續保提醒',
+  },
+  39: {
+    src: '/images/cases/case-insurance-claims-workflow.jpg',
+    alt: '保險理賠團隊用 AI 管理文件審核、異常偵測與客戶通知',
+  },
+  40: {
+    src: '/images/cases/case-gym-retention-operations.jpg',
+    alt: '健身房用 AI 追蹤會員流失、私教排課與設備維護',
+  },
+  41: {
+    src: '/images/cases/case-restaurant-reservation-followup.jpg',
+    alt: '餐飲團隊用 AI 接住訂位、外送訊息與熟客回訪',
+  },
+  42: {
+    src: '/images/cases/case-ecommerce-repurchase-automation.jpg',
+    alt: '電商品牌用 AI 串接訂單分群、回購提醒與客服追蹤',
+  },
+  43: {
+    src: '/images/cases/case-manufacturing-quote-tracking.jpg',
+    alt: '製造團隊用 AI 串接報價、產能看板與交期提醒',
+  },
 };
 
 export const caseVisualList = [
