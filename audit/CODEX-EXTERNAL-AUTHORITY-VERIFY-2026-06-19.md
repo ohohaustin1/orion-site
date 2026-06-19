@@ -2,7 +2,9 @@
 
 ## Conclusion
 
-Status: implemented locally and L3 verified. Production verification pending until push/deploy.
+Status: implemented, pushed, deployed, and production-smoke verified.
+
+Commit: `64033c3 Add official AI citation kit`
 
 This patch adds a crawlable official citation kit so external platforms and AI answer engines can cite a single consistent source for ORION AI.
 
@@ -76,6 +78,17 @@ Screenshots:
 ## Third-party Limit
 
 I did not create or edit LinkedIn, YouTube, Google Business, or other external accounts. Those require the owner's authenticated account and should not be fabricated. The website now provides the official copy that can be pasted into those platforms consistently.
+
+## L4 Production Smoke Verify
+
+Checked after deployment:
+
+- `https://orion01.com/ai-citation-kit`: 200, citation kit visible, LinkedIn copy visible, Google Business copy visible, Austin/email/LINE visible.
+- `https://orion01.com/llms.txt`: 200, citation kit URL visible, external platform copy visible, Austin/email/LINE visible.
+- `https://orion01.com/sitemap.xml`: 200, `/ai-citation-kit` visible.
+- `https://orion01.com/home`: 200, `/ai-citation-kit` homepage entry visible, Austin/email/LINE visible.
+
+Verification level reached: L4 production smoke verification.
 
 ## Next Best External Moves
 
