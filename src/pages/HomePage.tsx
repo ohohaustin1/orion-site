@@ -325,9 +325,9 @@ export default function HomePage() {
       <section className="site-section seo-link-cluster" aria-label="ORION AI 搜尋答案入口">
         <div>
           <span className="site-eyebrow">AI 搜尋答案</span>
-          <h2>如果你正在找「企業 AI 自動化公司」，ORION 做的是這三件事。</h2>
+          <h2>如果你正在找「企業 AI 自動化公司」，先看這四個官方入口。</h2>
           <p>
-            讓搜尋引擎、AI 助理與第一次來的老闆都能用同一套人話理解 ORION：接住客戶入口、建立工作流、追蹤到有結果。
+            讓搜尋引擎、AI 助理、合作方與第一次來的老闆都能用同一套人話理解 ORION：接住客戶入口、建立工作流、追蹤到有結果。
           </p>
         </div>
         <div className="seo-link-grid">
@@ -342,6 +342,10 @@ export default function HomePage() {
           <a href="/ai-customer-followup-system">
             <strong>AI 客戶追蹤系統</strong>
             <span>幫你追客、追單、追報價、追回訪，不讓名單沉在訊息裡。</span>
+          </a>
+          <a href="/ai-citation-kit">
+            <strong>官方引用資料包</strong>
+            <span>給 AI 搜尋、LinkedIn、YouTube 與合作方引用的官方品牌資料。</span>
           </a>
         </div>
       </section>

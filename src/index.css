@@ -1926,6 +1926,182 @@ body {
   line-height: 1.5;
 }
 
+.citation-kit-page {
+  --citation-gold: rgba(231, 201, 119, 0.92);
+}
+
+.citation-hero {
+  align-items: stretch;
+}
+
+.citation-proof-card {
+  position: relative;
+  min-height: 320px;
+  padding: clamp(1.4rem, 3vw, 2.2rem);
+  border: 1px solid rgba(231, 201, 119, 0.2);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(231, 201, 119, 0.14), transparent 34%),
+    radial-gradient(circle at 80% 30%, rgba(93, 189, 255, 0.13), transparent 34%),
+    linear-gradient(145deg, rgba(13, 20, 35, 0.9), rgba(5, 9, 17, 0.96));
+  box-shadow: 0 32px 90px rgba(0, 0, 0, 0.34);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+.citation-proof-card::before {
+  content: "";
+  position: absolute;
+  inset: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  pointer-events: none;
+}
+
+.citation-proof-card svg {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  color: var(--citation-gold);
+}
+
+.citation-proof-card span {
+  position: relative;
+  color: rgba(231, 201, 119, 0.82);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.citation-proof-card strong {
+  position: relative;
+  margin-top: 1rem;
+  color: rgba(248, 250, 252, 0.96);
+  font-size: clamp(1.5rem, 3vw, 2.65rem);
+  line-height: 1.16;
+  letter-spacing: 0;
+}
+
+.citation-kit-page .seo-answer-strip > div {
+  padding: clamp(18px, 2.6vw, 28px);
+  border: 1px solid rgba(201, 168, 76, 0.16);
+  border-radius: 20px;
+  background:
+    linear-gradient(145deg, rgba(15, 20, 34, 0.86), rgba(6, 10, 18, 0.92)),
+    radial-gradient(circle at top left, rgba(201, 168, 76, 0.12), transparent 42%);
+}
+
+.citation-kit-page .seo-answer-strip span {
+  display: block;
+  color: rgba(231, 201, 119, 0.82);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.5rem;
+}
+
+.citation-kit-page .seo-answer-strip strong {
+  display: block;
+  color: rgba(248, 250, 252, 0.94);
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  line-height: 1.45;
+  letter-spacing: 0;
+}
+
+.citation-kit-page .seo-list div {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.citation-kit-page .seo-list svg {
+  flex: 0 0 auto;
+  color: var(--orion-gold-bright);
+  margin-top: 0.25rem;
+}
+
+.citation-copy-section {
+  width: min(1120px, calc(100% - 2rem));
+  margin: clamp(3rem, 8vw, 7rem) auto 0;
+}
+
+.seo-section-heading {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: clamp(1.2rem, 3vw, 2rem);
+}
+
+.seo-section-heading h2 {
+  max-width: 780px;
+  color: rgba(248, 250, 252, 0.96);
+  font-size: clamp(2rem, 4vw, 4.5rem);
+  line-height: 1.04;
+  letter-spacing: 0;
+}
+
+.citation-copy-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.citation-copy-card {
+  min-height: 260px;
+  padding: clamp(1.2rem, 2.8vw, 1.8rem);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(15, 24, 40, 0.88), rgba(7, 11, 20, 0.94));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.citation-copy-card > span {
+  width: fit-content;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgba(231, 201, 119, 0.22);
+  border-radius: 999px;
+  background: rgba(231, 201, 119, 0.08);
+  color: rgba(231, 201, 119, 0.9);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.citation-copy-card h3 {
+  margin-top: 1rem;
+  color: rgba(248, 250, 252, 0.96);
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  line-height: 1.25;
+}
+
+.citation-copy-card p {
+  margin-top: 0.85rem;
+  color: rgba(203, 213, 225, 0.88);
+  line-height: 1.85;
+}
+
+.citation-copy-meta {
+  margin-top: auto;
+  padding-top: 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: rgba(148, 163, 184, 0.82);
+  font-size: 0.82rem;
+}
+
+.citation-copy-meta svg {
+  color: rgba(231, 201, 119, 0.78);
+}
+
 @media (max-width: 900px) {
   .seo-answer-strip,
   .seo-two-column,
@@ -1949,6 +2125,14 @@ body {
 
   .founder-portrait-panel {
     min-height: 460px;
+  }
+
+  .citation-copy-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .citation-proof-card {
+    min-height: 260px;
   }
 }
 @keyframes faqOpen {

@@ -41,6 +41,7 @@ const SEO_LINKS: { href: string; label: string }[] = [
   { href: '/ai-workflow-automation', label: 'AI 工作流自動化' },
   { href: '/ai-customer-followup-system', label: 'AI 客戶追蹤系統' },
   { href: '/founder-austin-xu-yaochen', label: 'Austin 許燿宸' },
+  { href: '/ai-citation-kit', label: '官方引用資料包' },
 ];
 
 /** 法律 / 信任連結（既有頁面，需被指向） */

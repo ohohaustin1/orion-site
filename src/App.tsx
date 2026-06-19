@@ -31,6 +31,7 @@ import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import SeoLandingPage from './pages/SeoLandingPage';
 import FounderPage from './pages/FounderPage';
+import CitationKitPage from './pages/CitationKitPage';
 
 // Pages that show sidebar
 const SIDEBAR_ROUTES = [
@@ -44,6 +45,7 @@ const SIDEBAR_ROUTES = [
   '/ai-workflow-automation',
   '/ai-customer-followup-system',
   '/founder-austin-xu-yaochen',
+  '/ai-citation-kit',
 ];
 
 function SidebarLayout({ children }: { children: React.ReactNode }) {
@@ -72,6 +74,7 @@ function classifyRoute(loc: string): string {
     loc === '/ai-customer-followup-system'
   ) return 'seo_landing';
   if (loc === '/founder-austin-xu-yaochen') return 'founder';
+  if (loc === '/ai-citation-kit') return 'citation_kit';
   if (loc === '/insights') return 'insights_index';
   if (loc === '/resources') return 'resources_index';
   if (loc === '/privacy' || loc === '/terms') return 'legal';
@@ -114,6 +117,7 @@ function Router() {
             {() => <SeoLandingPage slug="ai-customer-followup-system" />}
           </Route>
           <Route path="/founder-austin-xu-yaochen" component={FounderPage} />
+          <Route path="/ai-citation-kit" component={CitationKitPage} />
           <Route component={NotFound} />
         </Switch>
       </SidebarLayout>
@@ -211,6 +215,7 @@ function App() {
       '/ai-workflow-automation',
       '/ai-customer-followup-system',
       '/founder-austin-xu-yaochen',
+      '/ai-citation-kit',
       '/privacy',
       '/terms',
     ];

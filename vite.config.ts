@@ -18,6 +18,7 @@ const PRERENDER_ROUTES = [
   '/ai-workflow-automation',
   '/ai-customer-followup-system',
   '/founder-austin-xu-yaochen',
+  '/ai-citation-kit',
   '/privacy',
   '/terms',
 ];
