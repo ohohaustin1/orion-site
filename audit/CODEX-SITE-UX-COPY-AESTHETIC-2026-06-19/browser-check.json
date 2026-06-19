@@ -1,0 +1,1316 @@
+[
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "route": "/home",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\CODEX-SITE-UX-COPY-AESTHETIC-2026-06-19\\desktop-home.png",
+    "url": "http://127.0.0.1:4187/home/",
+    "title": "ORION AI｜幫老闆追客、追單、追進度",
+    "h1": "做一套專屬你的智慧中樞營運系統\nO AI 就是你的好幫手",
+    "h2s": [
+      "先看 O 可以接住\n哪些工作。",
+      "3 分鐘先拆一條流程",
+      "老闆每天看一張清單",
+      "有效再複製到下一段",
+      "最累的不是沒有人，是每件事最後都回到老闆身上。"
+    ],
+    "ctas": [
+      "案例",
+      "深度掃描",
+      "免費診斷",
+      "免費讓 O 拆一次",
+      "先看實戰案例",
+      "查看完整 12 個案例",
+      "動態案例不動產不是案源不夠，而是高意向客戶被淹沒了。案源、廣告、客服與業務回報分散，主管每天只能靠零碎訊息判斷成交機率。+31% / 預約賞屋率",
+      "動態案例電商客人不是不想買，是缺少最後一步信任。客服訊息、棄單原因、廣告素材與回購資料沒有串起來，團隊不知道哪裡最該優先修。+22% / 棄單回收率",
+      "動態案例製造業真正值錢的是老主管腦中的排程判斷。訂單變動、機台限制、庫存與交期靠主管人工調度，任何急單都會擾動整條產線。-72% / 排程時間",
+      "動態餐飲連鎖餐飲營運部排班不是填表，是每天的營運決策。",
+      "動態客戶留存會員制教育品牌真正的流失，通常在客人說出口前就開始了。",
+      "法律風險跨境服務公司法律風險常常不是文件錯，而是流程沒有記憶。"
+    ],
+    "bodyTextStart": "ORION AI 幫你追客、追單、追進度 首頁 案例 洞察 服務 團隊 資源 深度掃描 免費診斷 ORION AI OPERATING OFFICER 做一套專屬你的智慧中樞營運系統 O AI 就是你的好幫手 你只要說哪段工作最常卡：私訊沒回、報價後沒追、訂單交期卡住、回訪續約忘記，或團隊進度都要你問。ORION 會把它拆成一條每天會跑的流程：誰負責、多久要回、逾時怎麼提醒、老闆早上看什麼。 免費拆第一條流程 免費讓 O 拆一次 先看實戰案例 01 3 分鐘先拆一條流程 02",
+    "scrollWidth": 1440,
+    "overflowX": 0,
+    "nav": {
+      "width": 1240,
+      "height": 78,
+      "top": 18,
+      "left": 100
+    },
+    "navLinkCount": 6,
+    "activeText": "首頁",
+    "linkMetrics": [
+      {
+        "text": "首頁",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": "page",
+        "color": "rgb(7, 16, 29)",
+        "background": "linear-gradient(135deg, rgb(244, 251, 255), rgb(231, 212, 149))"
+      },
+      {
+        "text": "案例",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "洞察",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "服務",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "團隊",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "資源",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      }
+    ],
+    "menuDisplay": "none",
+    "pageImageCount": 6,
+    "pageVideoCount": 15,
+    "duplicateImages": [
+      [
+        "http://127.0.0.1:4187/brand/griffin-128.png",
+        2
+      ]
+    ],
+    "duplicateVideos": []
+  },
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "route": "/cases",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\CODEX-SITE-UX-COPY-AESTHETIC-2026-06-19\\desktop-cases.png",
+    "url": "http://127.0.0.1:4187/cases/",
+    "title": "ORION AI 實戰案例｜客人、訂單、回訪怎麼被 O 接住",
+    "h1": "不是看 AI 多炫，是看客人、訂單、回訪有沒有被追到結果。",
+    "h2s": [
+      "不是「導入 AI」四個字，是每天少漏幾件事。",
+      "都會建設銷售團隊",
+      "生活風格選品品牌",
+      "精密零件工廠",
+      "連鎖餐飲營運部"
+    ],
+    "ctas": [
+      "案例",
+      "深度掃描",
+      "免費診斷",
+      "讓 O 拆我的案例",
+      "讓 O 幫我拆流程",
+      "實戰案例"
+    ],
+    "bodyTextStart": "ORION AI 幫你追客、追單、追進度 首頁 案例 洞察 服務 團隊 資源 深度掃描 免費診斷 實戰案例 不是看 AI 多炫，是看客人、訂單、回訪有沒有被追到結果。 每個案例都從老闆每天會遇到的斷點開始：客人沒追、交期被插單、私訊漏回、回訪沒人做。ORION 的價值，是把這些事變成有人負責、會提醒、會回報。 案例資料已載入 老闆會看到的改變 不是「導入 AI」四個字，是每天少漏幾件事。 先看三個典型斷點：原本誰在忙、哪裡漏掉、O 接手後老闆早上會看到什麼。 動態案例 不動產",
+    "scrollWidth": 1440,
+    "overflowX": 0,
+    "nav": {
+      "width": 1240,
+      "height": 78,
+      "top": 18,
+      "left": 100
+    },
+    "navLinkCount": 6,
+    "activeText": "案例",
+    "linkMetrics": [
+      {
+        "text": "首頁",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "案例",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": "page",
+        "color": "rgb(7, 16, 29)",
+        "background": "linear-gradient(135deg, rgb(244, 251, 255), rgb(231, 212, 149))"
+      },
+      {
+        "text": "洞察",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "服務",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "團隊",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "資源",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      }
+    ],
+    "menuDisplay": "none",
+    "pageImageCount": 14,
+    "pageVideoCount": 5,
+    "duplicateImages": [
+      [
+        "http://127.0.0.1:4187/brand/griffin-128.png",
+        2
+      ]
+    ],
+    "duplicateVideos": []
+  },
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "route": "/about",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\CODEX-SITE-UX-COPY-AESTHETIC-2026-06-19\\desktop-about.png",
+    "url": "http://127.0.0.1:4187/about/",
+    "title": "ORION AI 服務介紹｜把每天追人的事交給 O",
+    "h1": "不是多買一個 AI 工具，是把每天要追人的事交給 O。",
+    "h2s": [
+      "找出最常卡住的事",
+      "從一件每天都要追的事，變成團隊每天會照著跑的系統。",
+      "先做一段最痛的流程，再一段一段接成公司的 AI 作業層。",
+      "適合每天被訊息、名單、訂單、團隊進度追著跑的老闆。",
+      "探索"
+    ],
+    "ctas": [
+      "案例",
+      "深度掃描",
+      "免費診斷",
+      "讓 O 幫我拆流程",
+      "讓 O 幫我看哪裡卡住",
+      "實戰案例"
+    ],
+    "bodyTextStart": "ORION AI 幫你追客、追單、追進度 首頁 案例 洞察 服務 團隊 資源 深度掃描 免費診斷 服務介紹 不是多買一個 AI 工具，是把每天要追人的事交給 O。 我們不急著堆功能。先找出客人從哪裡來、誰要處理、多久要回、哪裡常卡住、老闆每天要看什麼，再決定要接哪些工具、建立哪些提醒、留下哪些資料。 讓 O 幫我拆流程 找出最常卡住的事 接住客人和任務 把下一步派出去 每天回報給老闆 留下客戶記憶 確認真的能用 找出最常卡住的事 先找出客人、報價、訂單、回訪或團隊進度哪裡最常",
+    "scrollWidth": 1440,
+    "overflowX": 0,
+    "nav": {
+      "width": 1240,
+      "height": 78,
+      "top": 18,
+      "left": 100
+    },
+    "navLinkCount": 6,
+    "activeText": "服務",
+    "linkMetrics": [
+      {
+        "text": "首頁",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "案例",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "洞察",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "服務",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": "page",
+        "color": "rgb(7, 16, 29)",
+        "background": "linear-gradient(135deg, rgb(244, 251, 255), rgb(231, 212, 149))"
+      },
+      {
+        "text": "團隊",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "資源",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      }
+    ],
+    "menuDisplay": "none",
+    "pageImageCount": 2,
+    "pageVideoCount": 3,
+    "duplicateImages": [
+      [
+        "http://127.0.0.1:4187/brand/griffin-128.png",
+        2
+      ]
+    ],
+    "duplicateVideos": []
+  },
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "route": "/insights",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\CODEX-SITE-UX-COPY-AESTHETIC-2026-06-19\\desktop-insights.png",
+    "url": "http://127.0.0.1:4187/insights/",
+    "title": "ORION AI 數據洞察｜AI 值不值得做，看老闆有沒有少追事",
+    "h1": "AI 有沒有價值，看老闆有沒有少追客人、少追單、少追進度。",
+    "h2s": [
+      "AI 導入的輸贏，不是有沒有工具，而是老闆每天少追多少事。",
+      "一段流程值不值得交給 O，先看三個訊號。",
+      "風險提醒：不要把 AI 做成另一個需要人盯的工具。",
+      "用你的真實問題，測一次 O 能不能幫你少追一件事。",
+      "探索"
+    ],
+    "ctas": [
+      "案例",
+      "深度掃描",
+      "免費診斷",
+      "讓 O 幫我拆流程",
+      "實戰案例"
+    ],
+    "bodyTextStart": "ORION AI 幫你追客、追單、追進度 首頁 案例 洞察 服務 團隊 資源 深度掃描 免費診斷 數據洞察 AI 有沒有價值，看老闆有沒有少追客人、少追單、少追進度。 很多公司買了 AI 工具，但客人還是等回覆、業務還是忘記追、專案還是靠老闆盯。真正的差距不是模型多厲害，而是 O 有沒有每天幫你把下一步追到結果。 三種企業狀態 AI 導入的輸贏，不是有沒有工具，而是老闆每天少追多少事。 01 沒有 O 追流程 靠人追訊息、靠會議補資訊、靠老闆每天問進度。 公司越大，沒人追的客",
+    "scrollWidth": 1440,
+    "overflowX": 0,
+    "nav": {
+      "width": 1240,
+      "height": 78,
+      "top": 18,
+      "left": 100
+    },
+    "navLinkCount": 6,
+    "activeText": "洞察",
+    "linkMetrics": [
+      {
+        "text": "首頁",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "案例",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "洞察",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": "page",
+        "color": "rgb(7, 16, 29)",
+        "background": "linear-gradient(135deg, rgb(244, 251, 255), rgb(231, 212, 149))"
+      },
+      {
+        "text": "服務",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "團隊",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "資源",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      }
+    ],
+    "menuDisplay": "none",
+    "pageImageCount": 2,
+    "pageVideoCount": 2,
+    "duplicateImages": [
+      [
+        "http://127.0.0.1:4187/brand/griffin-128.png",
+        2
+      ]
+    ],
+    "duplicateVideos": []
+  },
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "route": "/team",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\CODEX-SITE-UX-COPY-AESTHETIC-2026-06-19\\desktop-team.png",
+    "url": "http://127.0.0.1:4187/team/",
+    "title": "ORION AI 核心團隊｜把老闆每天追的事做成系統",
+    "h1": "你說出一段混亂流程，ORION 團隊把它做成每天會跑的系統。",
+    "h2s": [
+      "Austin 許燿宸",
+      "戰略部",
+      "Codex 工程節點",
+      "Cowork 瀏覽器驗收",
+      "內容與成長節點"
+    ],
+    "ctas": [
+      "案例",
+      "深度掃描",
+      "免費診斷",
+      "讓 O 幫我拆流程",
+      "實戰案例"
+    ],
+    "bodyTextStart": "ORION AI 幫你追客、追單、追進度 首頁 案例 洞察 服務 團隊 資源 深度掃描 免費診斷 核心團隊 你說出一段混亂流程，ORION 團隊把它做成每天會跑的系統。 戰略先判斷哪一段最值得做，工程做出第一版，瀏覽器驗收確認客戶真的能用，AI Agent 把提醒、派工、追蹤、回報與資料回收接起來。 ORION AI 核心團隊 Austin 許燿宸 創辦人與策略總指揮 負責 ORION 的長期方向、產品判斷、商業模式與資源配置，確保每一次建置都能沉澱成複利資產。 戰略部 營運",
+    "scrollWidth": 1440,
+    "overflowX": 0,
+    "nav": {
+      "width": 1240,
+      "height": 78,
+      "top": 18,
+      "left": 100
+    },
+    "navLinkCount": 6,
+    "activeText": "團隊",
+    "linkMetrics": [
+      {
+        "text": "首頁",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "案例",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "洞察",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "服務",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "團隊",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": "page",
+        "color": "rgb(7, 16, 29)",
+        "background": "linear-gradient(135deg, rgb(244, 251, 255), rgb(231, 212, 149))"
+      },
+      {
+        "text": "資源",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      }
+    ],
+    "menuDisplay": "none",
+    "pageImageCount": 3,
+    "pageVideoCount": 2,
+    "duplicateImages": [
+      [
+        "http://127.0.0.1:4187/brand/griffin-128.png",
+        2
+      ]
+    ],
+    "duplicateVideos": []
+  },
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "route": "/resources",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\CODEX-SITE-UX-COPY-AESTHETIC-2026-06-19\\desktop-resources.png",
+    "url": "http://127.0.0.1:4187/resources/",
+    "title": "ORION AI 資源中心｜先搞懂哪件事要交給 O 追",
+    "h1": "想導入 AI，先問：哪件事你每天都在追？",
+    "h2s": [
+      "用 ORION 的標準，判斷哪件事值得交給 O。",
+      "O 的藍圖不是功能清單，而是「誰進來、誰處理、多久回、怎麼回報」。",
+      "先把工作邊界說清楚，O 才不會越做越亂。",
+      "把你每天最常追人的事交給 ORION，先拆一次。",
+      "探索"
+    ],
+    "ctas": [
+      "案例",
+      "深度掃描",
+      "免費診斷",
+      "讓 O 幫我拆流程",
+      "實戰案例"
+    ],
+    "bodyTextStart": "ORION AI 幫你追客、追單、追進度 首頁 案例 洞察 服務 團隊 資源 深度掃描 免費診斷 資源中心 想導入 AI，先問：哪件事你每天都在追？ 這裡不用你先懂技術。先幫你判斷：客人從哪裡來、誰要處理、多久要回、卡住怎麼辦、老闆要看什麼。 精選筆記 用 ORION 的標準，判斷哪件事值得交給 O。 策略筆記 不要先問能不能做 AI，先問哪一條流程最常卡住。 AI 導入前，先找出客人、報價、訂單、回訪、主管回報哪裡最常卡住。能每天重複追蹤的事，才值得先做成系統。 用我的公司",
+    "scrollWidth": 1440,
+    "overflowX": 0,
+    "nav": {
+      "width": 1240,
+      "height": 78,
+      "top": 18,
+      "left": 100
+    },
+    "navLinkCount": 6,
+    "activeText": "資源",
+    "linkMetrics": [
+      {
+        "text": "首頁",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "案例",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "洞察",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "服務",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "團隊",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "資源",
+        "display": "flex",
+        "flexDirection": "row",
+        "width": 72,
+        "height": 42,
+        "ariaCurrent": "page",
+        "color": "rgb(7, 16, 29)",
+        "background": "linear-gradient(135deg, rgb(244, 251, 255), rgb(231, 212, 149))"
+      }
+    ],
+    "menuDisplay": "none",
+    "pageImageCount": 2,
+    "pageVideoCount": 2,
+    "duplicateImages": [
+      [
+        "http://127.0.0.1:4187/brand/griffin-128.png",
+        2
+      ]
+    ],
+    "duplicateVideos": []
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "route": "/home",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\CODEX-SITE-UX-COPY-AESTHETIC-2026-06-19\\mobile-home.png",
+    "url": "http://127.0.0.1:4187/home/",
+    "title": "ORION AI｜幫老闆追客、追單、追進度",
+    "h1": "做一套專屬你的智慧中樞營運系統\nO AI 就是你的好幫手",
+    "h2s": [
+      "先看 O 可以接住\n哪些工作。",
+      "3 分鐘先拆一條流程",
+      "老闆每天看一張清單",
+      "有效再複製到下一段",
+      "最累的不是沒有人，是每件事最後都回到老闆身上。"
+    ],
+    "ctas": [
+      "案例",
+      "深度掃描",
+      "免費診斷",
+      "免費讓 O 拆一次",
+      "先看實戰案例",
+      "查看完整 12 個案例",
+      "動態案例不動產不是案源不夠，而是高意向客戶被淹沒了。案源、廣告、客服與業務回報分散，主管每天只能靠零碎訊息判斷成交機率。+31% / 預約賞屋率",
+      "動態案例電商客人不是不想買，是缺少最後一步信任。客服訊息、棄單原因、廣告素材與回購資料沒有串起來，團隊不知道哪裡最該優先修。+22% / 棄單回收率",
+      "動態案例製造業真正值錢的是老主管腦中的排程判斷。訂單變動、機台限制、庫存與交期靠主管人工調度，任何急單都會擾動整條產線。-72% / 排程時間",
+      "動態餐飲連鎖餐飲營運部排班不是填表，是每天的營運決策。",
+      "動態客戶留存會員制教育品牌真正的流失，通常在客人說出口前就開始了。",
+      "法律風險跨境服務公司法律風險常常不是文件錯，而是流程沒有記憶。"
+    ],
+    "bodyTextStart": "ORION AI ORION AI OPERATING OFFICER 做一套專屬你的智慧中樞營運系統 O AI 就是你的好幫手 你只要說哪段工作最常卡：私訊沒回、報價後沒追、訂單交期卡住、回訪續約忘記，或團隊進度都要你問。ORION 會把它拆成一條每天會跑的流程：誰負責、多久要回、逾時怎麼提醒、老闆早上看什麼。 免費拆第一條流程 免費讓 O 拆一次 先看實戰案例 01 3 分鐘先拆一條流程 02 不換系統也能先做 03 輸出入口、派工、提醒、回報 每天追蹤 追蹤回報 實戰案",
+    "scrollWidth": 390,
+    "overflowX": 0,
+    "nav": {
+      "width": 370,
+      "height": 66,
+      "top": 10,
+      "left": 10
+    },
+    "navLinkCount": 6,
+    "activeText": "首頁",
+    "linkMetrics": [
+      {
+        "text": "首頁",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": "page",
+        "color": "rgb(7, 16, 29)",
+        "background": "linear-gradient(135deg, rgb(244, 251, 255), rgb(231, 212, 149))"
+      },
+      {
+        "text": "案例",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "洞察",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "服務",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "團隊",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "資源",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      }
+    ],
+    "menuDisplay": "grid",
+    "pageImageCount": 10,
+    "pageVideoCount": 11,
+    "duplicateImages": [
+      [
+        "http://127.0.0.1:4187/brand/griffin-128.png",
+        2
+      ]
+    ],
+    "duplicateVideos": []
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "route": "/cases",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\CODEX-SITE-UX-COPY-AESTHETIC-2026-06-19\\mobile-cases.png",
+    "url": "http://127.0.0.1:4187/cases/",
+    "title": "ORION AI 實戰案例｜客人、訂單、回訪怎麼被 O 接住",
+    "h1": "不是看 AI 多炫，是看客人、訂單、回訪有沒有被追到結果。",
+    "h2s": [
+      "不是「導入 AI」四個字，是每天少漏幾件事。",
+      "都會建設銷售團隊",
+      "生活風格選品品牌",
+      "精密零件工廠",
+      "連鎖餐飲營運部"
+    ],
+    "ctas": [
+      "案例",
+      "深度掃描",
+      "免費診斷",
+      "讓 O 拆我的案例",
+      "讓 O 幫我拆流程",
+      "實戰案例"
+    ],
+    "bodyTextStart": "ORION AI 實戰案例 不是看 AI 多炫，是看客人、訂單、回訪有沒有被追到結果。 每個案例都從老闆每天會遇到的斷點開始：客人沒追、交期被插單、私訊漏回、回訪沒人做。ORION 的價值，是把這些事變成有人負責、會提醒、會回報。 案例資料已載入 老闆會看到的改變 不是「導入 AI」四個字，是每天少漏幾件事。 先看三個典型斷點：原本誰在忙、哪裡漏掉、O 接手後老闆早上會看到什麼。 動態案例 不動產 都會建設銷售團隊 原本卡點：案源、廣告、客服與業務回報分散，主管每天只能靠零碎",
+    "scrollWidth": 390,
+    "overflowX": 0,
+    "nav": {
+      "width": 370,
+      "height": 66,
+      "top": 10,
+      "left": 10
+    },
+    "navLinkCount": 6,
+    "activeText": "案例",
+    "linkMetrics": [
+      {
+        "text": "首頁",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "案例",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": "page",
+        "color": "rgb(7, 16, 29)",
+        "background": "linear-gradient(135deg, rgb(244, 251, 255), rgb(231, 212, 149))"
+      },
+      {
+        "text": "洞察",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "服務",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "團隊",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "資源",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      }
+    ],
+    "menuDisplay": "grid",
+    "pageImageCount": 15,
+    "pageVideoCount": 4,
+    "duplicateImages": [
+      [
+        "http://127.0.0.1:4187/brand/griffin-128.png",
+        2
+      ]
+    ],
+    "duplicateVideos": []
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "route": "/about",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\CODEX-SITE-UX-COPY-AESTHETIC-2026-06-19\\mobile-about.png",
+    "url": "http://127.0.0.1:4187/about/",
+    "title": "ORION AI 服務介紹｜把每天追人的事交給 O",
+    "h1": "不是多買一個 AI 工具，是把每天要追人的事交給 O。",
+    "h2s": [
+      "找出最常卡住的事",
+      "從一件每天都要追的事，變成團隊每天會照著跑的系統。",
+      "先做一段最痛的流程，再一段一段接成公司的 AI 作業層。",
+      "適合每天被訊息、名單、訂單、團隊進度追著跑的老闆。",
+      "探索"
+    ],
+    "ctas": [
+      "案例",
+      "深度掃描",
+      "免費診斷",
+      "讓 O 幫我拆流程",
+      "讓 O 幫我看哪裡卡住",
+      "實戰案例"
+    ],
+    "bodyTextStart": "ORION AI 服務介紹 不是多買一個 AI 工具，是把每天要追人的事交給 O。 我們不急著堆功能。先找出客人從哪裡來、誰要處理、多久要回、哪裡常卡住、老闆每天要看什麼，再決定要接哪些工具、建立哪些提醒、留下哪些資料。 讓 O 幫我拆流程 找出最常卡住的事 接住客人和任務 把下一步派出去 每天回報給老闆 留下客戶記憶 確認真的能用 找出最常卡住的事 先找出客人、報價、訂單、回訪或團隊進度哪裡最常卡住，再決定第一版 O 要先追哪一段。 常卡流程、負責人、第一版追蹤清單 交付方",
+    "scrollWidth": 390,
+    "overflowX": 0,
+    "nav": {
+      "width": 370,
+      "height": 66,
+      "top": 10,
+      "left": 10
+    },
+    "navLinkCount": 6,
+    "activeText": "服務",
+    "linkMetrics": [
+      {
+        "text": "首頁",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "案例",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "洞察",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "服務",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": "page",
+        "color": "rgb(7, 16, 29)",
+        "background": "linear-gradient(135deg, rgb(244, 251, 255), rgb(231, 212, 149))"
+      },
+      {
+        "text": "團隊",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "資源",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      }
+    ],
+    "menuDisplay": "grid",
+    "pageImageCount": 4,
+    "pageVideoCount": 1,
+    "duplicateImages": [
+      [
+        "http://127.0.0.1:4187/brand/griffin-128.png",
+        2
+      ]
+    ],
+    "duplicateVideos": []
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "route": "/insights",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\CODEX-SITE-UX-COPY-AESTHETIC-2026-06-19\\mobile-insights.png",
+    "url": "http://127.0.0.1:4187/insights/",
+    "title": "ORION AI 數據洞察｜AI 值不值得做，看老闆有沒有少追事",
+    "h1": "AI 有沒有價值，看老闆有沒有少追客人、少追單、少追進度。",
+    "h2s": [
+      "AI 導入的輸贏，不是有沒有工具，而是老闆每天少追多少事。",
+      "一段流程值不值得交給 O，先看三個訊號。",
+      "風險提醒：不要把 AI 做成另一個需要人盯的工具。",
+      "用你的真實問題，測一次 O 能不能幫你少追一件事。",
+      "探索"
+    ],
+    "ctas": [
+      "案例",
+      "深度掃描",
+      "免費診斷",
+      "讓 O 幫我拆流程",
+      "實戰案例"
+    ],
+    "bodyTextStart": "ORION AI 數據洞察 AI 有沒有價值，看老闆有沒有少追客人、少追單、少追進度。 很多公司買了 AI 工具，但客人還是等回覆、業務還是忘記追、專案還是靠老闆盯。真正的差距不是模型多厲害，而是 O 有沒有每天幫你把下一步追到結果。 三種企業狀態 AI 導入的輸贏，不是有沒有工具，而是老闆每天少追多少事。 01 沒有 O 追流程 靠人追訊息、靠會議補資訊、靠老闆每天問進度。 公司越大，沒人追的客人、單子和進度越難看見。 02 只有單點 AI 工具 可以加速局部任務，但入口、",
+    "scrollWidth": 390,
+    "overflowX": 0,
+    "nav": {
+      "width": 370,
+      "height": 66,
+      "top": 10,
+      "left": 10
+    },
+    "navLinkCount": 6,
+    "activeText": "洞察",
+    "linkMetrics": [
+      {
+        "text": "首頁",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "案例",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "洞察",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": "page",
+        "color": "rgb(7, 16, 29)",
+        "background": "linear-gradient(135deg, rgb(244, 251, 255), rgb(231, 212, 149))"
+      },
+      {
+        "text": "服務",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "團隊",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "資源",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      }
+    ],
+    "menuDisplay": "grid",
+    "pageImageCount": 3,
+    "pageVideoCount": 1,
+    "duplicateImages": [
+      [
+        "http://127.0.0.1:4187/brand/griffin-128.png",
+        2
+      ]
+    ],
+    "duplicateVideos": []
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "route": "/team",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\CODEX-SITE-UX-COPY-AESTHETIC-2026-06-19\\mobile-team.png",
+    "url": "http://127.0.0.1:4187/team/",
+    "title": "ORION AI 核心團隊｜把老闆每天追的事做成系統",
+    "h1": "你說出一段混亂流程，ORION 團隊把它做成每天會跑的系統。",
+    "h2s": [
+      "Austin 許燿宸",
+      "戰略部",
+      "Codex 工程節點",
+      "Cowork 瀏覽器驗收",
+      "內容與成長節點"
+    ],
+    "ctas": [
+      "案例",
+      "深度掃描",
+      "免費診斷",
+      "讓 O 幫我拆流程",
+      "實戰案例"
+    ],
+    "bodyTextStart": "ORION AI 核心團隊 你說出一段混亂流程，ORION 團隊把它做成每天會跑的系統。 戰略先判斷哪一段最值得做，工程做出第一版，瀏覽器驗收確認客戶真的能用，AI Agent 把提醒、派工、追蹤、回報與資料回收接起來。 ORION AI 核心團隊 Austin 許燿宸 創辦人與策略總指揮 負責 ORION 的長期方向、產品判斷、商業模式與資源配置，確保每一次建置都能沉澱成複利資產。 戰略部 營運斷點與任務總控 把客戶入口、營運斷點、風險與 Chairman 決策整理成清楚派",
+    "scrollWidth": 390,
+    "overflowX": 0,
+    "nav": {
+      "width": 370,
+      "height": 66,
+      "top": 10,
+      "left": 10
+    },
+    "navLinkCount": 6,
+    "activeText": "團隊",
+    "linkMetrics": [
+      {
+        "text": "首頁",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "案例",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "洞察",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "服務",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "團隊",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": "page",
+        "color": "rgb(7, 16, 29)",
+        "background": "linear-gradient(135deg, rgb(244, 251, 255), rgb(231, 212, 149))"
+      },
+      {
+        "text": "資源",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      }
+    ],
+    "menuDisplay": "grid",
+    "pageImageCount": 4,
+    "pageVideoCount": 1,
+    "duplicateImages": [
+      [
+        "http://127.0.0.1:4187/brand/griffin-128.png",
+        2
+      ]
+    ],
+    "duplicateVideos": []
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "route": "/resources",
+    "screenshot": "C:\\Users\\user\\Desktop\\01_工作專案_ORION與公司\\ORION\\orion-site\\audit\\CODEX-SITE-UX-COPY-AESTHETIC-2026-06-19\\mobile-resources.png",
+    "url": "http://127.0.0.1:4187/resources/",
+    "title": "ORION AI 資源中心｜先搞懂哪件事要交給 O 追",
+    "h1": "想導入 AI，先問：哪件事你每天都在追？",
+    "h2s": [
+      "用 ORION 的標準，判斷哪件事值得交給 O。",
+      "O 的藍圖不是功能清單，而是「誰進來、誰處理、多久回、怎麼回報」。",
+      "先把工作邊界說清楚，O 才不會越做越亂。",
+      "把你每天最常追人的事交給 ORION，先拆一次。",
+      "探索"
+    ],
+    "ctas": [
+      "案例",
+      "深度掃描",
+      "免費診斷",
+      "讓 O 幫我拆流程",
+      "實戰案例"
+    ],
+    "bodyTextStart": "ORION AI 資源中心 想導入 AI，先問：哪件事你每天都在追？ 這裡不用你先懂技術。先幫你判斷：客人從哪裡來、誰要處理、多久要回、卡住怎麼辦、老闆要看什麼。 精選筆記 用 ORION 的標準，判斷哪件事值得交給 O。 策略筆記 不要先問能不能做 AI，先問哪一條流程最常卡住。 AI 導入前，先找出客人、報價、訂單、回訪、主管回報哪裡最常卡住。能每天重複追蹤的事，才值得先做成系統。 用我的公司情境檢查 工程筆記 一個會追流程的 O，至少要知道：誰進來、誰處理、卡在哪。 只",
+    "scrollWidth": 390,
+    "overflowX": 0,
+    "nav": {
+      "width": 370,
+      "height": 66,
+      "top": 10,
+      "left": 10
+    },
+    "navLinkCount": 6,
+    "activeText": "資源",
+    "linkMetrics": [
+      {
+        "text": "首頁",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "案例",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "洞察",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "服務",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "團隊",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": null,
+        "color": "rgba(219, 231, 245, 0.73)",
+        "background": "none"
+      },
+      {
+        "text": "資源",
+        "display": "inline-flex",
+        "flexDirection": "row",
+        "width": 0,
+        "height": 0,
+        "ariaCurrent": "page",
+        "color": "rgb(7, 16, 29)",
+        "background": "linear-gradient(135deg, rgb(244, 251, 255), rgb(231, 212, 149))"
+      }
+    ],
+    "menuDisplay": "grid",
+    "pageImageCount": 3,
+    "pageVideoCount": 1,
+    "duplicateImages": [
+      [
+        "http://127.0.0.1:4187/brand/griffin-128.png",
+        2
+      ]
+    ],
+    "duplicateVideos": []
+  }
+]

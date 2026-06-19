@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { ElementType } from 'react';
 import { Link, useLocation } from 'wouter';
 import {
   Activity,
@@ -23,16 +24,16 @@ interface NavItem {
   path: string;
   label: string;
   desc: string;
-  icon: React.ElementType;
+  icon: ElementType;
 }
 
 const navItems: NavItem[] = [
   { path: '/home', label: '首頁', desc: 'ORION 是什麼', icon: Home },
-  { path: '/cases', label: '實戰案例', desc: '產業如何落地', icon: Trophy },
-  { path: '/insights', label: '數據洞察', desc: 'AI 導入判斷', icon: BarChart3 },
-  { path: '/about', label: '服務介紹', desc: '交付方法與模組', icon: Building2 },
-  { path: '/team', label: '核心團隊', desc: '策略與工程作戰鏈', icon: Users },
-  { path: '/resources', label: '資源中心', desc: '筆記與 FAQ', icon: BookOpen },
+  { path: '/cases', label: '案例', desc: '看 O 怎麼接住工作', icon: Trophy },
+  { path: '/insights', label: '洞察', desc: '判斷哪段流程最值得做', icon: BarChart3 },
+  { path: '/about', label: '服務', desc: '交付方法與模組', icon: Building2 },
+  { path: '/team', label: '團隊', desc: '策略、工程、驗收作戰鏈', icon: Users },
+  { path: '/resources', label: '資源', desc: '筆記與 FAQ', icon: BookOpen },
 ];
 
 function isActivePath(itemPath: string, location: string): boolean {
@@ -66,7 +67,7 @@ export default function Sidebar() {
           <img src={ORION_LOGO} alt="ORION" />
           <span>
             <strong>ORION AI</strong>
-            <small>AI 幫你追客、追單、追進度</small>
+            <small>幫你追客、追單、追進度</small>
           </span>
         </Link>
 
@@ -75,7 +76,12 @@ export default function Sidebar() {
             const Icon = item.icon;
             const active = activeItem.path === item.path;
             return (
-              <Link key={item.path} href={item.path} className={active ? 'active' : ''}>
+              <Link
+                key={item.path}
+                href={item.path}
+                className={active ? 'active' : ''}
+                aria-current={active ? 'page' : undefined}
+              >
                 <Icon size={16} />
                 <span>{item.label}</span>
               </Link>
@@ -90,7 +96,7 @@ export default function Sidebar() {
           </a>
           <a href={DIAG_URL} className="topnav-primary">
             <Activity size={16} />
-            啟動診斷
+            免費診斷
           </a>
           <button className="orion-topnav-menu" type="button" onClick={() => setMenuOpen(true)} aria-label="開啟導覽">
             <Menu size={22} />
@@ -126,6 +132,7 @@ export default function Sidebar() {
                     key={item.path}
                     href={item.path}
                     className={activeItem.path === item.path ? 'active' : ''}
+                    aria-current={activeItem.path === item.path ? 'page' : undefined}
                     onClick={() => setMenuOpen(false)}
                   >
                     <Icon size={20} />
@@ -139,7 +146,7 @@ export default function Sidebar() {
             <div className="orion-menu-cta">
               <a href={DIAG_URL} onClick={() => setMenuOpen(false)}>
                 <Activity size={17} />
-                啟動 AI 診斷
+                免費診斷
               </a>
               <a href={`${DIAG_URL}/?mode=warrior`} onClick={() => setMenuOpen(false)}>
                 <Shield size={17} />

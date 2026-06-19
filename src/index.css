@@ -2708,62 +2708,95 @@ body {
   top: 18px;
   left: 50%;
   transform: translateX(-50%);
-  width: min(1180px, calc(100% - 36px));
-  min-height: 72px;
+  width: min(1240px, calc(100% - 48px));
+  min-height: 78px;
   z-index: 120;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(238px, 0.74fr) minmax(480px, auto) minmax(246px, 0.7fr);
   align-items: center;
-  gap: 18px;
-  padding: 10px 12px 10px 16px;
-  border: 1px solid rgba(206, 225, 255, 0.16);
-  border-radius: 28px;
-  background: rgba(5, 11, 22, 0.66);
-  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255,255,255,0.10);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  gap: 16px;
+  padding: 10px 12px 10px 18px;
+  overflow: hidden;
+  border: 1px solid rgba(206, 225, 255, 0.20);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 13% 0%, rgba(229, 188, 104, 0.18), transparent 18rem),
+    radial-gradient(circle at 78% 0%, rgba(105, 197, 255, 0.13), transparent 18rem),
+    linear-gradient(180deg, rgba(8, 15, 30, 0.91), rgba(5, 10, 20, 0.76));
+  box-shadow:
+    0 22px 70px rgba(0, 0, 0, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(26px) saturate(132%);
+  -webkit-backdrop-filter: blur(26px) saturate(132%);
+  isolation: isolate;
+}
+
+.orion-topnav::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  z-index: -1;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.045);
+  border-radius: 24px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.036), transparent 34%, rgba(229, 188, 104, 0.035)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), transparent);
 }
 
 .orion-topnav-brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  min-width: 214px;
+  gap: 12px;
+  min-width: 0;
   color: #f3f7fb;
   text-decoration: none;
 }
 
 .orion-topnav-brand img {
-  width: 44px;
-  height: 44px;
+  width: 50px;
+  height: 50px;
   object-fit: contain;
-  filter: drop-shadow(0 0 12px rgba(229, 188, 104, 0.46));
+  filter: drop-shadow(0 0 15px rgba(229, 188, 104, 0.42));
+  flex: 0 0 auto;
 }
 
 .orion-topnav-brand span {
   display: grid;
-  gap: 1px;
+  gap: 2px;
+  min-width: 0;
 }
 
 .orion-topnav-brand strong {
-  font-size: 0.98rem;
-  letter-spacing: 0.08em;
+  color: rgba(250, 253, 255, 0.96);
+  font-size: 1.04rem;
+  font-weight: 900;
+  letter-spacing: 0.10em;
+  line-height: 1.1;
 }
 
 .orion-topnav-brand small {
-  color: rgba(214, 226, 239, 0.66);
-  font-size: 0.68rem;
-  letter-spacing: 0.02em;
+  color: rgba(215, 227, 240, 0.70);
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
 }
 
 .orion-topnav-links {
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 2px;
   min-width: 0;
+  padding: 4px;
+  border: 1px solid rgba(206, 225, 255, 0.09);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.055);
 }
 
-.orion-topnav-links button,
+.orion-topnav-links a,
 .orion-topnav-menu,
 .orion-menu-head button {
   border: 0;
@@ -2771,32 +2804,62 @@ body {
   font-family: inherit;
 }
 
-.orion-topnav-links button {
+.orion-topnav-links a {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  justify-content: center;
+  gap: 6px;
   min-height: 42px;
-  padding: 0 12px;
+  padding: 0 11px;
   border-radius: 999px;
-  color: rgba(219, 231, 245, 0.70);
+  color: rgba(219, 231, 245, 0.73);
   background: transparent;
-  font-weight: 750;
-  font-size: 0.88rem;
+  font-weight: 850;
+  font-size: 0.86rem;
+  line-height: 1;
+  text-decoration: none;
   white-space: nowrap;
-  transition: color 0.2s ease, background 0.2s ease;
+  transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.orion-topnav-links button:hover,
-.orion-topnav-links button.active {
+.orion-topnav-links a svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+  opacity: 0.82;
+  stroke-width: 2.2;
+}
+
+.orion-topnav-links a:hover {
+  color: #f7fbff;
+  background: rgba(255, 255, 255, 0.075);
+  transform: translateY(-1px);
+}
+
+.orion-topnav-links a.active,
+.orion-topnav-links a[aria-current="page"] {
   color: #07101d;
-  background: linear-gradient(135deg, #edf7ff, #e5bc68);
+  background: linear-gradient(135deg, #f4fbff 0%, #e7d495 100%);
+  box-shadow:
+    0 10px 26px rgba(229, 188, 104, 0.17),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  transform: none;
+}
+
+.orion-topnav-links a:focus-visible,
+.topnav-ghost:focus-visible,
+.topnav-primary:focus-visible,
+.orion-topnav-menu:focus-visible {
+  outline: 2px solid rgba(229, 188, 104, 0.72);
+  outline-offset: 3px;
 }
 
 .orion-topnav-actions {
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 10px;
+  min-width: 0;
 }
 
 .topnav-ghost,
@@ -2805,25 +2868,41 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 42px;
-  padding: 0 14px;
+  min-height: 44px;
+  padding: 0 16px;
   border-radius: 999px;
   font-size: 0.86rem;
   font-weight: 850;
   text-decoration: none;
   white-space: nowrap;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .topnav-ghost {
-  color: rgba(235, 244, 255, 0.88);
-  border: 1px solid rgba(206, 225, 255, 0.18);
-  background: rgba(255,255,255,0.055);
+  color: rgba(235, 244, 255, 0.90);
+  border: 1px solid rgba(206, 225, 255, 0.20);
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.topnav-ghost:hover {
+  border-color: rgba(206, 225, 255, 0.34);
+  background: rgba(255, 255, 255, 0.082);
+  transform: translateY(-1px);
 }
 
 .topnav-primary {
   color: #07101d;
-  background: linear-gradient(135deg, #edf7ff, #e5bc68);
-  box-shadow: 0 14px 40px rgba(229, 188, 104, 0.18);
+  background: linear-gradient(135deg, #f4fbff 0%, #e5bc68 100%);
+  box-shadow:
+    0 14px 34px rgba(229, 188, 104, 0.19),
+    inset 0 1px 0 rgba(255, 255, 255, 0.64);
+}
+
+.topnav-primary:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 18px 42px rgba(229, 188, 104, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
 }
 
 .orion-topnav-menu {
@@ -4651,6 +4730,10 @@ body {
 @media (max-width: 1180px) {
   .orion-topnav {
     grid-template-columns: auto auto;
+    justify-content: space-between;
+    width: min(860px, calc(100% - 32px));
+    min-height: 74px;
+    padding: 10px 12px 10px 16px;
   }
 
   .orion-topnav-links,
@@ -4724,9 +4807,9 @@ body {
   .orion-topnav {
     top: 10px;
     width: calc(100% - 20px);
-    min-height: 64px;
-    border-radius: 22px;
-    padding: 9px 10px;
+    min-height: 66px;
+    border-radius: 24px;
+    padding: 9px 10px 9px 12px;
   }
 
   .orion-topnav-brand {
@@ -4734,12 +4817,13 @@ body {
   }
 
   .orion-topnav-brand img {
-    width: 38px;
-    height: 38px;
+    width: 42px;
+    height: 42px;
   }
 
   .orion-topnav-brand strong {
-    font-size: 0.86rem;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
   }
 
   .orion-topnav-brand small {
