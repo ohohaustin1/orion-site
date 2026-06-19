@@ -10,6 +10,8 @@ export interface CaseVisual {
   videoWebm?: string;
 }
 
+export type CaseVisualPlacement = 'default' | 'homeFeatured' | 'homeMini' | 'casesFeatured' | 'casesList';
+
 export interface CaseStudy {
   id: number;
   industry: string;
@@ -195,7 +197,78 @@ export const caseVisualList = [
   caseVisuals[12],
 ];
 
-export function getCaseVisual(caseData: Pick<CaseStudy, 'id' | 'industry' | 'company'>, index = 0): CaseVisual {
+const videoVisual = (src: string, videoMp4: string, alt: string, videoWebm?: string): CaseVisual => ({
+  src,
+  videoMp4,
+  videoWebm,
+  alt,
+});
+
+const caseVisualPlacementOverrides: Partial<Record<CaseVisualPlacement, Record<number, CaseVisual>>> = {
+  homeMini: {
+    4: videoVisual('/videos/posters/coverr-cafe-handoff-loop.jpg', '/videos/stock/coverr-cafe-handoff-loop.mp4', '餐飲門店把交付與回訪流程交給 ORION 追蹤'),
+    5: videoVisual('/videos/posters/orion-memory-city-card-loop.jpg', '/videos/orion-memory-city-card-loop.mp4', '會員留存與客戶記憶資料流動態畫面'),
+    7: videoVisual('/videos/posters/orion-trust-host-stage-loop.jpg', '/videos/orion-trust-host-stage-loop.mp4', '品牌語感與內容審核工作流動態畫面'),
+    8: videoVisual('/videos/posters/orion-executive-board-pan.jpg', '/videos/orion-executive-board-pan.mp4', '企業現金流與主管儀表板動態畫面'),
+    11: videoVisual('/videos/posters/orion-toolflow-card-loop.jpg', '/videos/orion-toolflow-card-loop.mp4', '投資策略與工具調用工作流動態畫面'),
+    12: videoVisual('/videos/posters/runway-orion-executive-03.jpg', '/videos/runway-orion-executive-03.mp4', '重大決策與企業主管判斷動態畫面'),
+  },
+  casesFeatured: {
+    1: videoVisual('/videos/posters/coverr-office-workflow-loop.jpg', '/videos/stock/coverr-office-workflow-loop.mp4', '企業團隊把客戶與任務流程整理進 ORION'),
+    2: videoVisual('/videos/posters/orion-bg-01-core-devices.jpg', '/videos/orion-bg-01-core-devices.mp4', '電商訂單與跨裝置工具調用工作流動態畫面'),
+    3: videoVisual(
+      '/images/cases/case-manufacturing-schedule.jpg',
+      '/videos/cases/case-manufacturing-command-loop.mp4',
+      '製造業排程與產線任務看板動態畫面',
+      '/videos/cases/case-manufacturing-command-loop.webm',
+    ),
+  },
+  casesList: {
+    1: {
+      src: '/images/cases/case-real-estate-ai-followup.jpg',
+      alt: '不動產案源與高意向客戶追蹤案例圖',
+    },
+    2: {
+      src: '/images/cases/case-ecommerce-cart-recovery.jpg',
+      alt: '電商棄單與回購流程案例圖',
+    },
+    3: {
+      src: '/images/cases/case-manufacturing-schedule.jpg',
+      alt: '製造業排程與產線任務看板案例圖',
+    },
+    21: videoVisual(
+      '/images/cases/case-real-estate-ai-followup.jpg',
+      '/videos/cases/case-real-estate-command-loop.mp4',
+      '不動產案源與追蹤流程動態畫面',
+      '/videos/cases/case-real-estate-command-loop.webm',
+    ),
+    22: videoVisual(
+      '/images/cases/case-ecommerce-cart-recovery.jpg',
+      '/videos/cases/case-ecommerce-command-loop.mp4',
+      '電商棄單與回購流程動態畫面',
+      '/videos/cases/case-ecommerce-command-loop.webm',
+    ),
+    23: videoVisual(
+      '/images/cases/case-manufacturing-schedule.jpg',
+      '/videos/cases/case-manufacturing-command-loop.mp4',
+      '製造排程與產線任務看板動態畫面',
+      '/videos/cases/case-manufacturing-command-loop.webm',
+    ),
+    24: videoVisual('/videos/posters/coverr-cafe-handoff-loop.jpg', '/videos/stock/coverr-cafe-handoff-loop.mp4', '餐飲訂位與現場交付流程動態畫面'),
+    25: videoVisual('/videos/posters/orion-bg-02-toolflow-network.jpg', '/videos/orion-bg-02-toolflow-network.mp4', '品牌語感與內容任務網路動態畫面'),
+    34: videoVisual('/videos/posters/orion-executive-hero-dolly.jpg', '/videos/orion-executive-hero-dolly.mp4', '重大決策與高階主管判斷動態畫面'),
+    38: videoVisual('/videos/posters/runway-orion-executive-03.jpg', '/videos/runway-orion-executive-03.mp4', '企業現金流與經營追蹤動態畫面'),
+  },
+};
+
+export function getCaseVisual(
+  caseData: Pick<CaseStudy, 'id' | 'industry' | 'company'>,
+  index = 0,
+  placement: CaseVisualPlacement = 'default',
+): CaseVisual {
+  const placementDirect = caseVisualPlacementOverrides[placement]?.[caseData.id];
+  if (placementDirect) return placementDirect;
+
   const direct = caseVisuals[caseData.id];
   if (direct) return direct;
 

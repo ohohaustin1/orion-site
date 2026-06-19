@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react';
 import {
   ArrowRight,
   BarChart3,
@@ -12,6 +11,7 @@ import {
 import PageSEO from '../components/PageSEO';
 import HeroSection from '../components/hero/HeroSection';
 import CinematicVideo from '../components/shared/CinematicVideo';
+import CaseMedia from '../components/shared/CaseMedia';
 import { allCases, getCaseVisual } from '../data/cases';
 import { DIAG_URL } from '../lib/api-base';
 import { pushEvent } from '../lib/analytics';
@@ -94,78 +94,6 @@ function startDiagnosis(entryPoint: string) {
   window.location.href = `${DIAG_URL}/`;
 }
 
-interface CaseLoopVideoProps {
-  mp4: string;
-  webm?: string;
-  poster: string;
-}
-
-function CaseLoopVideo({ mp4, webm, poster }: CaseLoopVideoProps) {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-
-  useEffect(() => {
-    const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const requestPlayback = () => {
-      const video = videoRef.current;
-      if (!video || shouldReduceMotion) return;
-
-      video.muted = true;
-      video.defaultMuted = true;
-      video.playsInline = true;
-      void video.play().catch(() => undefined);
-    };
-    const requestVisiblePlayback = () => {
-      if (document.visibilityState === 'visible') {
-        requestPlayback();
-      }
-    };
-
-    requestPlayback();
-    const interval = window.setInterval(requestPlayback, 4000);
-    document.addEventListener('visibilitychange', requestVisiblePlayback);
-    window.addEventListener('focus', requestPlayback);
-    window.addEventListener('pageshow', requestPlayback);
-    window.addEventListener('scroll', requestPlayback, { passive: true });
-    window.addEventListener('touchstart', requestPlayback, { passive: true });
-
-    return () => {
-      window.clearInterval(interval);
-      document.removeEventListener('visibilitychange', requestVisiblePlayback);
-      window.removeEventListener('focus', requestPlayback);
-      window.removeEventListener('pageshow', requestPlayback);
-      window.removeEventListener('scroll', requestPlayback);
-      window.removeEventListener('touchstart', requestPlayback);
-    };
-  }, [mp4, webm]);
-
-  const requestLoadedPlayback = (video: HTMLVideoElement) => {
-    video.muted = true;
-    video.defaultMuted = true;
-    video.playsInline = true;
-    void video.play().catch(() => undefined);
-  };
-
-  return (
-    <video
-      ref={videoRef}
-      className="home-case-feature-media"
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="auto"
-      poster={poster}
-      aria-hidden="true"
-      tabIndex={-1}
-      onLoadedData={(event) => requestLoadedPlayback(event.currentTarget)}
-      onCanPlay={(event) => requestLoadedPlayback(event.currentTarget)}
-    >
-      {webm && <source src={webm} type="video/webm" />}
-      <source src={mp4} type="video/mp4" />
-    </video>
-  );
-}
-
 export default function HomePage() {
   return (
     <div className="orion-cinematic-site">
@@ -197,18 +125,14 @@ export default function HomePage() {
 
         <div className="home-case-featured-grid">
           {featuredHomeCases.map((caseData, index) => {
-            const visual = getCaseVisual(caseData, index);
+            const visual = getCaseVisual(caseData, index, 'homeFeatured');
             return (
               <a
                 key={`home-featured-${caseData.id}`}
                 className="home-case-feature-card"
                 href={`/cases?industry=${encodeURIComponent(caseData.industry)}`}
               >
-                {visual?.videoMp4 ? (
-                  <CaseLoopVideo mp4={visual.videoMp4} webm={visual.videoWebm} poster={visual.src} />
-                ) : (
-                  visual && <img src={visual.src} alt={visual.alt} loading="eager" />
-                )}
+                {visual && <CaseMedia visual={visual} className="home-case-feature-media" loading="eager" preload="auto" />}
                 {visual?.videoMp4 && (
                   <span className="home-case-video-badge" aria-hidden="true">
                     <i />
@@ -231,14 +155,19 @@ export default function HomePage() {
 
         <div className="home-case-mini-grid">
           {compactHomeCases.map((caseData, index) => {
-            const visual = getCaseVisual(caseData, index + featuredHomeCases.length);
+            const visual = getCaseVisual(caseData, index + featuredHomeCases.length, 'homeMini');
             return (
               <a
                 key={`home-mini-${caseData.id}`}
                 className="home-case-mini-card"
                 href={`/cases?industry=${encodeURIComponent(caseData.industry)}`}
               >
-                {visual && <img src={visual.src} alt={visual.alt} loading="lazy" />}
+                {visual && <CaseMedia visual={visual} className="home-case-mini-media" loading="lazy" preload="metadata" />}
+                {visual?.videoMp4 && (
+                  <span className="home-case-mini-video-dot" aria-hidden="true">
+                    動態
+                  </span>
+                )}
                 <div>
                   <span>{caseData.industry}</span>
                   <h3>{caseData.company}</h3>

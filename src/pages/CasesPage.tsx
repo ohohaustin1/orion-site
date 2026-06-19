@@ -3,6 +3,7 @@ import { ArrowRight, BarChart3, Filter, Lightbulb, ShieldCheck, Wrench } from 'l
 import { allCases, getCaseVisual, type CaseStudy, type MetricItem } from '../data/cases';
 import PageSEO from '../components/PageSEO';
 import CinematicVideo from '../components/shared/CinematicVideo';
+import CaseMedia from '../components/shared/CaseMedia';
 import { API_BASE, DIAG_URL } from '../lib/api-base';
 import { pushEvent } from '../lib/analytics';
 
@@ -153,10 +154,15 @@ export default function CasesPage() {
         </div>
         <div className="flagship-case-grid">
           {flagshipCases.map((caseData, index) => {
-            const visual = getCaseVisual(caseData, index);
+            const visual = getCaseVisual(caseData, index, 'casesFeatured');
             return (
               <article key={`flagship-${caseData.id}`} className="flagship-case-card">
-                {visual && <img className="flagship-case-image" src={visual.src} alt={visual.alt} loading="lazy" />}
+                {visual && <CaseMedia visual={visual} className="flagship-case-image flagship-case-media" loading="lazy" preload="metadata" />}
+                {visual?.videoMp4 && (
+                  <span className="flagship-case-video-badge" aria-hidden="true">
+                    動態案例
+                  </span>
+                )}
                 <span>{caseData.industry}</span>
                 <h3>{caseData.company}</h3>
                 <p><strong>原本卡點：</strong>{caseData.problem}</p>
@@ -194,11 +200,11 @@ export default function CasesPage() {
 
       <section className="case-study-list">
         {filtered.map((caseData, index) => {
-          const visual = getCaseVisual(caseData, index);
+          const visual = getCaseVisual(caseData, index, 'casesList');
           return (
             <article key={caseData.id} className={`case-study-row ${openId === caseData.id ? 'is-open' : ''}`}>
               <button className="case-study-summary" onClick={() => setOpenId(openId === caseData.id ? null : caseData.id)}>
-                {visual && <img className="case-study-thumb" src={visual.src} alt={visual.alt} loading="lazy" />}
+                {visual && <CaseMedia visual={visual} className="case-study-thumb" loading="lazy" preload="none" />}
                 <div className="case-study-summary-copy">
                   <span className="case-industry">{caseData.industry}</span>
                   <h2>{caseData.company}</h2>
