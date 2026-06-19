@@ -24,6 +24,11 @@ Target: mobile-specific video strategy for ORION01 official site
   - `/insights/`: 1 cinematic video, 1 poster-only background, overflowX 0.
   - `/team/`: 1 cinematic video, 1 poster-only background, overflowX 0.
   - `/resources/`: 1 cinematic video, 1 poster-only background, overflowX 0.
+- L4 production verify:
+  - `https://orion01.com/home/`: deployed bundle hash matched `43dbbef` build.
+  - Production `/home/`: 2 cinematic videos, 4 poster-only large backgrounds, 9 case videos, overflowX 0.
+  - Production `/cases/`: 1 cinematic video, 1 poster-only background, case videos autoplay, overflowX 0.
+  - Production `/about/`, `/insights/`, `/team/`, `/resources/`: each keeps 1 primary cinematic video and downgrades secondary large media to poster-only on mobile.
 
 ## Evidence Files
 
@@ -32,3 +37,6 @@ Target: mobile-specific video strategy for ORION01 official site
 - `mobile-home-hero.png`
 - `mobile-home-cases.png`
 - `desktop-home-hero.png`
+- `production-mobile-pages-video-probe.json`
+- `production-mobile-home-hero.png`
+- `production-mobile-home-cases.png`

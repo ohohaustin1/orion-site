@@ -1,0 +1,301 @@
+[
+  {
+    "url": "https://orion01.com/home/?codex_verify=43dbbef",
+    "overflowX": 0,
+    "cinematicVideoCount": 2,
+    "posterOnlyCount": 4,
+    "videos": [
+      {
+        "src": "https://orion01.com/videos/mobile/orion-hero-command-mobile-9x16.mp4",
+        "poster": "https://orion01.com/videos/posters/mobile/orion-hero-command-mobile-9x16.jpg",
+        "paused": false,
+        "autoplay": true,
+        "muted": true,
+        "preload": "metadata",
+        "pos": "50% 50%",
+        "className": "cinematic-video orion-hero-video "
+      },
+      {
+        "src": "https://orion01.com/videos/mobile/orion-command-frame-mobile-4x5.mp4",
+        "poster": "https://orion01.com/videos/posters/mobile/orion-command-frame-mobile-4x5.jpg",
+        "paused": false,
+        "autoplay": true,
+        "muted": true,
+        "preload": "metadata",
+        "pos": "45% 50%",
+        "className": "cinematic-video orion-command-frame-video "
+      }
+    ],
+    "posters": [
+      {
+        "src": "https://orion01.com/videos/posters/mixkit-collaborative-digital-display.jpg",
+        "pos": "52% 50%",
+        "className": "cinematic-video  "
+      },
+      {
+        "src": "https://orion01.com/videos/posters/orion-bg-02-toolflow-network.jpg",
+        "pos": "50% 50%",
+        "className": "cinematic-video tool-calling-video "
+      },
+      {
+        "src": "https://orion01.com/videos/posters/orion-bg-03-systems-city.jpg",
+        "pos": "50% 50%",
+        "className": "cinematic-video  "
+      },
+      {
+        "src": "https://orion01.com/videos/posters/orion-bg-04-memory-nightcity.jpg",
+        "pos": "50% 50%",
+        "className": "cinematic-video  "
+      }
+    ],
+    "caseVideoCount": 9,
+    "caseVideos": [
+      {
+        "src": "https://orion01.com/videos/cases/case-real-estate-command-loop.webm",
+        "autoplay": true,
+        "muted": true,
+        "paused": false,
+        "pos": "58% 50%"
+      },
+      {
+        "src": "https://orion01.com/videos/cases/case-ecommerce-command-loop.webm",
+        "autoplay": true,
+        "muted": true,
+        "paused": false,
+        "pos": "52% 50%"
+      },
+      {
+        "src": "https://orion01.com/videos/cases/case-manufacturing-command-loop.webm",
+        "autoplay": true,
+        "muted": true,
+        "paused": false,
+        "pos": "62% 50%"
+      },
+      {
+        "src": "https://orion01.com/videos/stock/coverr-cafe-handoff-loop.mp4",
+        "autoplay": true,
+        "muted": true,
+        "paused": false,
+        "pos": "50% 50%"
+      },
+      {
+        "src": "https://orion01.com/videos/orion-memory-city-card-loop.mp4",
+        "autoplay": true,
+        "muted": true,
+        "paused": false,
+        "pos": "54% 50%"
+      },
+      {
+        "src": "https://orion01.com/videos/orion-trust-host-stage-loop.mp4",
+        "autoplay": true,
+        "muted": true,
+        "paused": false,
+        "pos": "50% 50%"
+      },
+      {
+        "src": "https://orion01.com/videos/orion-executive-board-pan.mp4",
+        "autoplay": true,
+        "muted": true,
+        "paused": false,
+        "pos": "55% 50%"
+      },
+      {
+        "src": "https://orion01.com/videos/orion-toolflow-card-loop.mp4",
+        "autoplay": true,
+        "muted": true,
+        "paused": false,
+        "pos": "52% 50%"
+      }
+    ]
+  },
+  {
+    "url": "https://orion01.com/cases/?codex_verify=43dbbef",
+    "overflowX": 0,
+    "cinematicVideoCount": 1,
+    "posterOnlyCount": 1,
+    "videos": [
+      {
+        "src": "https://orion01.com/videos/orion-systems-city-card-loop.mp4",
+        "poster": "https://orion01.com/videos/posters/orion-systems-city-card-loop.jpg",
+        "paused": false,
+        "autoplay": true,
+        "muted": true,
+        "preload": "metadata",
+        "pos": "50% 50%",
+        "className": "cinematic-video  "
+      }
+    ],
+    "posters": [
+      {
+        "src": "https://orion01.com/videos/posters/orion-core-devices-card-loop.jpg",
+        "pos": "50% 50%",
+        "className": "cinematic-video  "
+      }
+    ],
+    "caseVideoCount": 7,
+    "caseVideos": [
+      {
+        "src": "https://orion01.com/videos/cases/case-real-estate-command-loop.webm",
+        "autoplay": true,
+        "muted": true,
+        "paused": false,
+        "pos": "58% 50%"
+      },
+      {
+        "src": "https://orion01.com/videos/stock/coverr-cafe-handoff-loop.mp4",
+        "autoplay": true,
+        "muted": true,
+        "paused": false,
+        "pos": "50% 50%"
+      },
+      {
+        "src": "https://orion01.com/videos/cases/case-ecommerce-command-loop.webm",
+        "autoplay": true,
+        "muted": true,
+        "paused": false,
+        "pos": "52% 50%"
+      },
+      {
+        "src": "https://orion01.com/videos/cases/case-manufacturing-command-loop.webm",
+        "autoplay": true,
+        "muted": true,
+        "paused": false,
+        "pos": "62% 50%"
+      },
+      {
+        "src": "https://orion01.com/videos/orion-bg-02-toolflow-network.mp4",
+        "autoplay": true,
+        "muted": true,
+        "paused": false,
+        "pos": "50% 50%"
+      },
+      {
+        "src": "https://orion01.com/videos/orion-executive-hero-dolly.mp4",
+        "autoplay": true,
+        "muted": true,
+        "paused": false,
+        "pos": "48% 50%"
+      },
+      {
+        "src": "https://orion01.com/videos/runway-orion-executive-03.mp4",
+        "autoplay": true,
+        "muted": true,
+        "paused": false,
+        "pos": "48% 50%"
+      }
+    ]
+  },
+  {
+    "url": "https://orion01.com/about/?codex_verify=43dbbef",
+    "overflowX": 0,
+    "cinematicVideoCount": 1,
+    "posterOnlyCount": 2,
+    "videos": [
+      {
+        "src": "https://orion01.com/videos/runway-orion-executive-03.mp4",
+        "poster": "https://orion01.com/videos/posters/runway-orion-executive-03.jpg",
+        "paused": false,
+        "autoplay": true,
+        "muted": true,
+        "preload": "metadata",
+        "pos": "48% 50%",
+        "className": "cinematic-video  "
+      }
+    ],
+    "posters": [
+      {
+        "src": "https://orion01.com/videos/posters/orion-toolflow-card-loop.jpg",
+        "pos": "52% 50%",
+        "className": "cinematic-video  "
+      },
+      {
+        "src": "https://orion01.com/videos/posters/orion-bg-01-core-devices.jpg",
+        "pos": "50% 50%",
+        "className": "cinematic-video  "
+      }
+    ],
+    "caseVideoCount": 0,
+    "caseVideos": []
+  },
+  {
+    "url": "https://orion01.com/insights/?codex_verify=43dbbef",
+    "overflowX": 0,
+    "cinematicVideoCount": 1,
+    "posterOnlyCount": 1,
+    "videos": [
+      {
+        "src": "https://orion01.com/videos/orion-bg-00-command.mp4",
+        "poster": "https://orion01.com/videos/posters/orion-bg-00-command.jpg",
+        "paused": false,
+        "autoplay": true,
+        "muted": true,
+        "preload": "metadata",
+        "pos": "50% 50%",
+        "className": "cinematic-video  "
+      }
+    ],
+    "posters": [
+      {
+        "src": "https://orion01.com/videos/posters/orion-executive-board-pan.jpg",
+        "pos": "55% 50%",
+        "className": "cinematic-video  "
+      }
+    ],
+    "caseVideoCount": 0,
+    "caseVideos": []
+  },
+  {
+    "url": "https://orion01.com/team/?codex_verify=43dbbef",
+    "overflowX": 0,
+    "cinematicVideoCount": 1,
+    "posterOnlyCount": 1,
+    "videos": [
+      {
+        "src": "https://orion01.com/videos/orion-executive-team-pan.mp4",
+        "poster": "https://orion01.com/videos/posters/orion-executive-team-pan.jpg",
+        "paused": false,
+        "autoplay": true,
+        "muted": true,
+        "preload": "metadata",
+        "pos": "52% 50%",
+        "className": "cinematic-video  "
+      }
+    ],
+    "posters": [
+      {
+        "src": "https://orion01.com/videos/posters/orion-memory-city-card-loop.jpg",
+        "pos": "54% 50%",
+        "className": "cinematic-video  "
+      }
+    ],
+    "caseVideoCount": 0,
+    "caseVideos": []
+  },
+  {
+    "url": "https://orion01.com/resources/?codex_verify=43dbbef",
+    "overflowX": 0,
+    "cinematicVideoCount": 1,
+    "posterOnlyCount": 1,
+    "videos": [
+      {
+        "src": "https://orion01.com/videos/orion-executive-hero-dolly.mp4",
+        "poster": "https://orion01.com/videos/posters/orion-executive-hero-dolly.jpg",
+        "paused": false,
+        "autoplay": true,
+        "muted": true,
+        "preload": "metadata",
+        "pos": "48% 50%",
+        "className": "cinematic-video  "
+      }
+    ],
+    "posters": [
+      {
+        "src": "https://orion01.com/videos/posters/orion-trust-host-stage-loop.jpg",
+        "pos": "50% 50%",
+        "className": "cinematic-video  "
+      }
+    ],
+    "caseVideoCount": 0,
+    "caseVideos": []
+  }
+]
