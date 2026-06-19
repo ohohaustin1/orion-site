@@ -3720,6 +3720,17 @@ body {
   white-space: nowrap;
 }
 
+.orion-hero-promise {
+  max-width: 690px;
+  margin: 0 0 18px;
+  color: #ffe5a8;
+  font-size: clamp(1.1rem, 1.55vw, 1.32rem);
+  font-weight: 800;
+  line-height: 1.55;
+  letter-spacing: 0;
+  text-shadow: 0 1px 18px rgba(2, 7, 14, 0.5), 0 0 24px rgba(232, 201, 126, 0.15);
+}
+
 .orion-hero-subtitle,
 .site-section-copy p,
 .site-section-header p,
@@ -5363,6 +5374,12 @@ body {
 
   .orion-hero-copy h1 strong {
     white-space: normal;
+  }
+
+  .orion-hero-promise {
+    font-size: 1.05rem;
+    line-height: 1.62;
+    margin-bottom: 16px;
   }
 
   .orion-hero-subtitle,

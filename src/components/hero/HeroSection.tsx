@@ -106,6 +106,10 @@ export default function HeroSection() {
             </strong>
           </h1>
 
+          <p className="orion-hero-promise">
+            只有你有想法，我就有辦法。重複性、覺得煩的工作，我全部幫你做成自動化流程。
+          </p>
+
           <p className="orion-hero-subtitle">
             你只要說哪段工作最常卡：私訊沒回、報價後沒追、訂單交期卡住、回訪續約忘記，或團隊進度都要你問。ORION 會把它拆成一條每天會跑的流程：誰負責、多久要回、逾時怎麼提醒、老闆早上看什麼。
           </p>

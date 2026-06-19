@@ -45,6 +45,11 @@
   text-shadow: 0 1px 18px rgba(2, 7, 14, 0.55);
 }
 
+.orion-hero-cinematic .orion-hero-promise {
+  color: #ffe6aa;
+  text-shadow: 0 1px 18px rgba(2, 7, 14, 0.55), 0 0 26px rgba(232, 201, 126, 0.16);
+}
+
 /* (3) 內文 subtitle：原 --site-muted #a8b7ca（實機偏灰、區域對比不足）
        → #e4ecf5，於暗底 scrim 上對比約 13:1，遠超 AA */
 .orion-hero-cinematic .orion-hero-subtitle {
