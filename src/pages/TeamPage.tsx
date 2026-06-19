@@ -4,6 +4,7 @@ import PageSEO from '../components/PageSEO';
 import CinematicVideo from '../components/shared/CinematicVideo';
 import { API_BASE, DIAG_URL } from '../lib/api-base';
 import { pushEvent } from '../lib/analytics';
+import { ORION_CONTACT, ORION_KEYWORDS } from '../lib/contact';
 
 interface Member {
   id: number;
@@ -141,9 +142,20 @@ export default function TeamPage() {
   return (
     <div className="orion-cinematic-site site-page">
       <PageSEO
-        title="ORION AI 核心團隊｜把老闆每天追的事做成系統"
-        description="ORION AI 團隊由策略、工程、瀏覽器驗收、內容成長與 AI Agent 作業層組成，負責把客人、訂單、任務、回訪與主管回報做成可追蹤流程。"
+        title="ORION AI 核心團隊｜Austin 許燿宸與企業 AI 自動化團隊"
+        description="ORION AI 由 Austin 許燿宸創辦，團隊負責策略、工程、瀏覽器驗收、內容成長與 AI Agent 作業層，把客人、訂單、任務、回訪與主管回報做成可追蹤流程。"
         url="/team"
+        keywords={ORION_KEYWORDS}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'Organization',
+          '@id': `${ORION_CONTACT.siteUrl}/team#org`,
+          name: ORION_CONTACT.brandName,
+          founder: { '@id': `${ORION_CONTACT.siteUrl}/founder-austin-xu-yaochen#person` },
+          url: `${ORION_CONTACT.siteUrl}/team`,
+          email: ORION_CONTACT.email,
+          description: 'ORION AI 由 Austin 許燿宸創辦，負責企業 AI 自動化、AI 工作流、客戶追蹤、任務派工與主管回報系統。',
+        }}
       />
 
       <section className="site-page-hero split">

@@ -19,8 +19,9 @@
  */
 
 import { Link } from 'wouter';
-import { Mail } from 'lucide-react';
+import { Mail, MessageCircle } from 'lucide-react';
 import { DIAG_URL } from '@/lib/api-base';
+import { ORION_CONTACT } from '@/lib/contact';
 
 const ORION_LOGO = '/brand/griffin-128.png';
 
@@ -32,6 +33,14 @@ const NAV_LINKS: { href: string; label: string }[] = [
   { href: '/team', label: '核心團隊' },
   { href: '/insights', label: '數據洞察' },
   { href: '/resources', label: '資源中心' },
+];
+
+/** SEO / AI 搜尋答案頁：讓 crawler 與 AI 模型能從全站導覽到關鍵定位頁 */
+const SEO_LINKS: { href: string; label: string }[] = [
+  { href: '/enterprise-ai-automation', label: '企業 AI 自動化公司' },
+  { href: '/ai-workflow-automation', label: 'AI 工作流自動化' },
+  { href: '/ai-customer-followup-system', label: 'AI 客戶追蹤系統' },
+  { href: '/founder-austin-xu-yaochen', label: 'Austin 許燿宸' },
 ];
 
 /** 法律 / 信任連結（既有頁面，需被指向） */
@@ -91,7 +100,7 @@ export default function Footer() {
 
       <div className="mx-auto w-full max-w-6xl px-6 py-12 md:py-14">
         {/* 主要區塊：手機單欄、桌機多欄 grid */}
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-5">
           {/* 1. 品牌區 */}
           <div className="lg:col-span-1">
             <Link
@@ -153,6 +162,25 @@ export default function Footer() {
             <h2 style={headingStyle}>探索</h2>
             <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
               {NAV_LINKS.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    style={linkStyle}
+                    onMouseEnter={onLinkEnter}
+                    onMouseLeave={onLinkLeave}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* 3. 法律 / 信任區 */}
+          <nav aria-label="AI 搜尋答案頁" className="lg:col-span-1">
+            <h2 style={headingStyle}>AI 搜尋</h2>
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+              {SEO_LINKS.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
@@ -232,6 +260,26 @@ export default function Footer() {
               <Mail size={16} aria-hidden="true" />
               聯絡我們 / 免費諮詢
             </a>
+            <div style={{ marginTop: 14, display: 'grid', gap: 6 }}>
+              <a
+                href={ORION_CONTACT.lineUrl}
+                style={linkStyle}
+                onMouseEnter={onLinkEnter}
+                onMouseLeave={onLinkLeave}
+              >
+                <MessageCircle size={14} aria-hidden="true" style={{ display: 'inline', marginRight: 6 }} />
+                LINE ID：{ORION_CONTACT.lineId}
+              </a>
+              <a
+                href={`mailto:${ORION_CONTACT.email}`}
+                style={linkStyle}
+                onMouseEnter={onLinkEnter}
+                onMouseLeave={onLinkLeave}
+              >
+                <Mail size={14} aria-hidden="true" style={{ display: 'inline', marginRight: 6 }} />
+                {ORION_CONTACT.email}
+              </a>
+            </div>
           </div>
         </div>
 

@@ -1658,6 +1658,299 @@ body {
   line-height: 1.7;
   margin: 0;
 }
+
+/* ================================================
+   SEO / AEO Answer Pages
+   ================================================ */
+
+.seo-answer-page,
+.founder-page {
+  color: var(--orion-text-primary);
+}
+
+.seo-hero .cinematic-video {
+  min-height: clamp(320px, 42vw, 560px);
+}
+
+.seo-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  margin-top: 28px;
+}
+
+.seo-answer-strip,
+.seo-two-column,
+.seo-link-cluster,
+.seo-contact-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(18px, 3vw, 28px);
+  align-items: stretch;
+}
+
+.seo-answer-strip article,
+.seo-two-column > div,
+.seo-link-cluster,
+.seo-contact-panel,
+.founder-positioning article {
+  border: 1px solid rgba(201, 168, 76, 0.16);
+  background:
+    linear-gradient(145deg, rgba(15, 20, 34, 0.86), rgba(6, 10, 18, 0.92)),
+    radial-gradient(circle at top left, rgba(201, 168, 76, 0.12), transparent 42%);
+  border-radius: 24px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+.seo-answer-strip article,
+.seo-two-column > div,
+.founder-positioning article {
+  padding: clamp(22px, 3vw, 34px);
+}
+
+.seo-answer-strip svg,
+.founder-positioning svg {
+  color: var(--orion-gold-bright);
+  margin-bottom: 16px;
+}
+
+.seo-answer-strip h2,
+.seo-two-column h2,
+.seo-link-cluster h2,
+.seo-contact-panel h2,
+.founder-positioning h2 {
+  margin: 0 0 14px;
+  color: var(--orion-text-primary);
+  font-size: clamp(1.35rem, 2.3vw, 2rem);
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.seo-answer-strip p,
+.seo-two-column p,
+.seo-link-cluster p,
+.seo-contact-panel p,
+.founder-positioning p {
+  margin: 0;
+  color: rgba(232, 234, 240, 0.74);
+  line-height: 1.9;
+  letter-spacing: 0.01em;
+}
+
+.seo-list,
+.seo-check-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.seo-list p,
+.seo-check-list p {
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
+.seo-check-list p {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.seo-check-list svg {
+  flex: 0 0 auto;
+  color: var(--orion-gold-bright);
+  margin-top: 4px;
+}
+
+.seo-explainer-grid,
+.seo-faq-grid,
+.founder-positioning {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 2.4vw, 24px);
+}
+
+.seo-explainer-grid article,
+.seo-faq-grid article {
+  min-height: 100%;
+  border: 1px solid rgba(201, 168, 76, 0.14);
+  border-radius: 22px;
+  background: rgba(10, 15, 26, 0.72);
+  padding: clamp(20px, 2.6vw, 30px);
+}
+
+.seo-explainer-grid article > span {
+  color: var(--orion-gold-bright);
+  font-family: var(--orion-font-mono, "JetBrains Mono", monospace);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+}
+
+.seo-explainer-grid h2,
+.seo-faq-grid h3 {
+  margin: 14px 0 12px;
+  color: var(--orion-text-primary);
+  font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+  line-height: 1.35;
+}
+
+.seo-explainer-grid p,
+.seo-faq-grid p {
+  color: rgba(232, 234, 240, 0.72);
+  line-height: 1.85;
+  margin: 0;
+}
+
+.seo-explainer-grid ul {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  margin: 18px 0 0;
+  list-style: none;
+}
+
+.seo-explainer-grid li {
+  color: rgba(232, 234, 240, 0.82);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.seo-explainer-grid li::before {
+  content: '•';
+  color: var(--orion-gold-bright);
+  margin-right: 8px;
+}
+
+.seo-contact-panel,
+.seo-link-cluster {
+  padding: clamp(22px, 3vw, 34px);
+}
+
+.seo-contact-actions,
+.seo-link-grid {
+  display: grid;
+  gap: 12px;
+  align-content: center;
+}
+
+.seo-contact-actions a,
+.seo-link-grid a {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  color: var(--orion-text-primary);
+  text-decoration: none;
+  border: 1px solid rgba(201, 168, 76, 0.22);
+  background: rgba(255,255,255,0.04);
+  border-radius: 16px;
+  padding: 14px 16px;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.seo-contact-actions a:hover,
+.seo-link-grid a:hover {
+  transform: translateY(-2px);
+  border-color: rgba(232, 201, 106, 0.58);
+  background: rgba(201, 168, 76, 0.08);
+}
+
+.seo-contact-actions svg {
+  color: var(--orion-gold-bright);
+  flex: 0 0 auto;
+}
+
+.seo-link-grid a {
+  display: grid;
+  gap: 4px;
+}
+
+.seo-link-grid strong {
+  color: var(--orion-gold-bright);
+  font-size: 1rem;
+}
+
+.seo-link-grid span {
+  color: rgba(232,234,240,0.72);
+  line-height: 1.65;
+}
+
+.founder-portrait-panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  background:
+    radial-gradient(circle at 50% 10%, rgba(201, 168, 76, 0.2), transparent 45%),
+    linear-gradient(145deg, rgba(15, 20, 34, 0.92), rgba(5, 8, 15, 0.96));
+  min-height: clamp(360px, 44vw, 560px);
+  display: grid;
+  align-items: end;
+}
+
+.founder-portrait-panel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  opacity: 0.92;
+}
+
+.founder-portrait-panel > div {
+  position: absolute;
+  left: clamp(18px, 3vw, 32px);
+  right: clamp(18px, 3vw, 32px);
+  bottom: clamp(18px, 3vw, 32px);
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: rgba(5, 8, 15, 0.76);
+  border: 1px solid rgba(201, 168, 76, 0.24);
+  backdrop-filter: blur(14px);
+}
+
+.founder-portrait-panel strong,
+.founder-portrait-panel span {
+  display: block;
+}
+
+.founder-portrait-panel strong {
+  color: var(--orion-text-primary);
+  font-size: 1.25rem;
+  margin-bottom: 4px;
+}
+
+.founder-portrait-panel span {
+  color: var(--orion-gold-bright);
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .seo-answer-strip,
+  .seo-two-column,
+  .seo-link-cluster,
+  .seo-contact-panel,
+  .seo-explainer-grid,
+  .seo-faq-grid,
+  .founder-positioning {
+    grid-template-columns: 1fr;
+  }
+
+  .seo-hero-actions {
+    align-items: stretch;
+  }
+
+  .seo-hero-actions .orion-primary-btn,
+  .seo-hero-actions .orion-secondary-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .founder-portrait-panel {
+    min-height: 460px;
+  }
+}
 @keyframes faqOpen {
   from { opacity: 0; transform: translateY(-8px); }
   to { opacity: 1; transform: translateY(0); }

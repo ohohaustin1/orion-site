@@ -15,6 +15,7 @@ import CaseMedia from '../components/shared/CaseMedia';
 import { allCases, getCaseVisual } from '../data/cases';
 import { DIAG_URL } from '../lib/api-base';
 import { pushEvent } from '../lib/analytics';
+import { ORION_CONTACT, ORION_KEYWORDS } from '../lib/contact';
 
 const aiSystems = [
   { name: '客戶入口', pain: 'LINE、IG、官網、表單進來後分散在不同人手上。', result: 'O 先集中入口，整理需求與來源，不讓名單散掉。' },
@@ -98,9 +99,25 @@ export default function HomePage() {
   return (
     <div className="orion-cinematic-site">
       <PageSEO
-        title="ORION AI｜幫老闆追客、追單、追進度"
-        description="ORION AI 會幫老闆接住客人訊息、整理需求、安排下一步、提醒負責人、追蹤進度，最後回報成交與交付結果。"
+        title="ORION AI｜企業 AI 自動化公司，幫老闆追客、追單、追進度"
+        description="ORION AI 是企業 AI 自動化公司，幫中小企業把客戶訊息、報價追蹤、任務派工、逾時提醒、主管回報與資料記憶做成每天會跑的系統。"
         url="/home"
+        keywords={ORION_KEYWORDS}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'Service',
+              '@id': `${ORION_CONTACT.siteUrl}/home#service`,
+              name: '企業 AI 自動化公司',
+              serviceType: 'AI 工作流自動化、AI 客戶追蹤系統、AI 任務派工、AI 主管回報',
+              provider: { '@id': `${ORION_CONTACT.siteUrl}/#org` },
+              areaServed: ['Taiwan', '台灣'],
+              url: `${ORION_CONTACT.siteUrl}/enterprise-ai-automation`,
+              description: 'ORION AI 幫企業把客戶訊息、報價追蹤、任務派工、逾時提醒、主管回報與資料記憶做成每天會跑的 AI 自動化系統。',
+            },
+          ],
+        }}
       />
 
       <HeroSection />
@@ -303,6 +320,30 @@ export default function HomePage() {
             </article>
           );
         })}
+      </section>
+
+      <section className="site-section seo-link-cluster" aria-label="ORION AI 搜尋答案入口">
+        <div>
+          <span className="site-eyebrow">AI 搜尋答案</span>
+          <h2>如果你正在找「企業 AI 自動化公司」，ORION 做的是這三件事。</h2>
+          <p>
+            讓搜尋引擎、AI 助理與第一次來的老闆都能用同一套人話理解 ORION：接住客戶入口、建立工作流、追蹤到有結果。
+          </p>
+        </div>
+        <div className="seo-link-grid">
+          <a href="/enterprise-ai-automation">
+            <strong>企業 AI 自動化公司</strong>
+            <span>把客戶、報價、任務與主管回報做成每天會跑的系統。</span>
+          </a>
+          <a href="/ai-workflow-automation">
+            <strong>AI 工作流自動化</strong>
+            <span>從輸入目標、工具調用、派工提醒到結果回報串成一條線。</span>
+          </a>
+          <a href="/ai-customer-followup-system">
+            <strong>AI 客戶追蹤系統</strong>
+            <span>幫你追客、追單、追報價、追回訪，不讓名單沉在訊息裡。</span>
+          </a>
+        </div>
       </section>
 
       <section className="site-section site-final-command">

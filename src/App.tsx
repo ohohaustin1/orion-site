@@ -29,9 +29,22 @@ import ResourcesPage from "./pages/ResourcesPage";
 import TeamPage from './pages/TeamPage';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
+import SeoLandingPage from './pages/SeoLandingPage';
+import FounderPage from './pages/FounderPage';
 
 // Pages that show sidebar
-const SIDEBAR_ROUTES = ['/home', '/cases', '/insights', '/about', '/team', '/resources'];
+const SIDEBAR_ROUTES = [
+  '/home',
+  '/cases',
+  '/insights',
+  '/about',
+  '/team',
+  '/resources',
+  '/enterprise-ai-automation',
+  '/ai-workflow-automation',
+  '/ai-customer-followup-system',
+  '/founder-austin-xu-yaochen',
+];
 
 function SidebarLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -53,6 +66,12 @@ function classifyRoute(loc: string): string {
   if (loc === '/' || loc === '/home') return 'landing';
   if (loc === '/cases') return 'cases_index';
   if (loc === '/about' || loc === '/team') return 'about';
+  if (
+    loc === '/enterprise-ai-automation' ||
+    loc === '/ai-workflow-automation' ||
+    loc === '/ai-customer-followup-system'
+  ) return 'seo_landing';
+  if (loc === '/founder-austin-xu-yaochen') return 'founder';
   if (loc === '/insights') return 'insights_index';
   if (loc === '/resources') return 'resources_index';
   if (loc === '/privacy' || loc === '/terms') return 'legal';
@@ -85,6 +104,16 @@ function Router() {
           <Route path="/about" component={AboutPage} />
               <Route path="/team" component={TeamPage} />
           <Route path="/resources" component={ResourcesPage} />
+          <Route path="/enterprise-ai-automation">
+            {() => <SeoLandingPage slug="enterprise-ai-automation" />}
+          </Route>
+          <Route path="/ai-workflow-automation">
+            {() => <SeoLandingPage slug="ai-workflow-automation" />}
+          </Route>
+          <Route path="/ai-customer-followup-system">
+            {() => <SeoLandingPage slug="ai-customer-followup-system" />}
+          </Route>
+          <Route path="/founder-austin-xu-yaochen" component={FounderPage} />
           <Route component={NotFound} />
         </Switch>
       </SidebarLayout>
@@ -169,7 +198,22 @@ function App() {
 
   useEffect(() => {
     const path = window.location.pathname;
-    const skipSplash = ['/report', '/war-room', '/home', '/cases', '/insights', '/about', '/team', '/resources', '/privacy', '/terms'];
+    const skipSplash = [
+      '/report',
+      '/war-room',
+      '/home',
+      '/cases',
+      '/insights',
+      '/about',
+      '/team',
+      '/resources',
+      '/enterprise-ai-automation',
+      '/ai-workflow-automation',
+      '/ai-customer-followup-system',
+      '/founder-austin-xu-yaochen',
+      '/privacy',
+      '/terms',
+    ];
     // The acquisition root must show value and CTA immediately.  If the splash
     // renders first, the existing "/" -> "/home" redirect is delayed by 6s.
     if (path === '/' || skipSplash.some(r => path.startsWith(r))) {

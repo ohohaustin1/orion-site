@@ -31,6 +31,30 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://orion01.com/enterprise-ai-automation</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://orion01.com/ai-workflow-automation</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://orion01.com/ai-customer-followup-system</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://orion01.com/founder-austin-xu-yaochen</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://orion01.com/privacy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>

@@ -13,3 +13,6 @@ Disallow: /clients
 Disallow: /admin
 
 Sitemap: https://orion01.com/sitemap.xml
+
+# AI / answer-engine discovery helper (experimental, not a ranking guarantee):
+# https://orion01.com/llms.txt

@@ -4,6 +4,7 @@ import PageSEO from '../components/PageSEO';
 import CinematicVideo from '../components/shared/CinematicVideo';
 import { DIAG_URL } from '../lib/api-base';
 import { pushEvent } from '../lib/analytics';
+import { ORION_CONTACT, ORION_KEYWORDS } from '../lib/contact';
 
 const services = [
   {
@@ -80,9 +81,20 @@ export default function AboutPage() {
   return (
     <div className="orion-cinematic-site site-page">
       <PageSEO
-        title="ORION AI 服務介紹｜把每天追人的事交給 O"
-        description="ORION AI 幫企業把客人訊息、報價追蹤、任務派工、逾時提醒、主管回報與客戶紀錄做成每天可執行的系統。"
+        title="ORION AI 服務介紹｜企業 AI 自動化、AI 工作流、AI 客戶追蹤"
+        description="ORION AI 幫企業把客人訊息、報價追蹤、任務派工、逾時提醒、主管回報與客戶紀錄做成每天可執行的 AI 自動化系統。"
         url="/about"
+        keywords={ORION_KEYWORDS}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'Service',
+          '@id': `${ORION_CONTACT.siteUrl}/about#service`,
+          name: 'ORION AI 企業 AI 自動化服務',
+          serviceType: '企業 AI 自動化、AI 工作流自動化、AI 客戶追蹤系統',
+          provider: { '@id': `${ORION_CONTACT.siteUrl}/#org` },
+          url: `${ORION_CONTACT.siteUrl}/about`,
+          description: 'ORION AI 幫企業把客人訊息、報價追蹤、任務派工、逾時提醒、主管回報與客戶紀錄做成每天可執行的 AI 自動化系統。',
+        }}
       />
 
       <section className="site-page-hero split">
