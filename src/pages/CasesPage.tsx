@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, BarChart3, Filter, Lightbulb, ShieldCheck, Wrench } from 'lucide-react';
-import { allCases, caseVisuals, type CaseStudy, type MetricItem } from '../data/cases';
+import { allCases, getCaseVisual, type CaseStudy, type MetricItem } from '../data/cases';
 import PageSEO from '../components/PageSEO';
 import CinematicVideo from '../components/shared/CinematicVideo';
 import { API_BASE, DIAG_URL } from '../lib/api-base';
@@ -152,8 +152,8 @@ export default function CasesPage() {
           <p>先看三個典型斷點：原本誰在忙、哪裡漏掉、O 接手後老闆早上會看到什麼。</p>
         </div>
         <div className="flagship-case-grid">
-          {flagshipCases.map((caseData) => {
-            const visual = caseVisuals[caseData.id];
+          {flagshipCases.map((caseData, index) => {
+            const visual = getCaseVisual(caseData, index);
             return (
               <article key={`flagship-${caseData.id}`} className="flagship-case-card">
                 {visual && <img className="flagship-case-image" src={visual.src} alt={visual.alt} loading="lazy" />}
@@ -193,8 +193,8 @@ export default function CasesPage() {
       </section>
 
       <section className="case-study-list">
-        {filtered.map((caseData) => {
-          const visual = caseVisuals[caseData.id];
+        {filtered.map((caseData, index) => {
+          const visual = getCaseVisual(caseData, index);
           return (
             <article key={caseData.id} className={`case-study-row ${openId === caseData.id ? 'is-open' : ''}`}>
               <button className="case-study-summary" onClick={() => setOpenId(openId === caseData.id ? null : caseData.id)}>

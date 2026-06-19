@@ -11,7 +11,7 @@ import {
 import PageSEO from '../components/PageSEO';
 import HeroSection from '../components/hero/HeroSection';
 import CinematicVideo from '../components/shared/CinematicVideo';
-import { allCases, caseVisuals } from '../data/cases';
+import { allCases, getCaseVisual } from '../data/cases';
 import { DIAG_URL } from '../lib/api-base';
 import { pushEvent } from '../lib/analytics';
 
@@ -123,8 +123,8 @@ export default function HomePage() {
         </div>
 
         <div className="home-case-featured-grid">
-          {featuredHomeCases.map((caseData) => {
-            const visual = caseVisuals[caseData.id];
+          {featuredHomeCases.map((caseData, index) => {
+            const visual = getCaseVisual(caseData, index);
             return (
               <a
                 key={`home-featured-${caseData.id}`}
@@ -147,8 +147,8 @@ export default function HomePage() {
         </div>
 
         <div className="home-case-mini-grid">
-          {compactHomeCases.map((caseData) => {
-            const visual = caseVisuals[caseData.id];
+          {compactHomeCases.map((caseData, index) => {
+            const visual = getCaseVisual(caseData, index + featuredHomeCases.length);
             return (
               <a
                 key={`home-mini-${caseData.id}`}

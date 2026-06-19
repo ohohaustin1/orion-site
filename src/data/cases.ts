@@ -80,6 +80,41 @@ export const caseVisuals: Record<number, CaseVisual> = {
   },
 };
 
+export const caseVisualList = [
+  caseVisuals[1],
+  caseVisuals[2],
+  caseVisuals[3],
+  caseVisuals[4],
+  caseVisuals[5],
+  caseVisuals[6],
+  caseVisuals[7],
+  caseVisuals[8],
+  caseVisuals[9],
+  caseVisuals[10],
+  caseVisuals[11],
+  caseVisuals[12],
+];
+
+export function getCaseVisual(caseData: Pick<CaseStudy, 'id' | 'industry' | 'company'>, index = 0): CaseVisual {
+  const direct = caseVisuals[caseData.id];
+  if (direct) return direct;
+
+  const text = `${caseData.industry} ${caseData.company}`;
+  if (/房地產|不動產/.test(text)) return caseVisuals[1];
+  if (/餐飲/.test(text)) return caseVisuals[4];
+  if (/電商|零售/.test(text)) return caseVisuals[2];
+  if (/製造|五金|汽車|物流|倉儲|車隊|貨運/.test(text)) return caseVisuals[3];
+  if (/顧問|品牌|社群/.test(text)) return caseVisuals[7];
+  if (/醫療|診所|牙醫|健康|美容|美髮|健身/.test(text)) return caseVisuals[10];
+  if (/法律|法務|合約/.test(text)) return caseVisuals[6];
+  if (/教育|補習|英語|學院/.test(text)) return caseVisuals[9];
+  if (/現金|財務|保險|理賠/.test(text)) return caseVisuals[8];
+  if (/股票|投資|研究/.test(text)) return caseVisuals[11];
+  if (/決策|建築|設計/.test(text)) return caseVisuals[12];
+
+  return caseVisualList[index % caseVisualList.length];
+}
+
 export const caseStudies: CaseStudy[] = [
   {
     id: 1,
