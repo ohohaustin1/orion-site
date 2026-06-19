@@ -2996,13 +2996,19 @@ body {
   box-shadow: 0 26px 90px rgba(0, 0, 0, 0.38);
 }
 
-.cinematic-video video {
+.cinematic-video video,
+.cinematic-video-poster {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: var(--video-position, center center);
   transform: scale(1.02);
+}
+
+.cinematic-video-poster {
+  display: block;
 }
 
 .cinematic-video-overlay {
@@ -3504,6 +3510,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: var(--case-video-position, center center);
   display: block;
 }
 
@@ -4765,6 +4772,20 @@ body {
       linear-gradient(135deg, #07101d 0%, #0a1527 100%);
   }
 
+  .cinematic-video video,
+  .cinematic-video-poster {
+    object-position: var(--video-mobile-position, var(--video-position, center center));
+  }
+
+  .home-case-feature-card img,
+  .home-case-feature-card video,
+  .home-case-mini-card img,
+  .home-case-mini-card video,
+  .flagship-case-image,
+  .case-study-thumb {
+    object-position: var(--case-video-mobile-position, var(--case-video-position, center center));
+  }
+
   .orion-hero-cinematic {
     min-height: auto;
   }
@@ -4985,7 +5006,8 @@ body {
     animation: none !important;
   }
 
-  .cinematic-video video {
+  .cinematic-video video,
+  .cinematic-video-poster {
     transform: none !important;
   }
 

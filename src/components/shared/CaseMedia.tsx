@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type CSSProperties } from 'react';
 import type { CaseVisual } from '../../data/cases';
 
 interface CaseMediaProps {
@@ -10,7 +10,12 @@ interface CaseMediaProps {
 
 export default function CaseMedia({ visual, className, loading = 'lazy', preload = 'metadata' }: CaseMediaProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  // SSR-safe reduced-motion check（prerender 視為 false）。用於關閉 autoplay。
+  const mediaStyle = {
+    '--case-video-position': visual.objectPosition || 'center center',
+    '--case-video-mobile-position': visual.mobileObjectPosition || visual.objectPosition || 'center center',
+  } as CSSProperties;
+  // SSR-safe reduced-motion check; no rerender needed because case videos are
+  // decorative and can fall back to the poster on first render.
   const reduceMotion =
     typeof window !== 'undefined' &&
     typeof window.matchMedia === 'function' &&
@@ -76,7 +81,7 @@ export default function CaseMedia({ visual, className, loading = 'lazy', preload
   }, [visual.videoMp4, visual.videoWebm]);
 
   if (!visual.videoMp4) {
-    return <img className={className} src={visual.src} alt={visual.alt} loading={loading} />;
+    return <img className={className} src={visual.src} alt={visual.alt} loading={loading} style={mediaStyle} />;
   }
 
   return (
@@ -91,6 +96,7 @@ export default function CaseMedia({ visual, className, loading = 'lazy', preload
       poster={visual.src}
       aria-hidden="true"
       tabIndex={-1}
+      style={mediaStyle}
       onLoadedData={(event) => requestLoadedPlayback(event.currentTarget, reduceMotion)}
       onCanPlay={(event) => requestLoadedPlayback(event.currentTarget, reduceMotion)}
     >

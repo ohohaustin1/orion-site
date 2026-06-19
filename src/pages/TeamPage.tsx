@@ -158,7 +158,11 @@ export default function TeamPage() {
             ORION AI 核心團隊
           </div>
         </div>
-        <CinematicVideo src="/videos/orion-executive-team-pan.mp4" label="企業 AI 團隊在未來辦公室協作的影片" />
+        <CinematicVideo
+          src="/videos/orion-executive-team-pan.mp4"
+          label="企業 AI 團隊在未來辦公室協作的影片"
+          mobileObjectPosition="52% center"
+        />
       </section>
 
       <section className="site-section team-system-section">
@@ -204,7 +208,12 @@ export default function TeamPage() {
       </section>
 
       <section className="site-section site-final-command compact">
-        <CinematicVideo src="/videos/orion-memory-city-card-loop.mp4" label="企業資料記憶與團隊交接動畫" />
+        <CinematicVideo
+          src="/videos/orion-memory-city-card-loop.mp4"
+          label="企業資料記憶與團隊交接動畫"
+          mobileMode="poster"
+          mobileObjectPosition="54% center"
+        />
         <div className="final-command-content">
           <span className="site-eyebrow">合作方式</span>
           <h2>你不用自己寫規格，先把最常漏、最常卡、最常要你追的事講出來。</h2>

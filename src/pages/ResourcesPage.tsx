@@ -71,7 +71,11 @@ export default function ResourcesPage() {
             這裡不用你先懂技術。先幫你判斷：客人從哪裡來、誰要處理、多久要回、卡住怎麼辦、老闆要看什麼。
           </p>
         </div>
-        <CinematicVideo src="/videos/orion-executive-hero-dolly.mp4" label="科技型主管在透明螢幕前說明 AI 營運工作流的影片" />
+        <CinematicVideo
+          src="/videos/orion-executive-hero-dolly.mp4"
+          label="科技型主管在透明螢幕前說明 AI 營運工作流的影片"
+          mobileObjectPosition="48% center"
+        />
       </section>
 
       <section className="site-section resource-grid-section">
@@ -95,7 +99,12 @@ export default function ResourcesPage() {
       </section>
 
       <section className="site-section resource-feature">
-        <CinematicVideo src="/videos/orion-trust-host-stage-loop.mp4" label="AI 數位主持人與企業簡報舞台影片" />
+        <CinematicVideo
+          src="/videos/orion-trust-host-stage-loop.mp4"
+          label="AI 數位主持人與企業簡報舞台影片"
+          mobileMode="poster"
+          mobileObjectPosition="50% center"
+        />
         <div>
           <span className="site-eyebrow">下載前先想清楚</span>
           <h2>O 的藍圖不是功能清單，而是「誰進來、誰處理、多久回、怎麼回報」。</h2>

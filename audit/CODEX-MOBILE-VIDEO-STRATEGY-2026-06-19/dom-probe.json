@@ -1,0 +1,621 @@
+{
+  "mobileInitial": {
+    "url": "http://127.0.0.1:4178/home/",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "scrollOverflowX": 0,
+    "heroVideo": {
+      "currentSrc": "http://127.0.0.1:4178/videos/mobile/orion-hero-command-mobile-9x16.mp4",
+      "poster": "http://127.0.0.1:4178/videos/posters/mobile/orion-hero-command-mobile-9x16.jpg",
+      "autoPlay": true,
+      "muted": true,
+      "paused": false,
+      "preload": "metadata",
+      "objectPosition": "50% 50%",
+      "rect": {
+        "x": -8,
+        "y": 32,
+        "width": 406,
+        "height": 1263
+      }
+    },
+    "commandVideo": {
+      "currentSrc": "http://127.0.0.1:4178/videos/mobile/orion-command-frame-mobile-4x5.mp4",
+      "poster": "http://127.0.0.1:4178/videos/posters/mobile/orion-command-frame-mobile-4x5.jpg",
+      "autoPlay": true,
+      "muted": true,
+      "paused": false,
+      "preload": "metadata",
+      "objectPosition": "45% 50%",
+      "rect": {
+        "x": 27,
+        "y": 931,
+        "width": 337,
+        "height": 304
+      }
+    },
+    "caseVideoCount": 9,
+    "caseVideos": [
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/cases/case-real-estate-command-loop.webm",
+        "poster": "http://127.0.0.1:4178/images/cases/case-real-estate-ai-followup.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "auto",
+        "objectPosition": "58% 50%",
+        "rect": {
+          "x": 10,
+          "y": 1641,
+          "width": 371,
+          "height": 400
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/cases/case-ecommerce-command-loop.webm",
+        "poster": "http://127.0.0.1:4178/images/cases/case-ecommerce-cart-recovery.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "auto",
+        "objectPosition": "52% 50%",
+        "rect": {
+          "x": 10,
+          "y": 2049,
+          "width": 371,
+          "height": 400
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/cases/case-manufacturing-command-loop.webm",
+        "poster": "http://127.0.0.1:4178/images/cases/case-manufacturing-schedule.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "auto",
+        "objectPosition": "62% 50%",
+        "rect": {
+          "x": 10,
+          "y": 2457,
+          "width": 371,
+          "height": 400
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/stock/coverr-cafe-handoff-loop.mp4",
+        "poster": "http://127.0.0.1:4178/videos/posters/coverr-cafe-handoff-loop.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "metadata",
+        "objectPosition": "50% 50%",
+        "rect": {
+          "x": 15,
+          "y": 2871,
+          "width": 360,
+          "height": 203
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/orion-memory-city-card-loop.mp4",
+        "poster": "http://127.0.0.1:4178/videos/posters/orion-memory-city-card-loop.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "metadata",
+        "objectPosition": "54% 50%",
+        "rect": {
+          "x": 15,
+          "y": 3224,
+          "width": 360,
+          "height": 203
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/orion-trust-host-stage-loop.mp4",
+        "poster": "http://127.0.0.1:4178/videos/posters/orion-trust-host-stage-loop.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "metadata",
+        "objectPosition": "50% 50%",
+        "rect": {
+          "x": 15,
+          "y": 3919,
+          "width": 360,
+          "height": 203
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/orion-executive-board-pan.mp4",
+        "poster": "http://127.0.0.1:4178/videos/posters/orion-executive-board-pan.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "metadata",
+        "objectPosition": "55% 50%",
+        "rect": {
+          "x": 15,
+          "y": 4294,
+          "width": 360,
+          "height": 203
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/orion-toolflow-card-loop.mp4",
+        "poster": "http://127.0.0.1:4178/videos/posters/orion-toolflow-card-loop.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "metadata",
+        "objectPosition": "52% 50%",
+        "rect": {
+          "x": 15,
+          "y": 5330,
+          "width": 360,
+          "height": 203
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/runway-orion-executive-03.mp4",
+        "poster": "http://127.0.0.1:4178/videos/posters/runway-orion-executive-03.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "metadata",
+        "objectPosition": "48% 50%",
+        "rect": {
+          "x": 15,
+          "y": 5683,
+          "width": 360,
+          "height": 203
+        }
+      }
+    ],
+    "posterOnlyCount": 4,
+    "posterOnly": [
+      {
+        "src": "http://127.0.0.1:4178/videos/posters/mixkit-collaborative-digital-display.jpg",
+        "objectPosition": "52% 50%",
+        "rect": {
+          "x": 11,
+          "y": 6946,
+          "width": 367,
+          "height": 263
+        }
+      },
+      {
+        "src": "http://127.0.0.1:4178/videos/posters/orion-bg-02-toolflow-network.jpg",
+        "objectPosition": "50% 50%",
+        "rect": {
+          "x": 11,
+          "y": 7674,
+          "width": 367,
+          "height": 1354
+        }
+      },
+      {
+        "src": "http://127.0.0.1:4178/videos/posters/orion-bg-03-systems-city.jpg",
+        "objectPosition": "50% 50%",
+        "rect": {
+          "x": 11,
+          "y": 12859,
+          "width": 367,
+          "height": 263
+        }
+      },
+      {
+        "src": "http://127.0.0.1:4178/videos/posters/orion-bg-04-memory-nightcity.jpg",
+        "objectPosition": "50% 50%",
+        "rect": {
+          "x": 11,
+          "y": 14578,
+          "width": 367,
+          "height": 667
+        }
+      }
+    ],
+    "cinematicVideoCount": 2
+  },
+  "mobileCases": {
+    "url": "http://127.0.0.1:4178/home/",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "scrollOverflowX": 0,
+    "heroVideo": {
+      "currentSrc": "http://127.0.0.1:4178/videos/mobile/orion-hero-command-mobile-9x16.mp4",
+      "poster": "http://127.0.0.1:4178/videos/posters/mobile/orion-hero-command-mobile-9x16.jpg",
+      "autoPlay": true,
+      "muted": true,
+      "paused": false,
+      "preload": "metadata",
+      "objectPosition": "50% 50%",
+      "rect": {
+        "x": -8,
+        "y": -1238,
+        "width": 406,
+        "height": 1263
+      }
+    },
+    "commandVideo": {
+      "currentSrc": "http://127.0.0.1:4178/videos/mobile/orion-command-frame-mobile-4x5.mp4",
+      "poster": "http://127.0.0.1:4178/videos/posters/mobile/orion-command-frame-mobile-4x5.jpg",
+      "autoPlay": true,
+      "muted": true,
+      "paused": false,
+      "preload": "metadata",
+      "objectPosition": "45% 50%",
+      "rect": {
+        "x": 27,
+        "y": -339,
+        "width": 337,
+        "height": 304
+      }
+    },
+    "caseVideoCount": 9,
+    "caseVideos": [
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/cases/case-real-estate-command-loop.webm",
+        "poster": "http://127.0.0.1:4178/images/cases/case-real-estate-ai-followup.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "auto",
+        "objectPosition": "58% 50%",
+        "rect": {
+          "x": 10,
+          "y": 371,
+          "width": 371,
+          "height": 400
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/cases/case-ecommerce-command-loop.webm",
+        "poster": "http://127.0.0.1:4178/images/cases/case-ecommerce-cart-recovery.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "auto",
+        "objectPosition": "52% 50%",
+        "rect": {
+          "x": 10,
+          "y": 779,
+          "width": 371,
+          "height": 400
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/cases/case-manufacturing-command-loop.webm",
+        "poster": "http://127.0.0.1:4178/images/cases/case-manufacturing-schedule.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "auto",
+        "objectPosition": "62% 50%",
+        "rect": {
+          "x": 10,
+          "y": 1187,
+          "width": 371,
+          "height": 400
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/stock/coverr-cafe-handoff-loop.mp4",
+        "poster": "http://127.0.0.1:4178/videos/posters/coverr-cafe-handoff-loop.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "metadata",
+        "objectPosition": "50% 50%",
+        "rect": {
+          "x": 15,
+          "y": 1601,
+          "width": 360,
+          "height": 203
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/orion-memory-city-card-loop.mp4",
+        "poster": "http://127.0.0.1:4178/videos/posters/orion-memory-city-card-loop.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "metadata",
+        "objectPosition": "54% 50%",
+        "rect": {
+          "x": 15,
+          "y": 1954,
+          "width": 360,
+          "height": 203
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/orion-trust-host-stage-loop.mp4",
+        "poster": "http://127.0.0.1:4178/videos/posters/orion-trust-host-stage-loop.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "metadata",
+        "objectPosition": "50% 50%",
+        "rect": {
+          "x": 15,
+          "y": 2649,
+          "width": 360,
+          "height": 203
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/orion-executive-board-pan.mp4",
+        "poster": "http://127.0.0.1:4178/videos/posters/orion-executive-board-pan.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "metadata",
+        "objectPosition": "55% 50%",
+        "rect": {
+          "x": 15,
+          "y": 3024,
+          "width": 360,
+          "height": 203
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/orion-toolflow-card-loop.mp4",
+        "poster": "http://127.0.0.1:4178/videos/posters/orion-toolflow-card-loop.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "metadata",
+        "objectPosition": "52% 50%",
+        "rect": {
+          "x": 15,
+          "y": 4060,
+          "width": 360,
+          "height": 203
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/runway-orion-executive-03.mp4",
+        "poster": "http://127.0.0.1:4178/videos/posters/runway-orion-executive-03.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "metadata",
+        "objectPosition": "48% 50%",
+        "rect": {
+          "x": 15,
+          "y": 4413,
+          "width": 360,
+          "height": 203
+        }
+      }
+    ],
+    "posterOnlyCount": 4,
+    "posterOnly": [
+      {
+        "src": "http://127.0.0.1:4178/videos/posters/mixkit-collaborative-digital-display.jpg",
+        "objectPosition": "52% 50%",
+        "rect": {
+          "x": 11,
+          "y": 5676,
+          "width": 367,
+          "height": 263
+        }
+      },
+      {
+        "src": "http://127.0.0.1:4178/videos/posters/orion-bg-02-toolflow-network.jpg",
+        "objectPosition": "50% 50%",
+        "rect": {
+          "x": 11,
+          "y": 6404,
+          "width": 367,
+          "height": 1354
+        }
+      },
+      {
+        "src": "http://127.0.0.1:4178/videos/posters/orion-bg-03-systems-city.jpg",
+        "objectPosition": "50% 50%",
+        "rect": {
+          "x": 11,
+          "y": 11589,
+          "width": 367,
+          "height": 263
+        }
+      },
+      {
+        "src": "http://127.0.0.1:4178/videos/posters/orion-bg-04-memory-nightcity.jpg",
+        "objectPosition": "50% 50%",
+        "rect": {
+          "x": 11,
+          "y": 13308,
+          "width": 367,
+          "height": 667
+        }
+      }
+    ],
+    "cinematicVideoCount": 2
+  },
+  "desktopInitial": {
+    "url": "http://127.0.0.1:4178/home/",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "scrollOverflowX": -15,
+    "heroVideo": {
+      "currentSrc": "http://127.0.0.1:4178/videos/runway-orion-executive-01.mp4",
+      "poster": "http://127.0.0.1:4178/videos/posters/runway-orion-executive-01.jpg",
+      "autoPlay": true,
+      "muted": true,
+      "paused": false,
+      "preload": "auto",
+      "objectPosition": "50% 50%",
+      "rect": {
+        "x": -28,
+        "y": -20,
+        "width": 1482,
+        "height": 1040
+      }
+    },
+    "commandVideo": {
+      "currentSrc": "http://127.0.0.1:4178/videos/runway-orion-executive-02.mp4",
+      "poster": "http://127.0.0.1:4178/videos/posters/runway-orion-executive-02.jpg",
+      "autoPlay": true,
+      "muted": true,
+      "paused": false,
+      "preload": "auto",
+      "objectPosition": "50% 50%",
+      "rect": {
+        "x": 803,
+        "y": 258,
+        "width": 551,
+        "height": 586
+      }
+    },
+    "caseVideoCount": 9,
+    "caseVideos": [
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/cases/case-real-estate-command-loop.webm",
+        "poster": "http://127.0.0.1:4178/images/cases/case-real-estate-ai-followup.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "auto",
+        "objectPosition": "50% 50%",
+        "rect": {
+          "x": 47,
+          "y": 1363,
+          "width": 439,
+          "height": 472
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/cases/case-ecommerce-command-loop.webm",
+        "poster": "http://127.0.0.1:4178/images/cases/case-ecommerce-cart-recovery.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "auto",
+        "objectPosition": "50% 50%",
+        "rect": {
+          "x": 493,
+          "y": 1363,
+          "width": 439,
+          "height": 472
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/cases/case-manufacturing-command-loop.webm",
+        "poster": "http://127.0.0.1:4178/images/cases/case-manufacturing-schedule.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "auto",
+        "objectPosition": "50% 50%",
+        "rect": {
+          "x": 939,
+          "y": 1363,
+          "width": 439,
+          "height": 472
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/stock/coverr-cafe-handoff-loop.mp4",
+        "poster": "http://127.0.0.1:4178/videos/posters/coverr-cafe-handoff-loop.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "metadata",
+        "objectPosition": "50% 50%",
+        "rect": {
+          "x": 54,
+          "y": 1848,
+          "width": 168,
+          "height": 174
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/orion-memory-city-card-loop.mp4",
+        "poster": "http://127.0.0.1:4178/videos/posters/orion-memory-city-card-loop.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "metadata",
+        "objectPosition": "50% 50%",
+        "rect": {
+          "x": 498,
+          "y": 1848,
+          "width": 168,
+          "height": 174
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/orion-trust-host-stage-loop.mp4",
+        "poster": "http://127.0.0.1:4178/videos/posters/orion-trust-host-stage-loop.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "metadata",
+        "objectPosition": "50% 50%",
+        "rect": {
+          "x": 54,
+          "y": 2038,
+          "width": 168,
+          "height": 174
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/orion-executive-board-pan.mp4",
+        "poster": "http://127.0.0.1:4178/videos/posters/orion-executive-board-pan.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "metadata",
+        "objectPosition": "50% 50%",
+        "rect": {
+          "x": 498,
+          "y": 2038,
+          "width": 168,
+          "height": 174
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/orion-toolflow-card-loop.mp4",
+        "poster": "http://127.0.0.1:4178/videos/posters/orion-toolflow-card-loop.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "metadata",
+        "objectPosition": "50% 50%",
+        "rect": {
+          "x": 498,
+          "y": 2228,
+          "width": 168,
+          "height": 174
+        }
+      },
+      {
+        "currentSrc": "http://127.0.0.1:4178/videos/runway-orion-executive-03.mp4",
+        "poster": "http://127.0.0.1:4178/videos/posters/runway-orion-executive-03.jpg",
+        "autoPlay": true,
+        "muted": true,
+        "paused": false,
+        "preload": "metadata",
+        "objectPosition": "50% 50%",
+        "rect": {
+          "x": 943,
+          "y": 2228,
+          "width": 168,
+          "height": 174
+        }
+      }
+    ],
+    "posterOnlyCount": 0,
+    "posterOnly": [],
+    "cinematicVideoCount": 6
+  }
+}

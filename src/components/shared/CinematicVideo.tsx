@@ -1,32 +1,95 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useReducedMotion } from 'framer-motion';
+
+type MobileVideoMode = 'video' | 'poster';
 
 interface CinematicVideoProps {
   src: string;
   className?: string;
   label?: string;
   overlay?: boolean;
+  posterSrc?: string;
+  mobileSrc?: string;
+  mobilePosterSrc?: string;
+  mobileMode?: MobileVideoMode;
+  objectPosition?: string;
+  mobileObjectPosition?: string;
+}
+
+const MOBILE_VIDEO_QUERY = '(max-width: 768px)';
+
+function derivePoster(src: string) {
+  return src.replace('/videos/', '/videos/posters/').replace(/\.[a-z0-9]+$/i, '.jpg');
+}
+
+function getInitialMobileViewport() {
+  return (
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia(MOBILE_VIDEO_QUERY).matches
+  );
+}
+
+function useMobileVideoViewport() {
+  const [isMobile, setIsMobile] = useState(getInitialMobileViewport);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return undefined;
+
+    const mediaQuery = window.matchMedia(MOBILE_VIDEO_QUERY);
+    const update = () => setIsMobile(mediaQuery.matches);
+    update();
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', update);
+      return () => mediaQuery.removeEventListener('change', update);
+    }
+
+    mediaQuery.addListener(update);
+    return () => mediaQuery.removeListener(update);
+  }, []);
+
+  return isMobile;
 }
 
 export default function CinematicVideo({
   src,
   className = '',
-  label = 'ORION AI 營運工作流視覺影片',
+  label = 'ORION AI cinematic business system video',
   overlay = true,
+  posterSrc,
+  mobileSrc,
+  mobilePosterSrc,
+  mobileMode = 'video',
+  objectPosition = 'center center',
+  mobileObjectPosition,
 }: CinematicVideoProps) {
   const reduceMotion = useReducedMotion();
+  const isMobile = useMobileVideoViewport();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const isOnScreenRef = useRef(false);
   const [failed, setFailed] = useState(false);
-  const poster = src.replace('/videos/', '/videos/posters/').replace(/\.[a-z0-9]+$/i, '.jpg');
+  const activeSrc = isMobile && mobileSrc ? mobileSrc : src;
+  const poster = isMobile
+    ? mobilePosterSrc || posterSrc || derivePoster(activeSrc)
+    : posterSrc || derivePoster(activeSrc);
+  const posterOnly = isMobile && mobileMode === 'poster';
+  const frameStyle = {
+    '--video-position': objectPosition,
+    '--video-mobile-position': mobileObjectPosition || objectPosition,
+  } as CSSProperties;
+
+  useEffect(() => {
+    setFailed(false);
+  }, [activeSrc, posterOnly]);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || failed) return;
+    if (!video || failed || posterOnly) return undefined;
 
     // Only play while the video is actually in the viewport. The ref tracks the
-    // latest intersection state so visibility/focus handlers (and the JSX
-    // onCanPlay handler) never resume an offscreen video.
+    // latest intersection state so visibility/focus handlers never resume an
+    // offscreen video.
     const requestPlayback = () => {
       const currentVideo = videoRef.current;
       if (!currentVideo || failed) return;
@@ -83,20 +146,27 @@ export default function CinematicVideo({
       window.removeEventListener('focus', requestPlayback);
       window.removeEventListener('pageshow', requestPlayback);
     };
-  }, [failed, reduceMotion]);
+  }, [activeSrc, failed, posterOnly, reduceMotion]);
 
   return (
-    <div className={`cinematic-video ${className} ${failed ? 'is-fallback' : ''}`} aria-label={label}>
-      {!failed && (
+    <div
+      className={`cinematic-video ${className} ${failed ? 'is-fallback' : ''}`}
+      aria-label={label}
+      style={frameStyle}
+    >
+      {!failed && posterOnly && (
+        <img className="cinematic-video-poster" src={poster} alt="" loading="lazy" aria-hidden="true" />
+      )}
+      {!failed && !posterOnly && (
         <video
           ref={videoRef}
-          src={src}
+          src={activeSrc}
           poster={poster}
           autoPlay={!reduceMotion}
           muted
           loop
           playsInline
-          preload="auto"
+          preload={isMobile ? 'metadata' : 'auto'}
           onCanPlay={() => {
             const currentVideo = videoRef.current;
             // Only start once ready AND on-screen; respect reduced-motion.
@@ -113,7 +183,7 @@ export default function CinematicVideo({
       {failed && (
         <div className="cinematic-video-fallback">
           <span>ORION AI</span>
-          <small>影片載入中</small>
+          <small>企業 AI 系統影片載入中</small>
         </div>
       )}
       {overlay && <span className="cinematic-video-overlay" aria-hidden="true" />}

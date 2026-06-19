@@ -203,7 +203,12 @@ export default function HomePage() {
           </p>
         </div>
         <div className="site-video-console">
-          <CinematicVideo src="/videos/mixkit-collaborative-digital-display.mp4" label="團隊在數位螢幕前討論企業資料的影片" />
+          <CinematicVideo
+            src="/videos/mixkit-collaborative-digital-display.mp4"
+            label="團隊在數位螢幕前討論企業資料的影片"
+            mobileMode="poster"
+            mobileObjectPosition="52% center"
+          />
           <div className="site-console-caption">
             <span>即時判斷</span>
             <span>任務派工</span>
@@ -220,7 +225,13 @@ export default function HomePage() {
         </div>
 
         <div className="tool-calling-stage">
-          <CinematicVideo src="/videos/orion-bg-02-toolflow-network.mp4" className="tool-calling-video" label="AI 營運工作流與資料流動畫" />
+          <CinematicVideo
+            src="/videos/orion-bg-02-toolflow-network.mp4"
+            className="tool-calling-video"
+            label="AI 營運工作流與資料流動畫"
+            mobileMode="poster"
+            mobileObjectPosition="50% center"
+          />
           <div className="workflow-node-grid">
             {workflowSteps.map((step, index) => (
               <article
@@ -260,7 +271,12 @@ export default function HomePage() {
 
       <section className="site-section site-method-section">
         <div className="method-video-panel">
-          <CinematicVideo src="/videos/orion-bg-03-systems-city.mp4" label="未來城市與系統中樞動畫" />
+          <CinematicVideo
+            src="/videos/orion-bg-03-systems-city.mp4"
+            label="未來城市與系統中樞動畫"
+            mobileMode="poster"
+            mobileObjectPosition="50% center"
+          />
         </div>
         <div className="method-copy">
           <span className="site-eyebrow">ORION 方法論</span>
@@ -290,7 +306,12 @@ export default function HomePage() {
       </section>
 
       <section className="site-section site-final-command">
-        <CinematicVideo src="/videos/orion-bg-04-memory-nightcity.mp4" label="夜間資料城市與企業記憶動畫" />
+        <CinematicVideo
+          src="/videos/orion-bg-04-memory-nightcity.mp4"
+          label="夜間資料城市與企業記憶動畫"
+          mobileMode="poster"
+          mobileObjectPosition="50% center"
+        />
         <div className="final-command-content">
           <span className="site-eyebrow">下一步</span>
           <h2>先讓 O 看看：你每天最常追人的那件事，能不能交給系統追。</h2>

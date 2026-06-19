@@ -97,7 +97,11 @@ export default function AboutPage() {
             <ArrowRight size={18} />
           </button>
         </div>
-        <CinematicVideo src="/videos/runway-orion-executive-03.mp4" label="企業主管檢視 AI 任務追蹤系統影片" />
+        <CinematicVideo
+          src="/videos/runway-orion-executive-03.mp4"
+          label="企業主管檢視 AI 任務追蹤系統影片"
+          mobileObjectPosition="48% center"
+        />
       </section>
 
       <section className="site-section service-lab">
@@ -145,7 +149,12 @@ export default function AboutPage() {
           </div>
         </div>
         <div className="method-video-panel">
-          <CinematicVideo src="/videos/orion-toolflow-card-loop.mp4" label="AI 營運工作流連接動畫" />
+          <CinematicVideo
+            src="/videos/orion-toolflow-card-loop.mp4"
+            label="AI 營運工作流連接動畫"
+            mobileMode="poster"
+            mobileObjectPosition="52% center"
+          />
         </div>
       </section>
 
@@ -166,7 +175,12 @@ export default function AboutPage() {
       </section>
 
       <section className="site-section site-final-command compact">
-        <CinematicVideo src="/videos/orion-bg-01-core-devices.mp4" label="跨裝置企業 AI 工作流影片" />
+        <CinematicVideo
+          src="/videos/orion-bg-01-core-devices.mp4"
+          label="跨裝置企業 AI 工作流影片"
+          mobileMode="poster"
+          mobileObjectPosition="50% center"
+        />
         <div className="final-command-content">
           <span className="site-eyebrow">適合誰</span>
           <h2>適合每天被訊息、名單、訂單、團隊進度追著跑的老闆。</h2>

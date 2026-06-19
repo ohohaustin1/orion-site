@@ -38,7 +38,11 @@ export default function InsightsPage() {
             很多公司買了 AI 工具，但客人還是等回覆、業務還是忘記追、專案還是靠老闆盯。真正的差距不是模型多厲害，而是 O 有沒有每天幫你把下一步追到結果。
           </p>
         </div>
-        <CinematicVideo src="/videos/orion-bg-00-command.mp4" label="企業資料中樞與決策洞察動畫" />
+        <CinematicVideo
+          src="/videos/orion-bg-00-command.mp4"
+          label="企業資料中樞與決策洞察動畫"
+          mobileObjectPosition="50% center"
+        />
       </section>
 
       <section className="site-section insight-score-section">
@@ -59,7 +63,12 @@ export default function InsightsPage() {
       </section>
 
       <section className="site-section signal-section">
-        <CinematicVideo src="/videos/orion-executive-board-pan.mp4" label="高階主管檢視企業資料與決策儀表板影片" />
+        <CinematicVideo
+          src="/videos/orion-executive-board-pan.mp4"
+          label="高階主管檢視企業資料與決策儀表板影片"
+          mobileMode="poster"
+          mobileObjectPosition="55% center"
+        />
         <div className="signal-content">
           <span className="site-eyebrow">ORION 觀察指標</span>
           <h2>一段流程值不值得交給 O，先看三個訊號。</h2>

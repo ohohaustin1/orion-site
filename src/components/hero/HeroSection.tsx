@@ -77,7 +77,11 @@ export default function HeroSection() {
     <section className="orion-hero-cinematic" aria-label="ORION AI 幫老闆追流程">
       <CinematicVideo
         src="/videos/runway-orion-executive-01.mp4"
+        mobileSrc="/videos/mobile/orion-hero-command-mobile-9x16.mp4"
+        mobilePosterSrc="/videos/posters/mobile/orion-hero-command-mobile-9x16.jpg"
         className="orion-hero-video"
+        objectPosition="center center"
+        mobileObjectPosition="center center"
         label="高級企業辦公室內的 AI 指揮中心背景影片"
       />
       <div className="orion-hero-aurora" aria-hidden="true" />
@@ -154,7 +158,11 @@ export default function HeroSection() {
           <div className="orion-command-frame">
             <CinematicVideo
               src="/videos/runway-orion-executive-02.mp4"
+              mobileSrc="/videos/mobile/orion-command-frame-mobile-4x5.mp4"
+              mobilePosterSrc="/videos/posters/mobile/orion-command-frame-mobile-4x5.jpg"
               className="orion-command-frame-video"
+              objectPosition="center center"
+              mobileObjectPosition="45% center"
               label="主管在透明螢幕前操作 AI 營運工作流的影片"
             />
             <div className="orion-command-hud">

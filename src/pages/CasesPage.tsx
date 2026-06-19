@@ -143,7 +143,11 @@ export default function CasesPage() {
             {source === 'api' ? '使用最新案例資料' : source === 'loading' ? '正在讀取案例資料' : '案例資料已載入'}
           </div>
         </div>
-        <CinematicVideo src="/videos/orion-systems-city-card-loop.mp4" label="企業系統案例城市動畫" />
+        <CinematicVideo
+          src="/videos/orion-systems-city-card-loop.mp4"
+          label="企業系統案例城市動畫"
+          mobileObjectPosition="50% center"
+        />
       </section>
 
       <section className="site-section flagship-case-section" aria-label="三個旗艦案例摘要">
@@ -247,7 +251,12 @@ export default function CasesPage() {
       </section>
 
       <section className="site-section site-final-command compact">
-        <CinematicVideo src="/videos/orion-core-devices-card-loop.mp4" label="多裝置企業 AI 工作流影片" />
+        <CinematicVideo
+          src="/videos/orion-core-devices-card-loop.mp4"
+          label="多裝置企業 AI 工作流影片"
+          mobileMode="poster"
+          mobileObjectPosition="50% center"
+        />
         <div className="final-command-content">
           <span className="site-eyebrow">下一步</span>
           <h2>把你每天最常漏掉的事，拆成第一版 O 可以追的流程。</h2>
