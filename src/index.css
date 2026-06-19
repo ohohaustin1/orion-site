@@ -3428,6 +3428,186 @@ body {
   max-width: 850px;
 }
 
+.home-case-showcase {
+  padding-top: clamp(32px, 5vw, 72px);
+}
+
+.home-case-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: end;
+  margin-bottom: 28px;
+}
+
+.home-case-head h2 {
+  max-width: 860px;
+  margin: 16px 0 0;
+  color: var(--site-text);
+  font-size: clamp(2.05rem, 4.7vw, 4.5rem);
+  line-height: 1.08;
+  font-weight: 850;
+  letter-spacing: 0;
+}
+
+.home-case-head h2 span {
+  display: block;
+}
+
+.home-case-head p {
+  max-width: 760px;
+  margin: 18px 0 0;
+  color: var(--site-muted);
+  font-size: 1.04rem;
+  line-height: 1.78;
+}
+
+.home-case-featured-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.home-case-feature-card,
+.home-case-mini-card {
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid rgba(206, 225, 255, 0.14);
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: 0 24px 74px rgba(0, 0, 0, 0.26), inset 0 1px 0 rgba(255,255,255,0.10);
+  transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
+}
+
+.home-case-feature-card:hover,
+.home-case-mini-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(229, 188, 104, 0.42);
+  box-shadow: 0 28px 88px rgba(31, 117, 210, 0.20), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+.home-case-feature-card {
+  min-height: 460px;
+  display: grid;
+  align-items: end;
+  border-radius: 30px;
+}
+
+.home-case-feature-card img,
+.home-case-mini-card img,
+.flagship-case-image,
+.case-study-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.home-case-feature-card img {
+  position: absolute;
+  inset: 0;
+  transform: scale(1.03);
+  filter: saturate(0.92) contrast(1.05) brightness(0.78);
+  transition: transform 0.5s ease, filter 0.5s ease;
+}
+
+.home-case-feature-card:hover img {
+  transform: scale(1.08);
+  filter: saturate(1) contrast(1.08) brightness(0.84);
+}
+
+.home-case-card-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(4, 9, 18, 0.06) 0%, rgba(4, 9, 18, 0.36) 42%, rgba(4, 9, 18, 0.92) 100%),
+    radial-gradient(circle at 18% 12%, rgba(229, 188, 104, 0.17), transparent 17rem);
+}
+
+.home-case-card-copy {
+  position: relative;
+  z-index: 2;
+  padding: 24px;
+}
+
+.home-case-card-copy span,
+.home-case-mini-card span {
+  display: inline-flex;
+  width: fit-content;
+  padding: 7px 11px;
+  border-radius: 999px;
+  color: #07101d;
+  background: linear-gradient(135deg, #ecf7ff, #e5bc68);
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.home-case-card-copy h3 {
+  margin: 16px 0 10px;
+  color: var(--site-text);
+  font-size: clamp(1.35rem, 2.1vw, 2rem);
+  line-height: 1.22;
+}
+
+.home-case-card-copy p {
+  margin: 0;
+  color: rgba(232, 241, 250, 0.82);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.home-case-card-copy strong {
+  display: block;
+  margin-top: 16px;
+  color: var(--site-gold-soft);
+  font-size: clamp(1.35rem, 2.5vw, 2.1rem);
+  line-height: 1.05;
+}
+
+.home-case-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.home-case-mini-card {
+  min-height: 174px;
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  gap: 0;
+  border-radius: 24px;
+}
+
+.home-case-mini-card img {
+  min-height: 174px;
+  filter: saturate(0.9) contrast(1.05) brightness(0.78);
+}
+
+.home-case-mini-card div {
+  min-width: 0;
+  padding: 18px;
+}
+
+.home-case-mini-card h3 {
+  margin: 12px 0 8px;
+  color: var(--site-text);
+  font-size: 1.02rem;
+  line-height: 1.32;
+}
+
+.home-case-mini-card p {
+  display: -webkit-box;
+  margin: 0;
+  color: var(--site-muted);
+  font-size: 0.88rem;
+  line-height: 1.58;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .tool-calling-stage {
   position: relative;
   min-height: 760px;
@@ -3890,12 +4070,20 @@ body {
 
 .flagship-case-card {
   border-radius: 26px;
-  padding: 28px;
+  padding: 16px 16px 28px;
   border: 1px solid rgba(229, 188, 104, 0.22);
   background:
     radial-gradient(circle at 20% 12%, rgba(229, 188, 104, 0.14), transparent 18rem),
     rgba(255,255,255,0.06);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.flagship-case-image {
+  height: 230px;
+  margin-bottom: 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(206, 225, 255, 0.12);
+  filter: saturate(0.92) contrast(1.05) brightness(0.78);
 }
 
 .flagship-case-card > span {
@@ -3956,8 +4144,20 @@ body {
   text-align: left;
   cursor: pointer;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(130px, auto);
+  grid-template-columns: 220px minmax(0, 1fr) minmax(130px, auto);
+  align-items: center;
   gap: 18px;
+}
+
+.case-study-thumb {
+  height: 146px;
+  border-radius: 20px;
+  border: 1px solid rgba(206, 225, 255, 0.12);
+  filter: saturate(0.9) contrast(1.05) brightness(0.78);
+}
+
+.case-study-summary-copy {
+  min-width: 0;
 }
 
 .case-study-summary h2 {
@@ -4381,6 +4581,20 @@ body {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .home-case-head {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .home-case-featured-grid,
+  .home-case-mini-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-case-mini-card {
+    grid-template-columns: 146px minmax(0, 1fr);
+  }
+
   .module-grid,
   .automation-grid,
   .site-scoreboard,
@@ -4484,6 +4698,8 @@ body {
   .automation-grid,
   .site-scoreboard,
   .site-scoreboard.compact,
+  .home-case-featured-grid,
+  .home-case-mini-grid,
   .case-detail-grid {
     grid-template-columns: 1fr;
   }
@@ -4515,6 +4731,31 @@ body {
   .flagship-case-card {
     padding: 22px;
     border-radius: 22px;
+  }
+
+  .flagship-case-image {
+    height: 210px;
+    margin: 0 0 16px;
+    border-radius: 18px;
+  }
+
+  .home-case-feature-card {
+    min-height: 390px;
+    border-radius: 24px;
+  }
+
+  .home-case-card-copy {
+    padding: 20px;
+  }
+
+  .home-case-mini-card {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .home-case-mini-card img {
+    height: 190px;
+    min-height: 0;
   }
 
   .site-section,
@@ -4565,6 +4806,10 @@ body {
   .case-study-summary {
     grid-template-columns: 1fr;
     padding: 22px;
+  }
+
+  .case-study-thumb {
+    height: 210px;
   }
 
   .case-metric-pair {

@@ -3,6 +3,11 @@ export interface MetricItem {
   value: string;
 }
 
+export interface CaseVisual {
+  src: string;
+  alt: string;
+}
+
 export interface CaseStudy {
   id: number;
   industry: string;
@@ -23,6 +28,57 @@ export interface CaseStudy {
   story_solution?: string;
   metrics?: MetricItem[];
 }
+
+export const caseVisuals: Record<number, CaseVisual> = {
+  1: {
+    src: '/images/cases/case-real-estate-ai-followup.jpg',
+    alt: '不動產銷售團隊在 AI 指揮中心追蹤高意向客戶',
+  },
+  2: {
+    src: '/images/cases/case-ecommerce-cart-recovery.jpg',
+    alt: '電商品牌團隊用 AI 整理客服訊息與棄單回收任務',
+  },
+  3: {
+    src: '/images/cases/case-manufacturing-schedule.jpg',
+    alt: '製造業主管在工廠指揮中心檢查產能排程與交期風險',
+  },
+  4: {
+    src: '/images/cases/case-restaurant-staffing.jpg',
+    alt: '連鎖餐飲營運團隊用 AI 安排門店人力與尖峰需求',
+  },
+  5: {
+    src: '/images/cases/case-retention-education.jpg',
+    alt: '會員制教育品牌用 AI 追蹤學員互動與續約風險',
+  },
+  6: {
+    src: '/images/cases/case-legal-risk-workflow.jpg',
+    alt: '跨境服務公司用 AI 檢查合約風險與銷售承諾流程',
+  },
+  7: {
+    src: '/images/cases/case-brand-voice-system.jpg',
+    alt: '高端顧問品牌用 AI 統一內容語氣與審核流程',
+  },
+  8: {
+    src: '/images/cases/case-cashflow-command.jpg',
+    alt: '成長型服務公司用 AI 追蹤現金流、收款與成本預警',
+  },
+  9: {
+    src: '/images/cases/case-education-transfer.jpg',
+    alt: '專業訓練機構用 AI 沉澱講師經驗與助教訓練流程',
+  },
+  10: {
+    src: '/images/cases/case-wellness-followup.jpg',
+    alt: '高端健康管理團隊用 AI 整理回訪、習慣追蹤與長期陪跑任務',
+  },
+  11: {
+    src: '/images/cases/case-investment-research.jpg',
+    alt: '私人投資研究室用 AI 整理策略假設、風險條件與決策回顧',
+  },
+  12: {
+    src: '/images/cases/case-decision-strategy.jpg',
+    alt: '企業主重大決策團隊用 AI 拆解情境、風險邊界與下一步',
+  },
+};
 
 export const caseStudies: CaseStudy[] = [
   {

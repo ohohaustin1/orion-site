@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, BarChart3, Filter, Lightbulb, ShieldCheck, Wrench } from 'lucide-react';
-import { allCases, type CaseStudy, type MetricItem } from '../data/cases';
+import { allCases, caseVisuals, type CaseStudy, type MetricItem } from '../data/cases';
 import PageSEO from '../components/PageSEO';
 import CinematicVideo from '../components/shared/CinematicVideo';
 import { API_BASE, DIAG_URL } from '../lib/api-base';
@@ -152,18 +152,22 @@ export default function CasesPage() {
           <p>先看三個典型斷點：原本誰在忙、哪裡漏掉、O 接手後老闆早上會看到什麼。</p>
         </div>
         <div className="flagship-case-grid">
-          {flagshipCases.map((caseData) => (
-            <article key={`flagship-${caseData.id}`} className="flagship-case-card">
-              <span>{caseData.industry}</span>
-              <h3>{caseData.company}</h3>
-              <p><strong>原本卡點：</strong>{caseData.problem}</p>
-              <p><strong>O 接手：</strong>{caseData.strategy}</p>
-              <div>
-                <small>老闆看到</small>
-                <b>{caseData.hero_number || caseData.duration || '待回、逾時、卡住清單'}</b>
-              </div>
-            </article>
-          ))}
+          {flagshipCases.map((caseData) => {
+            const visual = caseVisuals[caseData.id];
+            return (
+              <article key={`flagship-${caseData.id}`} className="flagship-case-card">
+                {visual && <img className="flagship-case-image" src={visual.src} alt={visual.alt} loading="lazy" />}
+                <span>{caseData.industry}</span>
+                <h3>{caseData.company}</h3>
+                <p><strong>原本卡點：</strong>{caseData.problem}</p>
+                <p><strong>O 接手：</strong>{caseData.strategy}</p>
+                <div>
+                  <small>老闆看到</small>
+                  <b>{caseData.hero_number || caseData.duration || '待回、逾時、卡住清單'}</b>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </section>
 
@@ -189,45 +193,51 @@ export default function CasesPage() {
       </section>
 
       <section className="case-study-list">
-        {filtered.map((caseData) => (
-          <article key={caseData.id} className={`case-study-row ${openId === caseData.id ? 'is-open' : ''}`}>
-            <button className="case-study-summary" onClick={() => setOpenId(openId === caseData.id ? null : caseData.id)}>
-              <span className="case-industry">{caseData.industry}</span>
-              <h2>{caseData.company}</h2>
-              <p>{caseData.hook_question || caseData.problem}</p>
-              <div className="case-metric-pair">
-                <strong>{caseData.hero_number || caseData.duration}</strong>
-                <span>{caseData.hero_money || '工作流成果'}</span>
-              </div>
-            </button>
+        {filtered.map((caseData) => {
+          const visual = caseVisuals[caseData.id];
+          return (
+            <article key={caseData.id} className={`case-study-row ${openId === caseData.id ? 'is-open' : ''}`}>
+              <button className="case-study-summary" onClick={() => setOpenId(openId === caseData.id ? null : caseData.id)}>
+                {visual && <img className="case-study-thumb" src={visual.src} alt={visual.alt} loading="lazy" />}
+                <div className="case-study-summary-copy">
+                  <span className="case-industry">{caseData.industry}</span>
+                  <h2>{caseData.company}</h2>
+                  <p>{caseData.hook_question || caseData.problem}</p>
+                </div>
+                <div className="case-metric-pair">
+                  <strong>{caseData.hero_number || caseData.duration}</strong>
+                  <span>{caseData.hero_money || '工作流成果'}</span>
+                </div>
+              </button>
 
-            {openId === caseData.id && (
-              <div className="case-study-detail">
-                <div className="case-detail-grid">
-                  <CaseDetail icon={<BarChart3 size={18} />} label="原本斷點" body={caseData.problem} />
-                  <CaseDetail icon={<Lightbulb size={18} />} label="AI 看見的本質" body={caseData.aiInsight} />
-                  <CaseDetail icon={<Wrench size={18} />} label="ORION 工作流做法" body={caseData.strategy} />
-                </div>
-                <div className="case-result-panel">
-                  <h3>可驗證成果</h3>
-                  <p>{caseData.results}</p>
-                  <div className="case-metrics">
-                    {(caseData.metrics || []).map((metric) => (
-                      <span key={`${caseData.id}-${metric.label}`}>
-                        <small>{metric.label}</small>
-                        <strong>{metric.value}</strong>
-                      </span>
-                    ))}
+              {openId === caseData.id && (
+                <div className="case-study-detail">
+                  <div className="case-detail-grid">
+                    <CaseDetail icon={<BarChart3 size={18} />} label="原本斷點" body={caseData.problem} />
+                    <CaseDetail icon={<Lightbulb size={18} />} label="AI 看見的本質" body={caseData.aiInsight} />
+                    <CaseDetail icon={<Wrench size={18} />} label="ORION 工作流做法" body={caseData.strategy} />
                   </div>
-                  <button className="orion-primary-btn" onClick={() => startDiagnosis('cases_card_cta')}>
-                    讓 O 拆我的案例
-                    <ArrowRight size={18} />
-                  </button>
+                  <div className="case-result-panel">
+                    <h3>可驗證成果</h3>
+                    <p>{caseData.results}</p>
+                    <div className="case-metrics">
+                      {(caseData.metrics || []).map((metric) => (
+                        <span key={`${caseData.id}-${metric.label}`}>
+                          <small>{metric.label}</small>
+                          <strong>{metric.value}</strong>
+                        </span>
+                      ))}
+                    </div>
+                    <button className="orion-primary-btn" onClick={() => startDiagnosis('cases_card_cta')}>
+                      讓 O 拆我的案例
+                      <ArrowRight size={18} />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
-          </article>
-        ))}
+              )}
+            </article>
+          );
+        })}
       </section>
 
       <section className="site-section site-final-command compact">

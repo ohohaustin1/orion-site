@@ -11,6 +11,7 @@ import {
 import PageSEO from '../components/PageSEO';
 import HeroSection from '../components/hero/HeroSection';
 import CinematicVideo from '../components/shared/CinematicVideo';
+import { allCases, caseVisuals } from '../data/cases';
 import { DIAG_URL } from '../lib/api-base';
 import { pushEvent } from '../lib/analytics';
 
@@ -84,6 +85,9 @@ const clarityItems = [
   },
 ];
 
+const featuredHomeCases = allCases.slice(0, 3);
+const compactHomeCases = allCases.slice(3, 12);
+
 function startDiagnosis(entryPoint: string) {
   pushEvent('chat_initiated', { flow_name: 'o', entry_point: entryPoint });
   window.location.href = `${DIAG_URL}/`;
@@ -99,6 +103,69 @@ export default function HomePage() {
       />
 
       <HeroSection />
+
+      <section className="site-section home-case-showcase" aria-label="ORION AI 實戰案例預覽">
+        <div className="home-case-head">
+          <div>
+            <span className="site-eyebrow">實戰案例</span>
+            <h2>
+              <span>先看 O 可以接住</span>
+              <span>哪些工作。</span>
+            </h2>
+            <p>
+              不用先懂 AI。你可以先看別人怎麼把客人追蹤、報價跟進、排程交付、回訪續約、現金流提醒，變成每天會跑的工作流。
+            </p>
+          </div>
+          <a className="orion-secondary-btn" href="/cases">
+            查看完整 12 個案例
+            <ArrowRight size={18} />
+          </a>
+        </div>
+
+        <div className="home-case-featured-grid">
+          {featuredHomeCases.map((caseData) => {
+            const visual = caseVisuals[caseData.id];
+            return (
+              <a
+                key={`home-featured-${caseData.id}`}
+                className="home-case-feature-card"
+                href={`/cases?industry=${encodeURIComponent(caseData.industry)}`}
+              >
+                {visual && <img src={visual.src} alt={visual.alt} loading="eager" />}
+                <div className="home-case-card-shade" aria-hidden="true" />
+                <div className="home-case-card-copy">
+                  <span>{caseData.industry}</span>
+                  <h3>{caseData.hook_question || caseData.company}</h3>
+                  <p>{caseData.problem}</p>
+                  <strong>
+                    {caseData.hero_number} / {caseData.hero_money}
+                  </strong>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+
+        <div className="home-case-mini-grid">
+          {compactHomeCases.map((caseData) => {
+            const visual = caseVisuals[caseData.id];
+            return (
+              <a
+                key={`home-mini-${caseData.id}`}
+                className="home-case-mini-card"
+                href={`/cases?industry=${encodeURIComponent(caseData.industry)}`}
+              >
+                {visual && <img src={visual.src} alt={visual.alt} loading="lazy" />}
+                <div>
+                  <span>{caseData.industry}</span>
+                  <h3>{caseData.company}</h3>
+                  <p>{caseData.hook_question || caseData.problem}</p>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </section>
 
       <section className="site-section site-clarity-strip" aria-label="ORION AI 交付物摘要">
         {clarityItems.map((item) => {

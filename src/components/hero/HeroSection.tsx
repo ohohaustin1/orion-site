@@ -130,8 +130,8 @@ export default function HeroSection() {
               免費讓 O 拆一次
               <ArrowRight size={18} />
             </button>
-            <a className="orion-secondary-btn" href="#tool-calling-workflow">
-              看老闆會看到什麼
+            <a className="orion-secondary-btn" href="/cases">
+              先看實戰案例
             </a>
           </div>
 
