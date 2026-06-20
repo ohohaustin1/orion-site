@@ -197,7 +197,7 @@ export default function CinematicVideo({
       {failed && (
         <div className="cinematic-video-fallback">
           <span>ORION AI</span>
-          <small>企業 AI 系統影片載入中</small>
+          <small>影片暫時無法載入，內容仍可正常閱讀。</small>
         </div>
       )}
       {overlay && <span className="cinematic-video-overlay" aria-hidden="true" />}

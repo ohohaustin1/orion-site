@@ -14,7 +14,7 @@ const founderJsonLd = {
       '@type': 'Person',
       '@id': `${founderUrl}#person`,
       name: 'Austin 許燿宸',
-      alternateName: ['許燿宸', 'Austin Hsu', 'Austin Xu', 'Austin Chen'],
+      alternateName: ['許燿宸', 'Austin Hsu', 'Austin Xu'],
       url: founderUrl,
       image: `${ORION_CONTACT.siteUrl}/team/AUSTIN.png`,
       jobTitle: 'ORION AI 創辦人',

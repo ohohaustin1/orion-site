@@ -72,8 +72,8 @@ export default function ResourcesPage() {
           </p>
         </div>
         <CinematicVideo
-          src="/videos/orion-executive-hero-dolly.mp4"
-          label="科技型主管在透明螢幕前說明 AI 營運工作流的影片"
+          src="/videos/orion-resource-blueprint-loop.mp4"
+          label="ORION 資源藍圖與工作流文件整理動畫"
           mobileObjectPosition="48% center"
         />
       </section>
@@ -100,9 +100,8 @@ export default function ResourcesPage() {
 
       <section className="site-section resource-feature">
         <CinematicVideo
-          src="/videos/orion-trust-host-stage-loop.mp4"
-          label="AI 數位主持人與企業簡報舞台影片"
-          mobileMode="poster"
+          src="/videos/orion-resource-briefing-loop.mp4"
+          label="ORION AI 作業簡報與任務拆解動畫"
           mobileObjectPosition="50% center"
         />
         <div>

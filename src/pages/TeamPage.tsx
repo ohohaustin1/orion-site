@@ -85,10 +85,21 @@ const LOCAL_TEAM_IMAGES: Array<{ pattern: RegExp; src: string }> = [
   { pattern: /林佳穎|Iris/i, src: '/team/林佳穎 Iris.png' },
   { pattern: /張雅婷|Tina/i, src: '/team/張雅婷 Tina.png' },
   { pattern: /吳明哲|Marcus/i, src: '/team/吳明哲 Marcus.png' },
-  { pattern: /Austin Chen/i, src: '/team/Austin Chen.png' },
+  { pattern: /Ethan Tsai|Austin Chen/i, src: '/team/Ethan Tsai.png' },
   { pattern: /Mira Lin/i, src: '/team/Mira Lin.png' },
   { pattern: /Ken Wu/i, src: '/team/Ken Wu.png' },
 ];
+
+function normalizePublicMember(member: Member): Member {
+  if (!/Austin Chen/i.test(member.name)) return member;
+  return {
+    ...member,
+    name: 'Ethan Tsai',
+    title: 'AI Workflow Architect',
+    bio: '負責把客戶需求拆成流程節點、資料欄位、提醒規則與驗收畫面，交給工程節點落地。',
+    image_url: null,
+  };
+}
 
 function resolveMemberImage(member: Pick<Member, 'name' | 'title' | 'image_url'>) {
   const profile = `${member.name} ${member.title}`;
@@ -171,8 +182,8 @@ export default function TeamPage() {
           </div>
         </div>
         <CinematicVideo
-          src="/videos/orion-executive-team-pan.mp4"
-          label="企業 AI 團隊在未來辦公室協作的影片"
+          src="/videos/orion-team-command-loop.mp4"
+          label="ORION 團隊任務總控與工作流協作動畫"
           mobileObjectPosition="52% center"
         />
       </section>
@@ -181,17 +192,18 @@ export default function TeamPage() {
         {useApiMembers ? (
           <div className="team-card-grid">
             {members.map((member) => {
-              const portrait = resolveMemberImage(member);
+              const displayMember = normalizePublicMember(member);
+              const portrait = resolveMemberImage(displayMember);
               return (
                 <article className="team-unit-card" key={member.id}>
                   {portrait ? (
-                    <img className="team-portrait-image" src={portrait} alt={`${member.name} 團隊照`} loading="lazy" />
+                    <img className="team-portrait-image" src={portrait} alt={`${displayMember.name} 團隊照`} loading="lazy" />
                   ) : (
-                    <div className="team-avatar-letter">{getInitial(member.name)}</div>
+                    <div className="team-avatar-letter">{getInitial(displayMember.name)}</div>
                   )}
-                  <h2>{member.name}</h2>
-                  <span>{member.title}</span>
-                  <p>{member.bio || 'ORION AI 核心成員，負責把商業問題轉成可執行工作流。'}</p>
+                  <h2>{displayMember.name}</h2>
+                  <span>{displayMember.title}</span>
+                  <p>{displayMember.bio || 'ORION AI 核心成員，負責把商業問題轉成可執行工作流。'}</p>
                 </article>
               );
             })}
@@ -221,9 +233,8 @@ export default function TeamPage() {
 
       <section className="site-section site-final-command compact">
         <CinematicVideo
-          src="/videos/orion-memory-city-card-loop.mp4"
-          label="企業資料記憶與團隊交接動畫"
-          mobileMode="poster"
+          src="/videos/orion-team-handoff-loop.mp4"
+          label="ORION 團隊派工、交接與回報動畫"
           mobileObjectPosition="54% center"
         />
         <div className="final-command-content">
