@@ -212,7 +212,16 @@ export default function CasesPage() {
           <p>
             每個案例都從老闆每天會遇到的斷點開始：客人沒追、交期被插單、私訊漏回、回訪沒人做。ORION 的價值，是把這些事變成有人負責、會提醒、會回報。
           </p>
-          <div className="source-pill">
+          <div className="site-page-hero-actions">
+            <button className="orion-primary-btn" onClick={() => startDiagnosis('cases_hero_primary')}>
+              用我的產業試拆一條流程
+              <ArrowRight size={18} />
+            </button>
+            <a className="orion-secondary-btn" href="#case-list">
+              看 12 個完整案例
+            </a>
+          </div>
+          <div className="source-pill cases-source-pill">
             <ShieldCheck size={16} />
             {source === 'api' ? '使用最新案例資料' : source === 'loading' ? '正在讀取案例資料' : '案例資料已載入'}
           </div>
@@ -235,7 +244,15 @@ export default function CasesPage() {
             const visual = getCaseVisual(caseData, index, 'casesFeatured');
             return (
               <article key={`flagship-${caseData.id}`} className="flagship-case-card">
-                {visual && <CaseMedia visual={visual} className="flagship-case-image flagship-case-media" loading="lazy" preload="metadata" />}
+                {visual && (
+                  <CaseMedia
+                    visual={visual}
+                    className="flagship-case-image flagship-case-media"
+                    loading="lazy"
+                    preload="metadata"
+                    mobileMode="poster"
+                  />
+                )}
                 {visual?.videoMp4 && (
                   <span className="flagship-case-video-badge" aria-hidden="true">
                     動態案例
@@ -276,14 +293,22 @@ export default function CasesPage() {
         </div>
       </section>
 
-      <section className="case-study-list">
+      <section className="case-study-list" id="case-list">
         {filtered.map((caseData, index) => {
           const visual = getCaseVisual(caseData, index, 'casesList');
           const resultPair = deriveResultPair(caseData);
           return (
             <article key={caseData.id} className={`case-study-row ${openId === caseData.id ? 'is-open' : ''}`}>
               <button className="case-study-summary" onClick={() => setOpenId(openId === caseData.id ? null : caseData.id)}>
-                {visual && <CaseMedia visual={visual} className="case-study-thumb" loading="lazy" preload="none" />}
+                {visual && (
+                  <CaseMedia
+                    visual={visual}
+                    className="case-study-thumb"
+                    loading="lazy"
+                    preload="none"
+                    mobileMode="poster"
+                  />
+                )}
                 <div className="case-study-summary-copy">
                   <span className="case-industry">{caseData.industry}</span>
                   <h2>{getCaseTitle(caseData)}</h2>

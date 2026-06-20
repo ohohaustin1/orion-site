@@ -3977,6 +3977,22 @@ body {
   max-width: 760px;
 }
 
+.site-page-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.site-page-hero-actions .orion-primary-btn,
+.site-page-hero-actions .orion-secondary-btn {
+  min-height: 52px;
+}
+
+.cases-source-pill {
+  margin-top: 18px;
+}
+
 .site-video-console,
 .method-video-panel,
 .site-page-hero .cinematic-video,
@@ -4665,6 +4681,7 @@ body {
   display: flex;
   gap: 18px;
   align-items: center;
+  overflow: hidden;
   border-radius: 24px;
   border: 1px solid rgba(206, 225, 255, 0.13);
   background: rgba(255,255,255,0.055);
@@ -4682,8 +4699,13 @@ body {
 .case-filter-list {
   display: flex;
   gap: 10px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   overflow-x: auto;
   padding-bottom: 2px;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .case-filter-list button,
@@ -5469,6 +5491,16 @@ body {
     padding: 52px 0;
   }
 
+  .site-page-hero-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .site-page-hero-actions .orion-primary-btn,
+  .site-page-hero-actions .orion-secondary-btn {
+    width: 100%;
+  }
+
   .site-page-hero {
     min-height: auto;
     padding-top: 92px;
@@ -5507,6 +5539,17 @@ body {
 
   .case-filter-section {
     display: grid;
+    width: min(100% - 28px, 1320px);
+    padding: 14px;
+  }
+
+  .case-filter-list {
+    padding: 0 2px 8px;
+    scrollbar-width: none;
+  }
+
+  .case-filter-list::-webkit-scrollbar {
+    display: none;
   }
 
   .case-study-summary {

@@ -149,7 +149,15 @@ export default function HomePage() {
                 className="home-case-feature-card"
                 href={`/cases?industry=${encodeURIComponent(caseData.industry)}`}
               >
-                {visual && <CaseMedia visual={visual} className="home-case-feature-media" loading="eager" preload="auto" />}
+                {visual && (
+                  <CaseMedia
+                    visual={visual}
+                    className="home-case-feature-media"
+                    loading="eager"
+                    preload="auto"
+                    mobileMode="poster"
+                  />
+                )}
                 {visual?.videoMp4 && (
                   <span className="home-case-video-badge" aria-hidden="true">
                     <i />
@@ -179,7 +187,15 @@ export default function HomePage() {
                 className="home-case-mini-card"
                 href={`/cases?industry=${encodeURIComponent(caseData.industry)}`}
               >
-                {visual && <CaseMedia visual={visual} className="home-case-mini-media" loading="lazy" preload="metadata" />}
+                {visual && (
+                  <CaseMedia
+                    visual={visual}
+                    className="home-case-mini-media"
+                    loading="lazy"
+                    preload="metadata"
+                    mobileMode="poster"
+                  />
+                )}
                 {visual?.videoMp4 && (
                   <span className="home-case-mini-video-dot" aria-hidden="true">
                     動態

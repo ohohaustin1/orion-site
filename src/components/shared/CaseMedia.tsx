@@ -1,15 +1,58 @@
-import { useEffect, useRef, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { CaseVisual } from '../../data/cases';
+
+type MobileMediaMode = 'video' | 'poster';
 
 interface CaseMediaProps {
   visual: CaseVisual;
   className: string;
   loading?: 'eager' | 'lazy';
   preload?: 'auto' | 'metadata' | 'none';
+  mobileMode?: MobileMediaMode;
 }
 
-export default function CaseMedia({ visual, className, loading = 'lazy', preload = 'metadata' }: CaseMediaProps) {
+const MOBILE_MEDIA_QUERY = '(max-width: 768px)';
+
+function getInitialMobileViewport() {
+  return (
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia(MOBILE_MEDIA_QUERY).matches
+  );
+}
+
+function useMobileMediaViewport() {
+  const [isMobile, setIsMobile] = useState(getInitialMobileViewport);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return undefined;
+
+    const mediaQuery = window.matchMedia(MOBILE_MEDIA_QUERY);
+    const update = () => setIsMobile(mediaQuery.matches);
+    update();
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', update);
+      return () => mediaQuery.removeEventListener('change', update);
+    }
+
+    mediaQuery.addListener(update);
+    return () => mediaQuery.removeListener(update);
+  }, []);
+
+  return isMobile;
+}
+
+export default function CaseMedia({
+  visual,
+  className,
+  loading = 'lazy',
+  preload = 'metadata',
+  mobileMode = 'video',
+}: CaseMediaProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const isMobile = useMobileMediaViewport();
+  const posterOnly = isMobile && mobileMode === 'poster';
   const mediaStyle = {
     '--case-video-position': visual.objectPosition || 'center center',
     '--case-video-mobile-position': visual.mobileObjectPosition || visual.objectPosition || 'center center',
@@ -23,7 +66,7 @@ export default function CaseMedia({ visual, className, loading = 'lazy', preload
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !visual.videoMp4) return;
+    if (!video || !visual.videoMp4 || posterOnly) return;
 
     // SSR-safe: matchMedia only exists in the browser. Respect reduced-motion by
     // keeping the static poster (no autoplay) for those users.
@@ -78,9 +121,9 @@ export default function CaseMedia({ visual, className, loading = 'lazy', preload
       window.removeEventListener('focus', requestPlayback);
       window.removeEventListener('pageshow', requestPlayback);
     };
-  }, [visual.videoMp4, visual.videoWebm]);
+  }, [posterOnly, visual.videoMp4, visual.videoWebm]);
 
-  if (!visual.videoMp4) {
+  if (!visual.videoMp4 || posterOnly) {
     return <img className={className} src={visual.src} alt={visual.alt} loading={loading} style={mediaStyle} />;
   }
 
