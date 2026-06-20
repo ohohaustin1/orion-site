@@ -12,6 +12,7 @@ interface CaseMediaProps {
 }
 
 const MOBILE_MEDIA_QUERY = '(max-width: 768px)';
+const LAZY_MEDIA_ROOT_MARGIN = '320px';
 
 function getInitialMobileViewport() {
   return (
@@ -53,6 +54,10 @@ export default function CaseMedia({
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const isMobile = useMobileMediaViewport();
   const posterOnly = isMobile && mobileMode === 'poster';
+  const preferredVideoSrc = visual.videoWebm || visual.videoMp4 || '';
+  const [activeVideoSrc, setActiveVideoSrc] = useState(preferredVideoSrc);
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
   const mediaStyle = {
     '--case-video-position': visual.objectPosition || 'center center',
     '--case-video-mobile-position': visual.mobileObjectPosition || visual.objectPosition || 'center center',
@@ -65,8 +70,37 @@ export default function CaseMedia({
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   useEffect(() => {
+    setActiveVideoSrc(preferredVideoSrc);
+    setShouldLoadVideo(false);
+    setVideoFailed(false);
+  }, [preferredVideoSrc, posterOnly]);
+
+  useEffect(() => {
     const video = videoRef.current;
-    if (!video || !visual.videoMp4 || posterOnly) return;
+    if (!video || !visual.videoMp4 || posterOnly || videoFailed) return undefined;
+
+    if (typeof IntersectionObserver === 'undefined') {
+      setShouldLoadVideo(true);
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setShouldLoadVideo(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0, rootMargin: LAZY_MEDIA_ROOT_MARGIN },
+    );
+
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, [posterOnly, videoFailed, visual.videoMp4]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !visual.videoMp4 || posterOnly || videoFailed || !shouldLoadVideo || !activeVideoSrc) return;
 
     // SSR-safe: matchMedia only exists in the browser. Respect reduced-motion by
     // keeping the static poster (no autoplay) for those users.
@@ -77,7 +111,7 @@ export default function CaseMedia({
 
     const requestPlayback = () => {
       const currentVideo = videoRef.current;
-      if (!currentVideo || shouldReduceMotion) return;
+      if (!currentVideo || shouldReduceMotion || !currentVideo.currentSrc) return;
 
       currentVideo.muted = true;
       currentVideo.defaultMuted = true;
@@ -92,38 +126,20 @@ export default function CaseMedia({
       }
     };
 
-    // SSR-safe: IntersectionObserver only exists in the browser. Case cards are
-    // part of the sales proof, so we do not actively pause them offscreen; the
-    // observer only nudges playback once the browser brings them near view.
-    let observer: IntersectionObserver | undefined;
-    if (typeof IntersectionObserver !== 'undefined') {
-      observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry?.isIntersecting) {
-            requestPlayback();
-          }
-        },
-        { threshold: 0, rootMargin: '200px' },
-      );
-      observer.observe(video);
-    } else {
-      requestPlayback();
-    }
-
+    video.load();
     requestPlayback();
     document.addEventListener('visibilitychange', requestVisiblePlayback);
     window.addEventListener('focus', requestPlayback);
     window.addEventListener('pageshow', requestPlayback);
 
     return () => {
-      observer?.disconnect();
       document.removeEventListener('visibilitychange', requestVisiblePlayback);
       window.removeEventListener('focus', requestPlayback);
       window.removeEventListener('pageshow', requestPlayback);
     };
-  }, [posterOnly, visual.videoMp4, visual.videoWebm]);
+  }, [activeVideoSrc, posterOnly, shouldLoadVideo, videoFailed, visual.videoMp4]);
 
-  if (!visual.videoMp4 || posterOnly) {
+  if (!visual.videoMp4 || posterOnly || videoFailed) {
     return <img className={className} src={visual.src} alt={visual.alt} loading={loading} style={mediaStyle} />;
   }
 
@@ -135,16 +151,24 @@ export default function CaseMedia({
       muted
       loop
       playsInline
-      preload={preload}
+      preload={shouldLoadVideo ? preload : 'none'}
       poster={visual.src}
       aria-hidden="true"
       tabIndex={-1}
       style={mediaStyle}
       onLoadedData={(event) => requestLoadedPlayback(event.currentTarget, reduceMotion)}
       onCanPlay={(event) => requestLoadedPlayback(event.currentTarget, reduceMotion)}
+      src={shouldLoadVideo ? activeVideoSrc : undefined}
+      data-src={activeVideoSrc}
+      onError={() => {
+        if (activeVideoSrc !== visual.videoMp4 && visual.videoMp4) {
+          setActiveVideoSrc(visual.videoMp4);
+          return;
+        }
+        setVideoFailed(true);
+      }}
     >
-      {visual.videoWebm && <source src={visual.videoWebm} type="video/webm" />}
-      <source src={visual.videoMp4} type="video/mp4" />
+      你的瀏覽器不支援影片播放。
     </video>
   );
 }

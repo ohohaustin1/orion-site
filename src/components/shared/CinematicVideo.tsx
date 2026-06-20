@@ -17,6 +17,7 @@ interface CinematicVideoProps {
 }
 
 const MOBILE_VIDEO_QUERY = '(max-width: 768px)';
+const LAZY_VIDEO_ROOT_MARGIN = '360px';
 
 function derivePoster(src: string) {
   return src.replace('/videos/', '/videos/posters/').replace(/\.[a-z0-9]+$/i, '.jpg');
@@ -66,9 +67,11 @@ export default function CinematicVideo({
 }: CinematicVideoProps) {
   const reduceMotion = useReducedMotion();
   const isMobile = useMobileVideoViewport();
+  const frameRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const isOnScreenRef = useRef(false);
   const [failed, setFailed] = useState(false);
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
   const activeSrc = isMobile && mobileSrc ? mobileSrc : src;
   const poster = isMobile
     ? mobilePosterSrc || posterSrc || derivePoster(activeSrc)
@@ -81,18 +84,47 @@ export default function CinematicVideo({
 
   useEffect(() => {
     setFailed(false);
+    setShouldLoadVideo(false);
+    isOnScreenRef.current = false;
   }, [activeSrc, posterOnly]);
 
   useEffect(() => {
+    const frame = frameRef.current;
+    if (!frame || failed || posterOnly) return undefined;
+
+    if (typeof IntersectionObserver === 'undefined') {
+      isOnScreenRef.current = true;
+      setShouldLoadVideo(true);
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const isOnScreen = Boolean(entry?.isIntersecting);
+        isOnScreenRef.current = isOnScreen;
+        if (isOnScreen) {
+          setShouldLoadVideo(true);
+        } else {
+          videoRef.current?.pause();
+        }
+      },
+      { threshold: 0, rootMargin: LAZY_VIDEO_ROOT_MARGIN },
+    );
+
+    observer.observe(frame);
+    return () => observer.disconnect();
+  }, [activeSrc, failed, posterOnly]);
+
+  useEffect(() => {
     const video = videoRef.current;
-    if (!video || failed || posterOnly) return undefined;
+    if (!video || failed || posterOnly || !shouldLoadVideo) return undefined;
 
     // Only play while the video is actually in the viewport. The ref tracks the
     // latest intersection state so visibility/focus handlers never resume an
     // offscreen video.
     const requestPlayback = () => {
       const currentVideo = videoRef.current;
-      if (!currentVideo || failed) return;
+      if (!currentVideo || failed || !currentVideo.currentSrc) return;
 
       currentVideo.muted = true;
       currentVideo.defaultMuted = true;
@@ -115,41 +147,22 @@ export default function CinematicVideo({
       }
     };
 
-    // SSR-safe: IntersectionObserver only exists in the browser.
-    let observer: IntersectionObserver | undefined;
-    if (typeof IntersectionObserver !== 'undefined') {
-      observer = new IntersectionObserver(
-        ([entry]) => {
-          isOnScreenRef.current = Boolean(entry?.isIntersecting);
-          if (isOnScreenRef.current) {
-            requestPlayback();
-          } else {
-            videoRef.current?.pause();
-          }
-        },
-        { threshold: 0, rootMargin: '200px' },
-      );
-      observer.observe(video);
-    } else {
-      // No observer support: fall back to old behaviour (treat as on-screen).
-      isOnScreenRef.current = true;
-      requestPlayback();
-    }
-
+    video.load();
+    requestPlayback();
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('focus', requestPlayback);
     window.addEventListener('pageshow', requestPlayback);
 
     return () => {
-      observer?.disconnect();
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('focus', requestPlayback);
       window.removeEventListener('pageshow', requestPlayback);
     };
-  }, [activeSrc, failed, posterOnly, reduceMotion]);
+  }, [activeSrc, failed, posterOnly, reduceMotion, shouldLoadVideo]);
 
   return (
     <div
+      ref={frameRef}
       className={`cinematic-video ${className} ${failed ? 'is-fallback' : ''}`}
       aria-label={label}
       style={frameStyle}
@@ -160,17 +173,18 @@ export default function CinematicVideo({
       {!failed && !posterOnly && (
         <video
           ref={videoRef}
-          src={activeSrc}
+          src={shouldLoadVideo ? activeSrc : undefined}
+          data-src={activeSrc}
           poster={poster}
           autoPlay={!reduceMotion}
           muted
           loop
           playsInline
-          preload={isMobile ? 'metadata' : 'auto'}
+          preload={shouldLoadVideo ? 'metadata' : 'none'}
           onCanPlay={() => {
             const currentVideo = videoRef.current;
             // Only start once ready AND on-screen; respect reduced-motion.
-            if (!currentVideo || reduceMotion || !isOnScreenRef.current) return;
+            if (!currentVideo || reduceMotion || !isOnScreenRef.current || !currentVideo.currentSrc) return;
 
             currentVideo.muted = true;
             currentVideo.defaultMuted = true;
