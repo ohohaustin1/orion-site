@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, BarChart3, Filter, Lightbulb, ShieldCheck, Wrench } from 'lucide-react';
-import { allCases, getCaseVisual, type CaseStudy, type MetricItem } from '../data/cases';
+import { ArrowRight, BarChart3, Filter, Lightbulb, ShieldCheck, Wrench, Zap } from 'lucide-react';
+import { allCases, getCaseVisual, getCaseWorkflows, type CaseStudy, type MetricItem } from '../data/cases';
 import PageSEO from '../components/PageSEO';
 import CinematicVideo from '../components/shared/CinematicVideo';
 import CaseMedia from '../components/shared/CaseMedia';
@@ -327,6 +327,11 @@ export default function CasesPage() {
                     <CaseDetail icon={<Lightbulb size={18} />} label="AI 看見的本質" body={caseData.aiInsight} />
                     <CaseDetail icon={<Wrench size={18} />} label="ORION 工作流做法" body={caseData.strategy} />
                   </div>
+                  <CaseDetail
+                    icon={<Zap size={18} />}
+                    label="還能順手交給 O 的工作流"
+                    items={getCaseWorkflows(caseData)}
+                  />
                   <div className="case-result-panel">
                     <h3>可驗證成果</h3>
                     <p>{caseData.results}</p>
@@ -371,12 +376,16 @@ export default function CasesPage() {
   );
 }
 
-function CaseDetail({ icon, label, body }: { icon: React.ReactNode; label: string; body: string }) {
+function CaseDetail({ icon, label, body, items }: { icon: React.ReactNode; label: string; body?: string; items?: string[] }) {
   return (
     <div className="case-detail-card">
       <span>{icon}</span>
       <strong>{label}</strong>
-      <p>{body}</p>
+      {items
+        ? items.map((item, i) => (
+            <p key={i}><span style={{ color: '#C5A059', marginRight: 6 }}>›</span>{item}</p>
+          ))
+        : <p>{body}</p>}
     </div>
   );
 }
