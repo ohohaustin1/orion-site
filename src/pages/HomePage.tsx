@@ -1,10 +1,13 @@
 import {
   ArrowRight,
   BarChart3,
+  Bot,
   BrainCircuit,
+  Clock3,
   Database,
   FileCheck2,
   Network,
+  RefreshCw,
   ShieldCheck,
   Workflow,
 } from 'lucide-react';
@@ -121,6 +124,50 @@ export default function HomePage() {
       />
 
       <HeroSection />
+
+      <section className="site-section always-on-supervisor" aria-label="ORION 24 小時 AI 主管">
+        <div className="always-on-copy">
+          <span className="site-eyebrow">24/7 AI SUPERVISOR</span>
+          <h2>24 小時做事，永遠不離職的好主管</h2>
+          <p>
+            客人私訊、報價追蹤、訂單進度、團隊回報，最怕不是沒人做，是沒人每天盯。
+            O 會把這些重複工作變成自動流程：有人進來就接、有人拖延就提醒、有結果就整理給老闆看。
+          </p>
+          <div className="always-on-points" aria-label="O AI 會持續盯住的工作">
+            <div>
+              <Clock3 size={18} />
+              <span>24 小時接住訊息</span>
+            </div>
+            <div>
+              <Bot size={18} />
+              <span>自動提醒負責人</span>
+            </div>
+            <div>
+              <RefreshCw size={18} />
+              <span>每天回報進度</span>
+            </div>
+          </div>
+          <button className="orion-primary-btn" type="button" onClick={() => startDiagnosis('home_247_supervisor')}>
+            讓 O 幫我盯一條流程
+            <ArrowRight size={18} />
+          </button>
+        </div>
+
+        <div className="always-on-video-panel">
+          <CinematicVideo
+            src="/videos/orion-robot-supervisor-loop.mp4"
+            posterSrc="/videos/posters/orion-robot-supervisor-loop.jpg"
+            className="always-on-video"
+            label="ORION AI 機器人主管持續處理客戶訊息、派工提醒與進度回報"
+            mobileObjectPosition="50% center"
+          />
+          <div className="always-on-video-caption" aria-hidden="true">
+            <span>客戶入口</span>
+            <span>派工提醒</span>
+            <span>每日回報</span>
+          </div>
+        </div>
+      </section>
 
       <section className="site-section home-case-showcase" aria-label="ORION AI 實戰案例預覽">
         <div className="home-case-head">
